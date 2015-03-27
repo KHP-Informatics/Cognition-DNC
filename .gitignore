@@ -1,0 +1,10 @@
+.idea/
+*.iml
+target/
+dependency-reduced-pom.xml
+*.db
+common/src/test/resources/tweets.txt
+cachedir/
+*.pyc
+column_mapping.json
+velocity.log*

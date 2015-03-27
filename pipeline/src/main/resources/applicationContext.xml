@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+    <context:component-scan base-package="uk.ac.kcl.iop.brc.core.pipeline.dncpipeline" />
+    <context:component-scan base-package="uk.ac.kcl.iop.brc.core.pipeline.common" />
+    <context:annotation-config />
+    <tx:annotation-driven />
+    <cache:annotation-driven cache-manager="cacheManager" />
+    <context:property-placeholder ignore-unresolvable="true"
+                                  location="classpath:config.properties" />
+
+    <bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">
+        <property name="caches">
+            <set>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean">
+                    <property name="name" value="patients" />
+                </bean>
+            </set>
+        </property>
+    </bean>
+
+    <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+        <property name="velocityProperties">
+            <value>
+                resource.loader=class
+                class.resource.loader.class = org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+            </value>
+        </property>
+    </bean>
+
+    <bean id="sourceTransactionManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sourceSessionFactory" />
+        <property name="dataSource" ref="sourceDataSource" />
+        <qualifier value="sourceTX" />
+    </bean>
+
+    <bean id="targetTransactionManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sourceSessionFactory" />
+        <property name="dataSource" ref="targetDataSource" />
+        <qualifier value="targetTX" />
+    </bean>
+
+    <bean id="sourceDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+          destroy-method="close">
+        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver" />
+        <property name="url" value="jdbc:jtds:sqlserver://address;databaseName=dbName;integratedSecurity=true" />
+        <property name="username" value="username" />
+        <property name="password" value="password" />
+    </bean>
+
+    <bean id="targetDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+          destroy-method="close">
+        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver" />
+        <property name="url" value="jdbc:jtds:sqlserver://address;databaseName=dbName;integratedSecurity=true" />
+        <property name="username" value="username" />
+        <property name="password" value="password" />
+    </bean>
+
+    <bean id="sourceSessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="sourceDataSource" />
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</prop>
+                <prop key="hibernate.current_session_context_class">thread</prop>
+                <!--<prop key="hibernate.show_sql">true</prop>-->
+                <!--<prop key="format_sql">true</prop>-->
+                <!--<prop key="use_sql_comments">true</prop>-->
+                <prop key="transaction.auto_close_session">true</prop>
+                <prop key="transaction.flush_before_completion">true</prop>
+                <prop key="hibernate.connection.autocommit">true</prop>
+                <prop key="hibernate.connection.pool_size">10000</prop>
+                <prop key="hibernate.connection.release_mode">after_statement</prop>
+
+                <prop key="hibernate.c3p0.min_size">32</prop>
+                <prop key="hibernate.c3p0.max_size">64</prop>
+                <prop key="hibernate.c3p0.timeout">100</prop>
+                <prop key="hibernate.c3p0.max_statements">30</prop>
+                <prop key="hibernate.c3p0.idle_test_period">60</prop>
+            </props>
+        </property>
+
+        <property name="mappingResources">
+            <list>
+                <value>queries/sqlserver-metadata-named-queries.hbm.xml</value>
+                <value>queries/sqlserver-pipeline-named-queries.hbm.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="targetSessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="targetDataSource" />
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</prop>
+                <prop key="hibernate.current_session_context_class">thread</prop>
+                <!--<prop key="hibernate.show_sql">true</prop>-->
+                <!--<prop key="format_sql">true</prop>-->
+                <!--<prop key="use_sql_comments">true</prop>-->
+                <prop key="transaction.auto_close_session">true</prop>
+                <prop key="transaction.flush_before_completion">true</prop>
+                <prop key="hibernate.connection.autocommit">true</prop>
+                <prop key="hibernate.connection.pool_size">10000</prop>
+                <prop key="hibernate.connection.release_mode">after_statement</prop>
+
+                <prop key="hibernate.c3p0.min_size">32</prop>
+                <prop key="hibernate.c3p0.max_size">64</prop>
+                <prop key="hibernate.c3p0.timeout">100</prop>
+                <prop key="hibernate.c3p0.max_statements">30</prop>
+                <prop key="hibernate.c3p0.idle_test_period">60</prop>
+            </props>
+        </property>
+
+        <property name="mappingResources">
+            <list>
+                <value>queries/sqlserver-metadata-named-queries.hbm.xml</value>
+                <value>queries/sqlserver-pipeline-named-queries.hbm.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="baseDao" class="uk.ac.kcl.iop.brc.core.pipeline.common.data.BaseDao">
+        <property name="sourceSessionFactory" ref="sourceSessionFactory"/>
+        <property name="targetSessionFactory" ref="targetSessionFactory"/>
+    </bean>
+
+    <bean id="sqlServerTypeHandler" class="uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.typehandlers.SqlServerTypeHandler">
+        <property name="configurationService" ref="configurationService" />
+    </bean>
+
+</beans>

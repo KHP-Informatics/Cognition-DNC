@@ -1,0 +1,5 @@
+[
+  #foreach( $address in $patient.getAddresses()  )
+    {"regexp": "(?i)$address.getPostCode()", "placeHolder": "PPPPP"} #if( $foreach.hasNext ), #end
+  #end
+]

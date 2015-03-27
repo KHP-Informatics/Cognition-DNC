@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<!-- HSQLDB queries for testing -->
+<hibernate-mapping>
+    <sql-query name="getColumnType">
+        SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE "TABLE_NAME" = :tableName AND "COLUMN_NAME" = :columnName
+    </sql-query>
+
+    <sql-query name="getTableNames">
+        SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE "TABLE_SCHEMA" = :schemaName
+    </sql-query>
+
+    <sql-query name="getColumnsOfTable">
+        SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE "TABLE_NAME" = :tableName
+    </sql-query>
+
+    <sql-query name="createVarcharColumnFromBinary">
+        ALTER TABLE :tableName ADD COLUMN :newColumnName VARCHAR(100)
+    </sql-query>
+
+    <sql-query name="getIdAndColumn">
+        SELECT :columnName FROM :tableName
+    </sql-query>
+
+    <sql-query name="saveConvertedText">
+        UPDATE :tableName SET :columnName = ':convertedText' WHERE id=:id
+    </sql-query>
+
+    <sql-query name="dropOldColumn">
+        ALTER TABLE :tableName DROP COLUMN :columnName
+    </sql-query>
+
+    <sql-query name="getIdColumnOfTable">
+        SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE "TABLE_NAME"= :tableName
+    </sql-query>
+
+</hibernate-mapping>

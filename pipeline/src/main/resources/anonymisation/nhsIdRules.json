@@ -1,0 +1,3 @@
+[
+  {"regexp": "(?i)${patient.getNHSNumber()}", "placeHolder": "HHHHH"}
+]

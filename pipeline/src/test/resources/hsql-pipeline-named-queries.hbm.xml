@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<!-- HSQLDB pipeline queries for testing -->
+<hibernate-mapping>
+
+    <sql-query name="getPatient">
+        select ID as "id", nhs_no as "NHSNumber", dob as "dateOfBirth" from tblPatient where ID = :patientId
+    </sql-query>
+
+    <sql-query name="getAllPatients">
+        select ID as "id", nhs_no as "NHSNumber" from tblPatient
+    </sql-query>
+
+    <sql-query name="getObjectFromCoordinate">
+        SELECT :sourceColumn FROM :sourceTable WHERE :pkColumnName = :id
+    </sql-query>
+
+    <sql-query name="saveTextToCoordinate">
+        insert into SaveTable (src_table, src_col, doc_ID, processedText, updatetime) values(':sourceTable', ':sourceColumn', :sourceId, ':anonymisedText', ':updateTime')
+    </sql-query>
+
+    <sql-query name="getPatientNames">
+        select first_name, last_name from tblPatientNames where patient_id = :patientId
+    </sql-query>
+
+    <sql-query name="getAddresses">
+        select Address1, postcode from tblPatientAddresses where patient_id = :patientId
+    </sql-query>
+
+    <sql-query name="getPhoneNumbers">
+        select number from tblPatientPhoneNumbers where patient_id = :patientId
+    </sql-query>
+
+</hibernate-mapping>

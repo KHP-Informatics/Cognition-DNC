@@ -1,0 +1,4 @@
+[
+  {"test":"${test.getNHSNumber()}"},
+  {"test": "${someStr.substring(0,2)} ${someStr.substring(2, 4)}"}
+]

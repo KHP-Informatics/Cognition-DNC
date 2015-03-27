@@ -1,0 +1,47 @@
+This application anonymises the patient data in plain text, or in binary format, and saves the results
+in a specified database table.
+
+The supported binary formats are doc, docx and PDF. The images in a PDF file are also
+converted to text using Tesseract OCR library.
+
+
+Usage:
+=======================================================================================
+java -jar /path/to/jar/file.jar --createMdoe --file=coordinates.json
+
+The coordinates.json file consists of work coordinates.
+Work coordinates specify where the patient document is and
+which patient it belongs to.
+
+An example coordinates.json is as follows:
+[
+{"sourceTable":"PatientBinaryDocs","pkColumnName":"ID","patientId":1,
+"type":"binary","idInSourceTable":43,"sourceColumn":"BinaryContent"},
+
+{"sourceTable":"PatientPlainTextDocs","pkColumnName":"ID","patientId":2,
+"type":"text","idInSourceTable":21,"sourceColumn":"TextContent"}
+]
+
+This file specifies 2 work coordinates. The first coordinate points to a binary file to be converted and anonymised.
+The second coordinate points to a plain text to be anonymised.
+
+
+Configuration
+=======================================================================================
+
+1) Edit src/main/resources/applicationContext.xml so that
+    a) The bean with id "sourceDataSource" points to the desired source DB.
+    b) The bean with id "targetDataSource" points to the desired source DB.
+    c) The bean with "sourceSessionFactory" uses the correct SQL dialect.
+    d) The bean with "targetSessionFactory" uses the correct SQL dialect.
+
+
+2) Edit src/main/resources/config.properties so that
+    a) The variable "conversionFormat" defines what format you want the output to be in (text or html)
+
+3) Are you using SQL Server? If so, edit pipeline/src/main/resources/queries/sqlserver-pipeline-named-queries.hbm.xml
+so it respects your schema and patient model. If you're not using sql server then
+please add your DB support in pipeline/src/main/resources/queries, and put the query file in
+applicationContext.xml in "mappingResources" property.
+
+

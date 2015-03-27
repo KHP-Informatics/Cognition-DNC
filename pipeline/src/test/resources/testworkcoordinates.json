@@ -1,0 +1,8 @@
+[
+{"patientId":1,"sourceTable":"tblPatientFreetext","sourceColumn":"textContent","idInSourceTable":1,"pkColumnName":"ID","type":"text", "updatetime": "2015-02-11 16:18:43.42"},
+{"patientId":2,"sourceTable":"tblPatientFreetext","sourceColumn":"textContent","idInSourceTable":2,"pkColumnName":"ID","type":"text"},
+{"patientId":3,"sourceTable":"tblPatientFreetext","sourceColumn":"textContent","idInSourceTable":3,"pkColumnName":"ID","type":"text"},
+{"patientId":3,"sourceTable":"tblPatientFreetext","sourceColumn":"textContent","idInSourceTable":4,"pkColumnName":"ID","type":"text"},
+{"patientId":4,"sourceTable":"tblPatientFreetext","sourceColumn":"textContent","idInSourceTable":5,"pkColumnName":"ID","type":"text"},
+{"patientId":4,"sourceTable":"tblPatientFreetext","sourceColumn":"textContent","idInSourceTable":6,"pkColumnName":"ID","type":"text"}
+]

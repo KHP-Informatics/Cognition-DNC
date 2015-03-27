@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<!-- MySql queries for end testing -->
+<hibernate-mapping>
+    <sql-query name="getColumnType">
+        select data_type from information_schema.columns where table_name = :tableName and column_name = :columnName
+    </sql-query>
+
+    <sql-query name="getTableNames">
+        select table_name from information_schema.tables where table_schema = :schemaName
+    </sql-query>
+
+    <sql-query name="getColumnsOfTable">
+        select column_name from information_schema.columns where table_name = :tableName
+    </sql-query>
+
+    <sql-query name="createVarcharColumnFromBinary">
+        ALTER TABLE :tableName ADD COLUMN :newColumnName VARCHAR(100)
+    </sql-query>
+
+    <sql-query name="getIdAndColumn">
+        SELECT :columnName FROM :tableName
+    </sql-query>
+
+    <sql-query name="saveConvertedText">
+        UPDATE :tableName SET :columnName = ':convertedText' WHERE id=:id
+    </sql-query>
+
+    <sql-query name="dropOldColumn">
+        ALTER TABLE :tableName DROP COLUMN :columnName
+    </sql-query>
+
+    <sql-query name="getIdColumnOfTable">
+        select COLUMN_NAME from information_schema.columns where table_name = :tableName and column_key='PRI'
+    </sql-query>
+
+</hibernate-mapping>

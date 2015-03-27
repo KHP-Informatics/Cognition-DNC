@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<smokingSamples>
+    
+    <currentSmoker>
+        <sample>smoking cessation medication</sample>
+        <sample>has been in and out smoking</sample>
+        <sample>smoking about cigarettes daily</sample>
+        <sample>had cigarette break</sample>
+        <sample>Compliant with smoking cessation medicaiton</sample>
+        <sample>in and out smoking</sample>
+        <sample>Smoking cigarettes daily</sample>
+        <sample>Has cigarettes</sample>
+        <sample>Had cigarette break</sample>
+        <sample>drinking tea and smoking</sample>
+        <sample>joining others for smoke outside</sample>
+        <sample>He has not smoked this shift</sample>
+        <sample>the garden to smoke</sample>
+        <sample>Smokes cigarettes per day</sample>
+        <sample>escorted outside for a cigarette</sample>
+        <sample>courtyard for a smoke.</sample>
+        <sample>blew the cigarette</sample>
+        <sample>History of heavy smoking</sample>
+        <sample>to quit smoking</sample>
+        <sample>was smoking outside</sample>
+        <sample>demanding out to smoke</sample>
+        <sample>garden smoking breaks</sample>
+        <sample>in garden smoking</sample>
+        <sample>garden to smoke</sample>
+        <sample>Smoking cessation advice</sample>
+        <sample>smoked last cigarette</sample>
+        <sample>demand to be allowed to smoke</sample>
+        <sample>smoking in room</sample>
+        <sample>spent time in the garden smoking</sample>
+        <sample>smoking cessation</sample>
+        <sample>smoked cigarettes</sample>
+        <sample>Currently smoking cigars</sample>
+        <sample>smokes during </sample>
+        <sample>out side smoking</sample>
+        <sample>smokes cigarettes</sample>
+        <sample>smoking heavily</sample>
+        <sample>smoking interacting peers</sample>
+    </currentSmoker>
+    
+    <pastSmoker>
+        <sample>does not smoke anymore</sample>
+        <sample>doesn't smoke anymore</sample>
+        <sample>stopped smoking</sample>
+        <sample>gave up smoking ago</sample>
+    </pastSmoker>
+  
+    <nonSmoker>
+        <sample>said didn't smoke</sample>
+        <sample>said did not smoke</sample>
+        <sample>does not smoke</sample>
+        <sample>doesn't smoke</sample>
+        <sample>never smokes</sample>
+        <sample>is non-smoker</sample>
+        <sample>is non smoker</sample>
+    </nonSmoker>  
+    
+</smokingSamples>
