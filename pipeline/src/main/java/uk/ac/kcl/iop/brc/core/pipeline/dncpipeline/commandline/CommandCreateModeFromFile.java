@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
-public class CreateModeFromFile implements CommandProcessor {
+public class CommandCreateModeFromFile implements CommandProcessor {
 
     @Autowired
     public DNCPipelineService dncPipelineService;

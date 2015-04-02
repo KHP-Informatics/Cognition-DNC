@@ -27,7 +27,7 @@
         <property name="velocityProperties">
             <value>
                 resource.loader=class
-                class.resource.loader.class = org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+                class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
             </value>
         </property>
     </bean>

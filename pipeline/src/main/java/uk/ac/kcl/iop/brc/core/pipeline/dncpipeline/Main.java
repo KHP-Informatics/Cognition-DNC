@@ -16,15 +16,18 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline;
 
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.commandline.CommandHelper;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.commandline.CommandProcessor;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Options;
 import org.apache.log4j.Logger;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.commandline.CommandHelper;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.commandline.CommandProcessor;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.security.CodeSource;
 import java.util.Map;
 
 public class Main {
@@ -34,14 +37,17 @@ public class Main {
     private static Logger logger = Logger.getLogger(Main.class);
 
     /**
-     * Entry point of APR (Anonymisation Pipeline Runner)
+     * Entry point of Cognition-DNC
      */
     public static void main(String[] args) {
         if (requiresHelp(args)) {
             CommandHelper.printHelp();
             System.exit(0);
         }
-        context = new ClassPathXmlApplicationContext("applicationContext.xml");
+
+        String path = "file:" + getCurrentFolder() + "/config/applicationContext.xml";
+
+        context = new ClassPathXmlApplicationContext(path);
         Options options = getOptions();
         CommandLineParser parser = new GnuParser();
         try {
@@ -50,6 +56,18 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static String getCurrentFolder() {
+        CodeSource codeSource = Main.class.getProtectionDomain().getCodeSource();
+        File jarFile;
+        try {
+            jarFile = new File(codeSource.getLocation().toURI().getPath());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return "";
+        }
+        return jarFile.getParentFile().getPath();
     }
 
     /**

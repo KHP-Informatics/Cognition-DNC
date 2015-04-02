@@ -29,20 +29,20 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CreateModeFromFileTest {
+public class CommandCreateModeFromFileTest {
 
     @Mock
     private DNCPipelineService dncPipelineService;
 
     @InjectMocks
-    private CreateModeFromFile createModeFromFile;
+    private CommandCreateModeFromFile commandCreateModeFromFile;
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionIfFilePathIsNotGiven() {
         CommandLine cmd = mock(CommandLine.class);
         when(cmd.getOptionValue("file")).thenReturn("");
 
-        createModeFromFile.process(cmd);
+        commandCreateModeFromFile.process(cmd);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class CreateModeFromFileTest {
         CommandLine cmd = mock(CommandLine.class);
         when(cmd.getOptionValue("file")).thenReturn("path/to/file");
 
-        createModeFromFile.process(cmd);
+        commandCreateModeFromFile.process(cmd);
 
         verify(dncPipelineService).startCreateModeWithFile("path/to/file");
     }

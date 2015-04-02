@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 @Component
-public class AppendModeFromFile implements CommandProcessor {
+public class CommandAppendModeFromFile implements CommandProcessor {
 
     @Override
     public boolean isResponsibleFor(CommandLine cmd) {

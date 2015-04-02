@@ -16,30 +16,37 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.commandline;
 
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.DNCPipelineService;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 
 @Component
-public class AppendModeFromWebService implements CommandProcessor {
+public class CommandCreateModeFromWebService implements CommandProcessor {
+
+    @Autowired
+    private DNCPipelineService dncPipelineService;
 
     @Override
     public boolean isResponsibleFor(CommandLine cmd) {
-        boolean appendMode = cmd.hasOption("appendMode");
+        boolean createMode = cmd.hasOption("createMode");
         boolean webService = cmd.hasOption("webService");
 
-        return appendMode && webService;
+        return createMode && webService;
     }
 
     @Override
     public void process(CommandLine cmd) {
-        throw new NotImplementedException();
+        dncPipelineService.startCreateModeFromWS();
     }
 
     @Override
     public void addOption(Options options) {
+        options.addOption(OptionBuilder.withLongOpt("webService")
+                .withDescription("Application gets jobs from the web service.").
+                        withArgName("webService").create());
     }
 
 }
