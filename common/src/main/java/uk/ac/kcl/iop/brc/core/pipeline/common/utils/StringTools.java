@@ -18,10 +18,6 @@ package uk.ac.kcl.iop.brc.core.pipeline.common.utils;
 
 public class StringTools {
 
-    public static String replaceXMLCodesToCharacters(String text) {
-        return text.replace("&#8217;", "'"); // &#8217; is the apostrophe character
-    }
-
     public static String shortenString(String string) {
         if (string == null) {
             return "";
