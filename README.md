@@ -22,8 +22,11 @@ As part of other information governance controls, we propose the Cognition pipel
   2. The XHTML files are passed through an anonymisation algorithm (based on regular expressions), to mask strong patient identifiers
 3. The results are passed back into a database, with co-ordinate references to allow the processed document to be queried in place of the original document
  
+<h2>
+Use Cases
+</h2>
 
-
+Cognition is designed to be used in conjuction with structured data from a source EHR system. For example, one potential use case is to make available EHR records to researchers while protecting patient anonymity. In order to do this, identifiable patient information needs to be concealed from both the structured and unstructured parts of the database. One system of doing this is for an Information Governance body to 'whitelist' structured parts of the database, and for Cognition to transform the unstructured parts into an acceptable form. Both processes can then be combined to present an anonymised database to epidemiologists and informatics researchers.
 
 <h3>
 Build Instructions:
@@ -132,6 +135,12 @@ The second coordinate points to a plain text type to be anonymised.
 `java -jar /path/to/jar/file.jar --createMode --file=coordinates.json`
 
 
-That’s it! If you’re interested in/need help with using our Cognition pipeline, please get in touch richard.r.jackson@kcl.ac.uk, ismailemrekartoglu@gmail.com, richard.j.dobson@kcl.ac.uk 
+That’s it! If all hs gone well, you should see richly formated XHTML strings appearing in your target table. 
+
+
+<h2>
+Contact
+</h2>
+If you’re interested in/need help with using our Cognition pipeline, please get in touch richard.r.jackson@kcl.ac.uk, ismailemrekartoglu@gmail.com, richard.j.dobson@kcl.ac.uk 
 </body>
 </html>
