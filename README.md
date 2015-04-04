@@ -18,7 +18,7 @@ As part of other information governance controls, we propose the Cognition pipel
 
 1. Cognition receives input in the form of a JSON array. This array contains details of ‘co-ordinates’ from a source database - unique references to binary and character (free text) datatypes that need to be processed
 2. Character data types are passed directly to the anonymisation process
-  1. Binary objects such as MS Word documents are converted to XHTML with the Apache Tika library. PDF’s undergo OCR with Tesseract (if installed)
+  1. Binary objects such as MS Word documents are converted to XHTML with the Apache Tika library. PDFs undergo OCR with Tesseract (if installed)
   2. The XHTML files are passed through an anonymisation algorithm (based on regular expressions), to mask strong patient identifiers
 3. The results are passed back into a database, with co-ordinate references to allow the processed document to be queried in place of the original document
  
@@ -114,7 +114,7 @@ An example coordinates.json contains the following text:
 "type":"text","idInSourceTable":21,"sourceColumn":"TextContent"}
 ]
 ```
-This file specifies 2 work coordinates. The first coordinate points to a binary file to be converted and anonymised.
+This file specifies two work coordinates. The first coordinate points to a binary file to be converted and anonymised.
 
 JSON Key|JSON Value
 --------|-----------
