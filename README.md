@@ -137,7 +137,7 @@ The second coordinate points to a plain text type to be anonymised.
 `java -jar /path/to/jar/file.jar --createMode --file=coordinates.json`
 
 
-That’s it! If all hs gone well, you should see richly formated XHTML strings appearing in your target table. 
+That’s it! If all has gone well, you should see richly formated XHTML strings appearing in your target table. 
 
 
 <h2>
