@@ -54,7 +54,7 @@ Database Connection
 </h5>
 
 Edit 
-`src/main/resources/applicationContext.xml`
+`pipeline/target/config/applicationContext.xml`
 
 so that:
 
@@ -66,7 +66,7 @@ so that:
 <h5>
 Query configuration
 </h5>
-Edit `pipeline/src/main/resources/queries/sqlserver-pipeline-named-queries.hbm.xml` so it respects your schema and patient model. For example, the following assumes that you have a patient table in the target DB with the patient key = ID, and the patient date of birth = “dob”:
+Edit `pipeline/target/config/queries/sqlserver-pipeline-named-queries.hbm.xml` so it respects your schema and patient model. For example, the following assumes that you have a patient table in the target DB with the patient key = ID, and the patient date of birth = “dob”:
 
 ```xml
 <sql-query name="getPatient">
