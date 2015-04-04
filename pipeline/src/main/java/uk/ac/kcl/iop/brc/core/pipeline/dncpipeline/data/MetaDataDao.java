@@ -32,6 +32,7 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 @Repository
 public class MetaDataDao extends BaseDao {
 

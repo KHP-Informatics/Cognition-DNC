@@ -23,6 +23,7 @@ import net.sf.jmimemagic.MagicMatchNotFoundException;
 import net.sf.jmimemagic.MagicParseException;
 import org.springframework.stereotype.Service;
 
+@Deprecated
 @Service
 public class FileTypeService {
 

@@ -16,6 +16,7 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.common.model;
 
+@Deprecated
 public enum InputMethod {
     FILE_SYSTEM("File System"),
     DATABASE("Database");

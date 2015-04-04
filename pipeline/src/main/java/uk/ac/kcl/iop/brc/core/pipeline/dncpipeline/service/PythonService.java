@@ -26,6 +26,7 @@ import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
 
+@Deprecated
 @Service
 public class PythonService {
 

@@ -18,6 +18,7 @@ package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model;
 
 import com.google.gson.annotations.SerializedName;
 
+@Deprecated
 public class TableColumnModel {
 
     @SerializedName("tableName")

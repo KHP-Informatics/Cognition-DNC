@@ -18,6 +18,7 @@ package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data;
 
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.typehandlers.TypeHandler;
 
+@Deprecated
 public enum DbColumnTypes {
 
     BLOB("blob"),

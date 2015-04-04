@@ -21,7 +21,6 @@ import uk.ac.kcl.iop.brc.core.pipeline.common.utils.TimeUtil;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.Patient;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.PatientAddress;
 import org.apache.commons.lang.math.RandomUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

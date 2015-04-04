@@ -16,6 +16,7 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model;
 
+@Deprecated
 public class IdAndData {
 
     private Integer id;
