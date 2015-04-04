@@ -28,6 +28,8 @@ Use Cases
 
 Cognition is designed to be used in conjuction with structured data from a source EHR system. For example, one potential use case is to make available EHR records to researchers while protecting patient anonymity. In order to do this, identifiable patient information needs to be concealed from both the structured and unstructured parts of the database. One system of doing this is for an Information Governance body to 'whitelist' structured parts of the database, and for Cognition to transform the unstructured parts into an acceptable form. Both processes can then be combined to present an anonymised database to epidemiologists and informatics researchers.
 
+![Cognition pipeline](https://github.com/KHP-Informatics/wiki-resources/blob/master/cognition.png)
+
 <h3>
 Build Instructions:
 </h3>
