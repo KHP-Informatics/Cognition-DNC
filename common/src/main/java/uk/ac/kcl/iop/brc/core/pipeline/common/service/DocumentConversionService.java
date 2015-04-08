@@ -30,7 +30,7 @@ import java.io.InputStream;
 public class DocumentConversionService {
 
     public String convertToText(byte[] data) {
-        return convertWithHandler(data, new BodyContentHandler());
+        return convertWithHandler(data, new BodyContentHandler(-1));
     }
 
     public String convertToXHTML(byte[] data) {
