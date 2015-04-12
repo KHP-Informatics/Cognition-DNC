@@ -63,6 +63,10 @@ public class AnonymisationService {
     }
 
     public String anonymisePatientPlainText(Patient patient, String text) {
+        return pseudonymiseAll(patient, text);
+    }
+
+    private String pseudonymiseAll(Patient patient, String text) {
         text = namePseudonymiser.pseudonymise(patient, text);
         text = phonePseudonymiser.pseudonymise(patient, text);
         text = nhsNumberPseudonymiser.pseudonymise(patient, text);
@@ -78,11 +82,7 @@ public class AnonymisationService {
 
         if (node instanceof TextNode) {
             TextNode textNode = (TextNode) node;
-            textNode.text(namePseudonymiser.pseudonymise(patient, textNode.text()));
-            textNode.text(phonePseudonymiser.pseudonymise(patient, textNode.text()));
-            textNode.text(nhsNumberPseudonymiser.pseudonymise(patient, textNode.text()));
-            textNode.text(dateOfBirthPseudonymiser.pseudonymise(patient, textNode.text()));
-            textNode.text(addressPseudonymiser.pseudonymise(patient, textNode.text()));
+            textNode.text(pseudonymiseAll(patient, textNode.text()));
         }
 
         if (CollectionUtils.isEmpty(node.childNodes())) {

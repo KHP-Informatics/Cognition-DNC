@@ -16,6 +16,7 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.anonymisation;
 
+import org.apache.commons.lang.StringUtils;
 import uk.ac.kcl.iop.brc.core.pipeline.common.utils.TimeUtil;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -55,6 +56,7 @@ public class TemplateFiller {
     private void addCommonToolsToMap(Map<String, Object> objectMap) {
         objectMap.put("StringTools", StringTools.class);
         objectMap.put("TimeUtil", TimeUtil.class);
+        objectMap.put("StringUtils", StringUtils.class);
     }
 
     public void setVelocityEngine(VelocityEngine velocityEngine) {
