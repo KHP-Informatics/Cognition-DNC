@@ -16,6 +16,7 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data;
 
+import org.hibernate.exception.SQLGrammarException;
 import uk.ac.kcl.iop.brc.core.pipeline.common.data.BaseDao;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.helper.ClobHelper;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.Patient;
@@ -64,16 +65,20 @@ public class PatientDao extends BaseDao {
     }
 
     private void setCarers(Patient patient) {
-        Query getCarers = getCurrentSourceSession().getNamedQuery("getCarers");
-        getCarers.setParameter("patientId", patient.getId());
-        List carerObjects = getCarers.list();
-        carerObjects.forEach(object -> {
-            Object[] carerRow = (Object[]) object;
-            String name = clobHelper.getStringFromExpectedClob(carerRow[0]);
-            String lastName = clobHelper.getStringFromExpectedClob(carerRow[1]);
-            PatientCarer carer = new PatientCarer(name, lastName);
-            patient.addCarer(carer);
-        });
+        try {
+            Query getCarers = getCurrentSourceSession().getNamedQuery("getCarers");
+            getCarers.setParameter("patientId", patient.getId());
+            List carerObjects = getCarers.list();
+            carerObjects.forEach(object -> {
+                Object[] carerRow = (Object[]) object;
+                String name = clobHelper.getStringFromExpectedClob(carerRow[0]);
+                String lastName = clobHelper.getStringFromExpectedClob(carerRow[1]);
+                PatientCarer carer = new PatientCarer(name, lastName);
+                patient.addCarer(carer);
+            });
+        } catch (Exception ex) {
+            logger.warn("Error while loading carers. Does the specified carer table exist?");
+        }
     }
 
     private void setPhoneNumbers(Patient patient) {
@@ -94,16 +99,20 @@ public class PatientDao extends BaseDao {
      * @param patient
      */
     private void setAddresses(Patient patient) {
-        Query getAddresses = getCurrentSourceSession().getNamedQuery("getAddresses");
-        getAddresses.setParameter("patientId", patient.getId());
-        List addressObjects = getAddresses.list();
-        addressObjects.forEach(object -> {
-            Object[] addressRow = (Object[]) object;
-            String addressStr = clobHelper.getStringFromExpectedClob(addressRow[0]);
-            String postCode = clobHelper.getStringFromExpectedClob(addressRow[1]);
-            PatientAddress address = PatientAddress.newAddressPostCode(addressStr, postCode);
-            patient.addAddress(address);
-        });
+        try {
+            Query getAddresses = getCurrentSourceSession().getNamedQuery("getAddresses");
+            getAddresses.setParameter("patientId", patient.getId());
+            List addressObjects = getAddresses.list();
+            addressObjects.forEach(object -> {
+                Object[] addressRow = (Object[]) object;
+                String addressStr = clobHelper.getStringFromExpectedClob(addressRow[0]);
+                String postCode = clobHelper.getStringFromExpectedClob(addressRow[1]);
+                PatientAddress address = PatientAddress.newAddressPostCode(addressStr, postCode);
+                patient.addAddress(address);
+            });
+        } catch (Exception ex) {
+            logger.warn("Error while loading addresses. Does the specified address table exist?");
+        }
     }
 
     /**

@@ -52,6 +52,25 @@ public class PatientDaoTest extends IntegrationTest {
         patientDao.executeSQLQueryForSource("drop table tblPatientNames");
         patientDao.executeSQLQueryForSource("drop table tblPatientAddresses");
         patientDao.executeSQLQueryForSource("drop table tblPatientPhoneNumbers");
+        patientDao.executeSQLQueryForSource("drop table tblPatientCarers");
+    }
+
+    @Test
+    public void shouldNotTerminateWhenCarerTableIsMissing() {
+        patientDao.executeSQLQueryForSource("drop table tblPatientCarers");
+        patientDao.executeSQLQueryForSource("insert into tblPatient values(1, '123123', '1990-05-09')");
+        patientDao.executeSQLQueryForSource("insert into tblPatientNames values('michael', 'gregorski', 1)");
+        patientDao.executeSQLQueryForSource("insert into tblPatientNames values('micha', 'gregor', 1)");
+        patientDao.executeSQLQueryForSource("insert into tblPatientAddresses values('address1', 'cb4 2za', 1)");
+        patientDao.executeSQLQueryForSource("insert into tblPatientAddresses values('address2', 'cb1 2za', 1)");
+        patientDao.executeSQLQueryForSource("insert into tblPatientPhoneNumbers values('213123', 1)");
+        patientDao.executeSQLQueryForSource("insert into tblPatientPhoneNumbers values('0778', 1)");
+
+        Patient patient = patientDao.getPatient(1L);
+
+        assertThat(patient.getForeNames().contains("michael"), equalTo(true));
+
+        patientDao.executeSQLQueryForSource("create table tblPatientCarers(first_name varchar(100), last_name varchar(100), patient_id int)");
     }
 
     @Test
