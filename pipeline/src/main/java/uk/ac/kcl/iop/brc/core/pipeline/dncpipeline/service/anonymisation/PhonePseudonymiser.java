@@ -26,7 +26,7 @@ public class PhonePseudonymiser extends Pseudonymiser {
 
     @Override
     public String getJsonRuleFilePath() {
-        return "anonymisation/phoneRules.json";
+        return "anonymisation/phoneRules.vm";
     }
 
     @Override

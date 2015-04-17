@@ -41,7 +41,7 @@ public abstract class Pseudonymiser {
 
         Map<String, Object> map = new HashMap<>();
         map.put("patient", patient);
-
+        map.put("sourceText", text);
         String jsonRules = templateFiller.getFilledTemplate(getJsonRuleFilePath(), map);
 
         JsonHelper<PseudonymisationRule> jsonHelper = new JsonHelper<>(PseudonymisationRule[].class);
@@ -49,6 +49,9 @@ public abstract class Pseudonymiser {
         List<PseudonymisationRule> pseudonymisationRules = jsonHelper.loadListFromString(jsonRules);
 
         for (PseudonymisationRule rule : pseudonymisationRules) {
+            if (rule == null) {
+                continue;
+            }
             text = text.replaceAll(rule.getRegexp(), rule.getPlaceHolder());
         }
 

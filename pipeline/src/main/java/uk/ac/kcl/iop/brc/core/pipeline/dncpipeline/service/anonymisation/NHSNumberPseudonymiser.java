@@ -26,7 +26,7 @@ public class NHSNumberPseudonymiser extends Pseudonymiser {
 
     @Override
     public String getJsonRuleFilePath() {
-        return "anonymisation/nhsIdRules.json";
+        return "anonymisation/nhsIdRules.vm";
     }
 
     @Override

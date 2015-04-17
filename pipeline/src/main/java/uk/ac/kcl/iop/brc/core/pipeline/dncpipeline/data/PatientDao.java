@@ -16,17 +16,16 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data;
 
-import org.hibernate.exception.SQLGrammarException;
-import uk.ac.kcl.iop.brc.core.pipeline.common.data.BaseDao;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.helper.ClobHelper;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.Patient;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.PatientAddress;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
+import uk.ac.kcl.iop.brc.core.pipeline.common.data.BaseDao;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.helper.ClobHelper;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.Patient;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.PatientAddress;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.PatientCarer;
 
 import java.util.ArrayList;

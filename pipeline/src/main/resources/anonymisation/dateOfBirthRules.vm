@@ -6,5 +6,7 @@
   {"regexp": "(?i)${TimeUtil.getFormattedDate($patient.getDateOfBirth(), 'MM/yyyy')}", "placeHolder" : "DDDDD"},
   {"regexp": "(?i)${TimeUtil.getFormattedDate($patient.getDateOfBirth(), 'yyyy/MM')}", "placeHolder" : "DDDDD"},
   {"regexp": "(?i)${TimeUtil.getFormattedDate($patient.getDateOfBirth(), 'dd.MM.yyyy')}", "placeHolder" : "DDDDD"},
-  {"regexp": "(?i)${TimeUtil.getFormattedDate($patient.getDateOfBirth(), 'MM.dd.yyyy')}", "placeHolder" : "DDDDD"}
+  {"regexp": "(?i)${TimeUtil.getFormattedDate($patient.getDateOfBirth(), 'MM.dd.yyyy')}", "placeHolder" : "DDDDD"},
+  {"regexp": "(?i)${TimeUtil.getFormattedDate($patient.getDateOfBirth(), 'MM dd')}", "placeHolder" : "DDDDD"},
+  {"regexp": "(?i)${TimeUtil.getFormattedDate($patient.getDateOfBirth(), 'yyyy')}", "placeHolder" : "DDDDD"}
 ]

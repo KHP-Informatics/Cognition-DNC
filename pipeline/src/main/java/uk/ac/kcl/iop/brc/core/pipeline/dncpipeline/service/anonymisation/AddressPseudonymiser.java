@@ -25,7 +25,7 @@ public class AddressPseudonymiser extends Pseudonymiser {
 
     @Override
     public String getJsonRuleFilePath() {
-        return "anonymisation/addressRules.json";
+        return "anonymisation/addressRules.vm";
     }
 
     @Override

@@ -25,7 +25,7 @@ public class DateOfBirthPseudonymiser extends Pseudonymiser {
 
     @Override
     public String getJsonRuleFilePath() {
-        return "anonymisation/dateOfBirthRules.json";
+        return "anonymisation/dateOfBirthRules.vm";
     }
 
     @Override

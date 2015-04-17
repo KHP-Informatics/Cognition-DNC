@@ -1,0 +1,7 @@
+[
+  #foreach( $phone in $patient.getPhoneNumbers()  )
+    #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $phone, 3) )
+      {"regexp": "(?i)$approximateMatch", "placeHolder": "FFFFF"},
+    #end
+  #end
+]
