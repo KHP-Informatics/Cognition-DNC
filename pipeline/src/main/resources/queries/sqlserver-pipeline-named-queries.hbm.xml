@@ -33,4 +33,8 @@
         select number from tblPatientPhoneNumbers where patient_id = :patientId
     </sql-query>
 
+    <sql-query name="getCarers">
+        select first_name, last_name from tblPatientCarers where patient_id = :patientId
+    </sql-query>
+
 </hibernate-mapping>

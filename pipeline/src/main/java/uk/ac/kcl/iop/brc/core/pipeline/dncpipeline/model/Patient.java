@@ -45,6 +45,8 @@ public class Patient {
     @SerializedName("phoneNumbers")
     private List<String> phoneNumbers = new ArrayList();
 
+    private List<PatientCarer> carers = new ArrayList<>();
+
     public long getId() {
         return id;
     }
@@ -154,4 +156,15 @@ public class Patient {
         return surnames;
     }
 
+    public List<PatientCarer> getCarers() {
+        return carers;
+    }
+
+    public void setCarers(List<PatientCarer> carers) {
+        this.carers = carers;
+    }
+
+    public void addCarer(PatientCarer carer) {
+        carers.add(carer);
+    }
 }

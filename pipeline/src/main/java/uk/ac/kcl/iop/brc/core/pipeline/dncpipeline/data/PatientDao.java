@@ -26,6 +26,7 @@ import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.PatientCarer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,8 +58,22 @@ public class PatientDao extends BaseDao {
         setNames(patient);
         setPhoneNumbers(patient);
         setAddresses(patient);
+        setCarers(patient);
 
         return patient;
+    }
+
+    private void setCarers(Patient patient) {
+        Query getCarers = getCurrentSourceSession().getNamedQuery("getCarers");
+        getCarers.setParameter("patientId", patient.getId());
+        List carerObjects = getCarers.list();
+        carerObjects.forEach(object -> {
+            Object[] carerRow = (Object[]) object;
+            String name = clobHelper.getStringFromExpectedClob(carerRow[0]);
+            String lastName = clobHelper.getStringFromExpectedClob(carerRow[1]);
+            PatientCarer carer = new PatientCarer(name, lastName);
+            patient.addCarer(carer);
+        });
     }
 
     private void setPhoneNumbers(Patient patient) {
