@@ -23,6 +23,7 @@ import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.PatientAddress;
 import org.apache.commons.lang.math.RandomUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.PatientCarer;
 
 import java.text.ParseException;
 
@@ -33,6 +34,41 @@ public class AnonymisationServiceTest extends IntegrationTest {
 
     @Autowired
     private AnonymisationService anonymisationService;
+
+    @Test
+    public void shouldAnonymisePatientCarer() throws ParseException {
+        Patient patient = new Patient();
+        patient.addForeName("Ismail");
+        patient.addSurname("Kartoglu");
+        patient.setNHSNumber("11111");
+        PatientAddress patientAddress1 = new PatientAddress();
+        patientAddress1.setAddress("addressText");
+        patientAddress1.setPostCode("cb4 2za");
+        PatientAddress patientAddress2 = new PatientAddress();
+        patientAddress2.setAddress("addressText");
+        patientAddress2.setPostCode("cb4 2za");
+        patient.addAddress(patientAddress1);
+        patient.addAddress(patientAddress2);
+        patient.addPhoneNumber("50090051234");
+        patient.addPhoneNumber("11090051234");
+        patient.setDateOfBirth(TimeUtil.getDateFromString("09/05/1990", "dd/MM/yyyy"));
+        patient.addCarer(new PatientCarer("xyz", "abc"));
+        String anonymisedText = anonymisationService.anonymisePatientHTML(patient, "<html>\n" +
+                "<body>\n" +
+                "<h>Ismail</h>\n" +
+                "\n" +
+                "<div>Ismail Kartoglu is our patient. His carer is XYZ ABC</div>\n" +
+                "<div>His phone number is: 32123123456 and 50090051234</div>\n" +
+                "<div>His post code is cb4 2za addressText</div>\n" +
+                "NHS number 11122\n Date of birth is 09/05/1990" +
+                "Ism MrK\n" +
+                "\n" +
+                "\n" +
+                "</body>\n" +
+                "</html>");
+
+        assertTrue(anonymisedText.contains("carer is YYYYY YYYYY"));
+    }
 
     @Test
     public void shouldAnonymisePatient() throws ParseException {

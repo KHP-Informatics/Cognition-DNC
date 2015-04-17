@@ -167,4 +167,21 @@ public class Patient {
     public void addCarer(PatientCarer carer) {
         carers.add(carer);
     }
+
+    public List<String> getCarerForeNames() {
+        List<String> names = new ArrayList<>();
+        carers.forEach(carer -> {
+            names.add(carer.getFirstName());
+        });
+
+        return names;
+    }
+    public List<String> getCarerLastNames() {
+        List<String> lastNames = new ArrayList<>();
+        carers.forEach(carer -> {
+            lastNames.add(carer.getLastName());
+        });
+
+        return lastNames;
+    }
 }
