@@ -16,11 +16,13 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.common.utils;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.util.MatcherAssertionErrors.assertThat;
 
@@ -50,13 +52,12 @@ public class StringToolsTest {
     public void shouldGetApproximatelyMatchingStrings() {
         String string = "Ismail Emre Kartoglu. Ismai Emre. Ismal. My name is Is mail.";
 
-        List<String> strings = StringTools.getApproximatelyMatchingStringList(string, "Ismail", 2);
+        List<String> strings = StringTools.getApproximatelyMatchingStringList(string, "Ismail");
 
-        assertThat(strings.size(), equalTo(4));
+        assertThat(strings.size(), equalTo(3));
         assertTrue(strings.contains("ismail"));
         assertTrue(strings.contains("ismai"));
         assertTrue(strings.contains("ismal"));
-        assertTrue(strings.contains("is mail"));
     }
 
     @Test
@@ -66,6 +67,55 @@ public class StringToolsTest {
         String result = StringTools.getCompletingString(string, 8, 11);
 
         assertThat(result, equalTo("a dummy"));
+    }
+
+    @Test
+    public void shouldNotIncludeParenthesesWhenCompletingPartialString() {
+        String string = "This is (a dummy) sentence.";
+
+        String result = StringTools.getCompletingString(string, 9, 11);
+
+        assertThat(result, equalTo("a dummy"));
+        assertThat(result, not(equalTo("(a dummy")));
+    }
+
+    @Test
+    public void shouldCheckIfStringIsAlphaNumeric() {
+        assertThat(StringUtils.isAlphanumeric("(hello"), equalTo(false));
+        assertThat(StringUtils.isAlphanumeric("123hello"), equalTo(true));
+    }
+
+    @Test
+    public void shouldReturnEmptyCollectionIfSearchWordIsBlank() {
+        String string = "Ismail Emre Kartoglu. Ismai Emre. Ismal. My name is Is mail.";
+
+        List<String> strings = StringTools.getApproximatelyMatchingStringList(string, "");
+
+        assertThat(strings.size(), equalTo(0));
+    }
+
+    @Test
+    public void shouldAvoidOpeningParenthesisAsTheBeginningCharacter() {
+        String string = "Ismail (Emre Kartoglu. Ismai Emre. Ismal. My name is Is mail.";
+
+        String result = StringTools.getCompletingString(string, 6, 11);
+
+        assertThat(result, equalTo("Emre"));
+    }
+
+    @Test
+    public void shouldGetMaxLevenshteinDistanceAsFifteenPercentOfWordLength() {
+        int dist = StringTools.getMaxDistance("Ismail");
+        assertThat(dist, equalTo(1));
+
+        dist = StringTools.getMaxDistance("Bob");
+        assertThat(dist, equalTo(0));
+
+        dist = StringTools.getMaxDistance("Craig");
+        assertThat(dist, equalTo(1));
+
+        dist = StringTools.getMaxDistance("07881618299");
+        assertThat(dist, equalTo(2));
     }
 
 }

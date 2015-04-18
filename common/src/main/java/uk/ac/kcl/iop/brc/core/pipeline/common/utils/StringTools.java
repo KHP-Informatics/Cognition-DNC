@@ -20,6 +20,8 @@ import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StringTools {
 
@@ -41,11 +43,14 @@ public class StringTools {
     /**
      * @param sourceString Source string to search for approximately matching segments.
      * @param search String to search in @sourceString.
-     * @param maxDistance Levenshtein distance.
      * @return A list of substrings from the @sourceString each of which approximately matches @search.
      */
-    public static List<String> getApproximatelyMatchingStringList(String sourceString, String search, int maxDistance) {
+    public static List<String> getApproximatelyMatchingStringList(String sourceString, String search) {
         List<String> matches = new ArrayList<>();
+        if (StringUtils.isBlank(search)) {
+            return matches;
+        }
+        int maxDistance = getMaxDistance(search);
         int searchLength = search.length();
         sourceString = sourceString.toLowerCase().trim();
         search = search.toLowerCase().trim();
@@ -56,27 +61,38 @@ public class StringTools {
             }
             String substring = sourceString.substring(i, endIndex).trim();
             if (getLevenshteinDistance(substring, search) <= maxDistance) {
-                matches.add(getCompletingString(sourceString, i, endIndex));
+                String completingString = getCompletingString(sourceString, i, endIndex);
+                matches.add(completingString);
                 i = endIndex;
             }
         }
         return matches;
     }
 
+    protected static int getMaxDistance(String word) {
+        return Math.round((float)word.length()*15/100);
+    }
+
     public static String getCompletingString(String string, int begin, int end) {
-        while ( begin > 0 && ! (string.substring(begin, begin+1).equalsIgnoreCase(" ")
-                || string.substring(begin, begin+1).equalsIgnoreCase(".")
-                || string.substring(begin, begin+1).equalsIgnoreCase("\n"))){
+        while ( begin > 0 && StringUtils.isAlphanumeric(string.substring(begin, begin+1)) ){
             begin -= 1;
         }
+        if (begin != 0)
+            begin += 1;
 
-        while ( end < string.length() - 1 &&
-                ! (string.substring(end, end+1).equalsIgnoreCase(" ")
-                        || string.substring(end, end+1).equalsIgnoreCase(".")
-                        || string.substring(end, end+1).equalsIgnoreCase("\n"))){
+        while ( end < string.length() - 1 && StringUtils.isAlphanumeric(string.substring(end, end + 1)) ){
             end += 1;
         }
 
-        return string.substring(begin, end).trim();
+        String regex = "\\w+(\\s+\\w+)*";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(string.substring(begin, end));
+
+        if (matcher.find()) {
+            return matcher.group();
+        }
+
+        return StringUtils.EMPTY;
     }
+
 }

@@ -1,6 +1,6 @@
 [
   #foreach( $forename in $patient.getForeNamesInDescendingLengthOrder()  )
-      #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $forename, 2) )
+      #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $forename) )
         {"regexp": "(?i)$approximateMatch", "placeHolder": "XXXXX"},
       #end
   #end
