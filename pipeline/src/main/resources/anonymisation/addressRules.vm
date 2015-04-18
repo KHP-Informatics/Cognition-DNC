@@ -1,5 +1,14 @@
 [
   #foreach( $address in $patient.getAddresses()  )
-    {"regexp": "(?i)$address.getPostCode()", "placeHolder": "PPPPP"} #if( $foreach.hasNext ), #end
+
+    #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $address.getPostCode()) )
+    {"regexp": "(?i)$approximateMatch", "placeHolder": "PPPPP"},
+    #end
+
+    #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $address.getAddress()) )
+    {"regexp": "(?i)$approximateMatch", "placeHolder": "AAAAA"},
+    #end
+
   #end
+
 ]
