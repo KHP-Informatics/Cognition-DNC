@@ -19,7 +19,7 @@ package uk.ac.kcl.iop.brc.core.pipeline.common.utils;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
-import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
@@ -52,12 +52,13 @@ public class StringToolsTest {
     public void shouldGetApproximatelyMatchingStrings() {
         String string = "Ismail Emre Kartoglu. Ismai Emre. Ismal. My name is Is mail.";
 
-        List<String> strings = StringTools.getApproximatelyMatchingStringList(string, "Ismail");
+        Set<String> strings = StringTools.getApproximatelyMatchingStringList(string, "Ismail");
 
-        assertThat(strings.size(), equalTo(3));
+        assertThat(strings.size(), equalTo(4));
         assertTrue(strings.contains("ismail"));
         assertTrue(strings.contains("ismai"));
         assertTrue(strings.contains("ismal"));
+        assertTrue(strings.contains("is mail"));
     }
 
     @Test
@@ -89,7 +90,7 @@ public class StringToolsTest {
     public void shouldReturnEmptyCollectionIfSearchWordIsBlank() {
         String string = "Ismail Emre Kartoglu. Ismai Emre. Ismal. My name is Is mail.";
 
-        List<String> strings = StringTools.getApproximatelyMatchingStringList(string, "");
+        Set<String> strings = StringTools.getApproximatelyMatchingStringList(string, "");
 
         assertThat(strings.size(), equalTo(0));
     }
@@ -116,6 +117,15 @@ public class StringToolsTest {
 
         dist = StringTools.getMaxDistance("07881618299");
         assertThat(dist, equalTo(2));
+    }
+
+    @Test
+    public void shouldGetPostCode() {
+        String string = "Ismail Emre Kartoglu. Ismai Emre. My post code is SE22 0RX.";
+
+        Set<String> strings = StringTools.getApproximatelyMatchingStringList(string, "SE220RX");
+
+        assertThat(strings.contains("se22 0rx"), equalTo(true));
     }
 
 }

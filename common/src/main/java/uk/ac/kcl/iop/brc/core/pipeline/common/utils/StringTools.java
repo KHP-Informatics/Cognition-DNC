@@ -19,7 +19,9 @@ package uk.ac.kcl.iop.brc.core.pipeline.common.utils;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,8 +47,8 @@ public class StringTools {
      * @param search String to search in @sourceString.
      * @return A list of substrings from the @sourceString each of which approximately matches @search.
      */
-    public static List<String> getApproximatelyMatchingStringList(String sourceString, String search) {
-        List<String> matches = new ArrayList<>();
+    public static Set<String> getApproximatelyMatchingStringList(String sourceString, String search) {
+        Set<String> matches = new HashSet<>();
         if (StringUtils.isBlank(search)) {
             return matches;
         }
@@ -59,9 +61,11 @@ public class StringTools {
             if (endIndex >= sourceString.length()) {
                 endIndex = sourceString.length();
             }
-            String substring = sourceString.substring(i, endIndex).trim();
-            if (getLevenshteinDistance(substring, search) <= maxDistance) {
-                String completingString = getCompletingString(sourceString, i, endIndex);
+            String completingString = getCompletingString(sourceString, i, endIndex);
+            if (matches.contains(completingString)) {
+                continue;
+            }
+            if (getLevenshteinDistance(completingString, search) <= maxDistance) {
                 matches.add(completingString);
                 i = endIndex;
             }
