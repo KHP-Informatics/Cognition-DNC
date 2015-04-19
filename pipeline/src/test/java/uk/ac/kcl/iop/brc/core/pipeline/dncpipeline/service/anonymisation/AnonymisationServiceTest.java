@@ -94,7 +94,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
                 "<div>Ismail Kartoglu is our patient.</div>\n" +
                 "<div>His phone number is: 32123123456 and 50090051234</div>\n" +
                 "<div>His post code is cb4 2za addressText</div>\n" +
-                "NHS number 11122\n Date of birth is 09/05/1990" +
+                "NHS number 11122\n Date of birth is 09/05/1990 09th May " +
                 "Ism MrK\n" +
                 "\n" +
                 "\n" +
@@ -104,6 +104,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
         assertTrue(anonymisedText.contains("XXXXX"));
         assertTrue(anonymisedText.contains("Date of birth is DDDDD"));
         assertTrue(anonymisedText.contains("post code is PPPPP"));
+        assertFalse(anonymisedText.contains("09th May"));
     }
 
     @Test
