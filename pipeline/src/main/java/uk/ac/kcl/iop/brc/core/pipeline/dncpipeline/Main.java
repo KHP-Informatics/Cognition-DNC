@@ -48,6 +48,7 @@ public class Main {
         String path = "file:" + getCurrentFolder() + "/config/applicationContext.xml";
 
         context = new ClassPathXmlApplicationContext(path);
+
         Options options = getOptions();
         CommandLineParser parser = new GnuParser();
         try {

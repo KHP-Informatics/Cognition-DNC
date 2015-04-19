@@ -1,20 +1,27 @@
 [
-  #foreach( $forename in $patient.getForeNamesInDescendingLengthOrder()  )
+
+#foreach( $forename in $patient.getForeNamesInDescendingLengthOrder()  )
       #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $forename) )
         {"regexp": "(?i)$approximateMatch", "placeHolder": "XXXXX"},
       #end
   #end
 
-  #foreach( $forename in $patient.getCarerForeNames() )
-    {"regexp": "(?i)$forename.trim()", "placeHolder": "YYYYY"},
+  #foreach( $surname in $patient.getLastNamesInDescendingLengthOrder()  )
+    #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $surname) )
+    {"regexp": "(?i)$approximateMatch", "placeHolder": "XXXXX"},
+    #end
+  #end
+
+  #foreach( $forename in $patient.getCarerForeNames()  )
+    #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $forename) )
+    {"regexp": "(?i)$approximateMatch", "placeHolder": "YYYYY"},
+    #end
   #end
 
   #foreach( $surname in $patient.getCarerLastNames()  )
-    {"regexp": "(?i)$surname.trim()", "placeHolder": "YYYYY"},
-  #end
-
-  #foreach( $surname in $patient.getLastNamesInDescendingLengthOrder()  )
-    {"regexp": "(?i)$surname.trim()", "placeHolder": "XXXXX"} #if( $foreach.hasNext ), #end
+    #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $surname) )
+    {"regexp": "(?i)$approximateMatch", "placeHolder": "YYYYY"},
+    #end
   #end
 
 ]
