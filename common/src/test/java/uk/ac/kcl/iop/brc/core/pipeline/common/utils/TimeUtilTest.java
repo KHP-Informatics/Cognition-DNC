@@ -38,6 +38,7 @@ public class TimeUtilTest {
 		Date dateFromString = TimeUtil.getDateFromString("09/05/1990", "dd/MM/yyyy");
 
 		assertThat(TimeUtil.getFormattedDate(dateFromString, "dd'(th|rd|st)?' MMMM"), equalTo("09(th|rd|st)? May"));
+		assertThat(TimeUtil.getFormattedDate(dateFromString, "d"), equalTo("9"));
 	}
 
 }
