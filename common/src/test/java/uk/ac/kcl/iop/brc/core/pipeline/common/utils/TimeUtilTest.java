@@ -33,4 +33,11 @@ public class TimeUtilTest {
         assertThat(TimeUtil.getFormattedDate(dateFromString, "dd/MM/yyyy"), equalTo("09/05/1990"));
     }
 
+	@Test
+	public void shouldAllowRegexInDateFormat() throws ParseException {
+		Date dateFromString = TimeUtil.getDateFromString("09/05/1990", "dd/MM/yyyy");
+
+		assertThat(TimeUtil.getFormattedDate(dateFromString, "dd'(th|rd|st)?' MMMM"), equalTo("09(th|rd|st)? May"));
+	}
+
 }
