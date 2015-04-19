@@ -62,7 +62,8 @@ public class AnonymisationSanityChecker {
                 "11122\n" +
                 "50090051234" +
                 "\n 09/05/1990" + "\n"
-                + "cb42za");
+                + "cb42za"
+                + " Some random text that should not be anonymised.");
         System.out.println(anonymisedText);
         if (anonymisedText.contains("TestName1") || anonymisedText.contains("TestName2")) {
             throw new AssertionError("First name pseudonymisation is not working! Please check config/anonymisation/nameRules");
@@ -81,6 +82,9 @@ public class AnonymisationSanityChecker {
         }
         if (anonymisedText.contains("cb42za")) {
             throw new AssertionError("Post code pseudonymisation is not working! Please check config/anonymisation/addressRules");
+        }
+        if (! anonymisedText.contains("Some random text that should not be anonymised.")) {
+            throw new AssertionError("Pseudonymisation rules anonymise everything? Please check your rules!");
         }
     }
 
