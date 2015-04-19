@@ -99,7 +99,7 @@ Finally, edit the files in `pipeline/target/config/anonymisation` to reflect the
 
 `yyyy.MM.dd`
 
-To do this, simply add a new json object to the json array in the `dateOfBirthRules.json` file, such as
+To do this, simply add a new json object to the json array in the `dateOfBirthRules.vm` file, such as
 
 ```json
   {"regexp": "(?i)${TimeUtil.getFormattedDate($patient.getDateOfBirth(), 'yyyy.MM.dd')}", "placeHolder" : "DDDDD"}
