@@ -73,6 +73,31 @@ public class StringTools {
         return matches;
     }
 
+    public static Set<String> getApproximatelyMatchingStringList(String sourceString, String search, int maxDistance) {
+        Set<String> matches = new HashSet<>();
+        if (StringUtils.isBlank(search)) {
+            return matches;
+        }
+        int searchLength = search.length();
+        sourceString = sourceString.toLowerCase().trim();
+        search = search.toLowerCase().trim();
+        for (int i = 0; i < sourceString.length(); i++) {
+            int endIndex = i + searchLength;
+            if (endIndex >= sourceString.length()) {
+                endIndex = sourceString.length();
+            }
+            String completingString = getCompletingString(sourceString, i, endIndex);
+            if (matches.contains(completingString)) {
+                continue;
+            }
+            if (getLevenshteinDistance(completingString, search) <= maxDistance) {
+                matches.add(completingString);
+                i = endIndex;
+            }
+        }
+        return matches;
+    }
+
     protected static int getMaxDistance(String word) {
         return Math.round((float)word.length()*15/100);
     }
