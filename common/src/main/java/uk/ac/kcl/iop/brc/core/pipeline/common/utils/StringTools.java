@@ -113,7 +113,7 @@ public class StringTools {
             end += 1;
         }
 
-        String regex = "\\w+(\\s+\\w+)*";
+        String regex = "\\w+(\\(?\\)?\\s+\\w+)*";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(string.substring(begin, end));
 

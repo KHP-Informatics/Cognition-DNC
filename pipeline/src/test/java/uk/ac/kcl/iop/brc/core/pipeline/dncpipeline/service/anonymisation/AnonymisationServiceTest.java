@@ -169,7 +169,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
                 "\n" +
                 "\n" +
                 "11122\n" +
-                "50090051234 " +
+                "(0500 90051234 " +
                 "Some random text that shouldn't be anonymised.");
         System.out.println(anonymisedText);
         assertTrue(anonymisedText.contains("HHHHH"));

@@ -128,4 +128,12 @@ public class StringToolsTest {
         assertThat(strings.contains("se22 0rx"), equalTo(true));
     }
 
+    @Test
+    public void shouldIncludeMiddleParanthesis() {
+        String string = "Ismail (07881) 618299. Ismai Emre. Ismal. My name is Is mail.";
+
+        String result = StringTools.getCompletingString(string, 8, 16);
+
+        assertThat(result, equalTo("07881) 618299"));
+    }
 }
