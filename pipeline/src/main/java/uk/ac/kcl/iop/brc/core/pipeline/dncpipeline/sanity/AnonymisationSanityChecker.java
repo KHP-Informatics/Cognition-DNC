@@ -43,7 +43,7 @@ public class AnonymisationSanityChecker {
         patient.addSurname("TestLastName1");
         patient.setNHSNumber("11122");
         PatientAddress patientAddress1 = new PatientAddress();
-        patientAddress1.setAddress("addressText");
+        patientAddress1.setAddress("Kidderpore Avenue Hampstead, London");
         patientAddress1.setPostCode("cb4 2za");
         PatientAddress patientAddress2 = new PatientAddress();
         patientAddress2.setAddress("addressText");
@@ -63,7 +63,8 @@ public class AnonymisationSanityChecker {
                 "50090051234" +
                 "\n 09/05/1990" + "\n"
                 + "cb42za"
-                + " Some random text that should not be anonymised.");
+                + " Some random text that should not be anonymised. \n" +
+                "Address is Kidderpore Ave, (Hampstead, London.");
         System.out.println(anonymisedText);
         if (anonymisedText.contains("TestName1") || anonymisedText.contains("TestName2")) {
             throw new AssertionError("First name pseudonymisation is not working! Please check config/anonymisation/nameRules");
@@ -85,6 +86,10 @@ public class AnonymisationSanityChecker {
         }
         if (! anonymisedText.contains("Some random text that should not be anonymised.")) {
             throw new AssertionError("Pseudonymisation rules anonymise everything? Please check your rules!");
+        }
+
+        if (! anonymisedText.contains("Address is AAAAA")) {
+            throw new AssertionError("Approximate address pseudonymisation is not working. Please check config/anonymisation/addressRules!");
         }
     }
 
