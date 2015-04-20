@@ -17,7 +17,6 @@
 package uk.ac.kcl.iop.brc.core.pipeline.common.utils;
 
 import org.apache.commons.lang.StringUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Set;
@@ -145,7 +144,7 @@ public class StringToolsTest {
 
         String address = "33, London, Marmora Road, SE22 0RX";
 
-        MatchingWindow window = StringTools.getMatchingWindow(string, address);
+        MatchingWindow window = StringTools.getMatchingWindowsAboveThreshold(string, address, 0.5f).get(0);
 
         assertThat(window.getMatchingText(), equalTo("33 Marmora Road, SE22 0RX, London,"));
 
@@ -158,24 +157,13 @@ public class StringToolsTest {
 
         String address = "33, London, Marmora Road, SE22 0RX";
 
-        MatchingWindow window = StringTools.getMatchingWindow(string, address);
+        MatchingWindow window = StringTools.getMatchingWindowsAboveThreshold(string, address, 0.5f).get(0);
 
         assertThat(window.getMatchingText(), equalTo("33 Marmora Road, SE22 0RX, London"));
 
         assertThat(string.substring(window.getBegin(), window.getEnd()), equalTo("33 Marmora Road, SE22 0RX, London"));
 
         assertThat(window.isScoreAboveThreshold(0.6f), equalTo(true));
-    }
-
-    @Test
-    public void shouldGetLowScoreWhenThereIsLittleMatch() {
-        String string = "I am Ismail Emre Kartoglu. My address changes London.";
-
-        String address = "33, London, Marmora Road, SE22 0RX";
-
-        MatchingWindow window = StringTools.getMatchingWindow(string, address);
-
-        assertThat(window.isScoreAboveThreshold(0.5f), equalTo(false));
     }
 
 }

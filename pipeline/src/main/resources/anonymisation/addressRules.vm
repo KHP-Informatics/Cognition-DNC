@@ -9,8 +9,7 @@
     {"regexp": "(?i)$approximateMatch", "placeHolder": "AAAAA"},
     #end
 
-    #set ($window = $StringTools.getMatchingWindow($sourceText, $address.getAddress()))
-    #if( $window.isScoreAboveThreshold(0.4) )
+    #foreach( $window in $StringTools.getMatchingWindowsAboveThreshold($sourceText, $address.getAddress(), 0.5) )
       {"regexp": "(?i)\\Q$window.getMatchingText()\\E", "placeHolder": "AAAAA"},
     #end
 

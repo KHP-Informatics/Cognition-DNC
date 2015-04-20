@@ -16,11 +16,13 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.common.utils;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class StringTools {
 
@@ -105,12 +107,20 @@ public class StringTools {
         return StringUtils.EMPTY;
     }
 
-    public static MatchingWindow getMatchingWindow(String text, String address) {
-        if (StringUtils.isBlank(text)) {
+    public static MatchingWindow getBestMatchingWindow(String text, String address) {
+        List<MatchingWindow> windows = getMatchingWindowsAboveThreshold(text, address, 0.2f);
+        if (CollectionUtils.isEmpty(windows)) {
             return new MatchingWindow();
         }
+        return windows.get(0);
+    }
+
+    public static List<MatchingWindow> getMatchingWindowsAboveThreshold(String text, String address, double threshold) {
+        if (StringUtils.isBlank(text)) {
+            return new ArrayList<>();
+        }
         if (StringUtils.isBlank(address)) {
-            return new MatchingWindow();
+            return new ArrayList<>();
         }
         String[] addressWords = address.split(" ");
         int bagSize = addressWords.length;
@@ -125,7 +135,9 @@ public class StringTools {
         }
 
         Collections.sort(windows);
-        return windows.get(0);
+        windows = windows.stream().filter(window -> window.isScoreAboveThreshold(threshold)).collect(Collectors.toList());
+
+        return windows;
     }
 
     private static MatchingWindow takeBag(String[] textWords, int startWordIndex, int bagSize) {
