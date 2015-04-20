@@ -16,7 +16,6 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.common.utils;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
@@ -107,22 +106,21 @@ public class StringTools {
         return StringUtils.EMPTY;
     }
 
-    public static MatchingWindow getBestMatchingWindow(String text, String address) {
-        List<MatchingWindow> windows = getMatchingWindowsAboveThreshold(text, address, 0.2f);
-        if (CollectionUtils.isEmpty(windows)) {
-            return new MatchingWindow();
-        }
-        return windows.get(0);
-    }
-
-    public static List<MatchingWindow> getMatchingWindowsAboveThreshold(String text, String address, double threshold) {
+    /**
+     *
+     * @param text The source text.
+     * @param search The text to be searched in {@code text}.
+     * @param threshold The threshold value between 0.0 - 1.0.
+     * @return A list of MatchingWindow objects.
+     */
+    public static List<MatchingWindow> getMatchingWindowsAboveThreshold(String text, String search, double threshold) {
         if (StringUtils.isBlank(text)) {
             return new ArrayList<>();
         }
-        if (StringUtils.isBlank(address)) {
+        if (StringUtils.isBlank(search)) {
             return new ArrayList<>();
         }
-        String[] addressWords = address.split(" ");
+        String[] addressWords = search.split(" ");
         int bagSize = addressWords.length;
         String[] textWords = text.split(" ");
         int textWordCount = textWords.length;
