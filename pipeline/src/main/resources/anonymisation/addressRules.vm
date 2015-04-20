@@ -9,6 +9,11 @@
     {"regexp": "(?i)$approximateMatch", "placeHolder": "AAAAA"},
     #end
 
+    #set ($window = $StringTools.getMatchingWindow($sourceText, $address.getAddress()))
+    #if( $window.isScoreAboveThreshold(0.4) )
+      {"regexp": "(?i)\\Q$window.getMatchingText()\\E", "placeHolder": "AAAAA"},
+    #end
+
   #end
 
 ]

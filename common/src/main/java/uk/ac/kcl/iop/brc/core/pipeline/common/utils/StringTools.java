@@ -18,10 +18,7 @@ package uk.ac.kcl.iop.brc.core.pipeline.common.utils;
 
 import org.apache.commons.lang.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,37 +39,17 @@ public class StringTools {
         return StringUtils.getLevenshteinDistance(str1, str2);
     }
 
+
+    public static Set<String> getApproximatelyMatchingStringList(String sourceString, String search) {
+        return getApproximatelyMatchingStringList(sourceString, search, getMaxDistance(search));
+    }
+
     /**
      * @param sourceString Source string to search for approximately matching segments.
      * @param search String to search in @sourceString.
-     * @return A list of substrings from the @sourceString each of which approximately matches @search.
+     * @param maxDistance Maximum edit distance that should be satisfied.
+     * @return A list of substrings from the @sourceString each of which approximately matches {@code search}.
      */
-    public static Set<String> getApproximatelyMatchingStringList(String sourceString, String search) {
-        Set<String> matches = new HashSet<>();
-        if (StringUtils.isBlank(search)) {
-            return matches;
-        }
-        int maxDistance = getMaxDistance(search);
-        int searchLength = search.length();
-        sourceString = sourceString.toLowerCase().trim();
-        search = search.toLowerCase().trim();
-        for (int i = 0; i < sourceString.length(); i++) {
-            int endIndex = i + searchLength;
-            if (endIndex >= sourceString.length()) {
-                endIndex = sourceString.length();
-            }
-            String completingString = getCompletingString(sourceString, i, endIndex);
-            if (matches.contains(completingString)) {
-                continue;
-            }
-            if (getLevenshteinDistance(completingString, search) <= maxDistance) {
-                matches.add(completingString);
-                i = endIndex;
-            }
-        }
-        return matches;
-    }
-
     public static Set<String> getApproximatelyMatchingStringList(String sourceString, String search, int maxDistance) {
         Set<String> matches = new HashSet<>();
         if (StringUtils.isBlank(search)) {
@@ -98,6 +75,10 @@ public class StringTools {
         return matches;
     }
 
+    /**
+     * @param word
+     * @return Approximate Levenshtein distance for {@code word}.
+     */
     protected static int getMaxDistance(String word) {
         return Math.round((float)word.length()*15/100);
     }
@@ -124,4 +105,47 @@ public class StringTools {
         return StringUtils.EMPTY;
     }
 
+    public static MatchingWindow getMatchingWindow(String text, String address) {
+        if (StringUtils.isBlank(text)) {
+            return new MatchingWindow();
+        }
+        if (StringUtils.isBlank(address)) {
+            return new MatchingWindow();
+        }
+        String[] addressWords = address.split(" ");
+        int bagSize = addressWords.length;
+        String[] textWords = text.split(" ");
+        int textWordCount = textWords.length;
+        List<MatchingWindow> windows = new ArrayList<>();
+        for (int i = 0; i < textWordCount; i++) {
+            MatchingWindow window = takeBag(textWords, i, bagSize);
+            window.setScoreAccordingTo(addressWords);
+            window.setMatchingText(text.substring(window.getBegin(), window.getEnd()));
+            windows.add(window);
+        }
+
+        Collections.sort(windows);
+        return windows.get(0);
+    }
+
+    private static MatchingWindow takeBag(String[] textWords, int startWordIndex, int bagSize) {
+        MatchingWindow window = new MatchingWindow();
+        int offset = 0;
+        for (int i = startWordIndex; i < startWordIndex+bagSize; i++) {
+            if (i >= textWords.length) {
+                break;
+            }
+            offset += textWords[i].length() + 1;
+            window.addWord(textWords[i]);
+        }
+        offset -= 1;
+        int begin = 0;
+        for (int i = 0; i < startWordIndex; i++) {
+            begin += textWords[i].length() + 1;
+        }
+        window.setBegin(begin);
+        window.setEnd(begin + offset);
+
+        return window;
+    }
 }
