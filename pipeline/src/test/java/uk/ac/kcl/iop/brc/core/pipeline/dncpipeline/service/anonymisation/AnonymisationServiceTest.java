@@ -201,7 +201,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
                 "\n" +
                 "\n" +
                 "11122\n" +
-                "(0500 90051234 " +
+                "(0500) 9005 1234 " +
                 "Some random text that shouldn't be anonymised." +
                 "" +
                 "Address is Kidderpore Ave, (Hampstead, London.");

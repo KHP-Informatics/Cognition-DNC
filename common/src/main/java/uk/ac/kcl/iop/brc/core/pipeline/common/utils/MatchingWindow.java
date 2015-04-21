@@ -2,7 +2,6 @@ package uk.ac.kcl.iop.brc.core.pipeline.common.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class MatchingWindow implements Comparable<MatchingWindow> {
 
