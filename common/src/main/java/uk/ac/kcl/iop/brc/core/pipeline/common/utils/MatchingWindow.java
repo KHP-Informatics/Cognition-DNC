@@ -14,7 +14,7 @@ public class MatchingWindow implements Comparable<MatchingWindow> {
     public MatchingWindow(){}
 
     public String getMatchingText() {
-        return matchingText;
+        return matchingText.replace("\"", "\\\"");
     }
 
     public void addWord(String word) {
@@ -28,17 +28,17 @@ public class MatchingWindow implements Comparable<MatchingWindow> {
         this.wordSet = wordSet;
     }
 
-    public void setScoreAccordingTo(String[] addressWords) {
+    public void setScoreAccordingTo(String[] wordsToMatch) {
         int match = 0;
         for (String word : wordSet) {
-            for (String addressWord : addressWords) {
+            for (String addressWord : wordsToMatch) {
                 if (StringTools.getLevenshteinDistance(word, addressWord) <= 2) {
                     match += 1;
                     break;
                 }
             }
         }
-        score = (float) match/addressWords.length;
+        score = (float) match/wordsToMatch.length;
     }
 
     @Override

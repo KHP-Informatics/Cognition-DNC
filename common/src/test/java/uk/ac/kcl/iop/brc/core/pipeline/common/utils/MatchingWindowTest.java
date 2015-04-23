@@ -29,8 +29,11 @@ public class MatchingWindowTest {
     }
 
     @Test
-    public void test() {
-        System.out.println("(hello world".replace("(", "\\(").replace(")", "\\)"));
+    public void shouldReplaceDoubleQuotes() {
+        MatchingWindow window = new MatchingWindow();
+        window.setMatchingText("matching \" text");
+
+        assertThat(window.getMatchingText(), equalTo("matching \\\" text"));
     }
 
 }

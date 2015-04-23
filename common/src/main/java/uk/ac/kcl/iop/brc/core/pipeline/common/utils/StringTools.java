@@ -69,7 +69,7 @@ public class StringTools {
                 continue;
             }
             if (getLevenshteinDistance(completingString, search) <= maxDistance) {
-                matches.add(completingString);
+                matches.add(completingString.replace("\"", "\\\""));
                 i = endIndex;
             }
         }
