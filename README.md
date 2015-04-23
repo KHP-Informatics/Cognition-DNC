@@ -33,7 +33,7 @@ Cognition is designed to be used in conjuction with structured data from a sourc
 <h3>
 Build Instructions:
 </h3>
-You can download the latest binary distribution <a href="https://dl.dropboxusercontent.com/u/68236083/DNCPipeline-0.1-bin.zip">using this link.</a> To use it, unzip the downloaded distribution, and apply the configurations as described in what follows.
+You can download the latest binary distribution from the release page. To use it, unzip the downloaded distribution, and apply the configurations as described in what follows.
 
 To build from source, ensure Maven is installed and navigate to the Cognition-DNC directory:
 
