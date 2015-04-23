@@ -17,6 +17,7 @@
 package uk.ac.kcl.iop.brc.core.pipeline.common.service;
 
 import org.apache.tika.io.IOUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -61,5 +62,16 @@ public class DocumentConversionServiceTest {
 
         assertTrue(text.contains("<body>"));
         assertTrue(text.contains("Introduction"));
+    }
+
+    @Test
+    @Ignore
+    public void shouldApplyOCR() throws IOException {
+        DocumentConversionService service = new DocumentConversionService();
+        InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("testPdfImage.pdf");
+        byte[] bytes = IOUtils.toByteArray(resourceAsStream);
+
+        String text = service.getContentFromImagePDF(bytes);
+        System.out.println(text);
     }
 }
