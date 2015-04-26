@@ -37,8 +37,4 @@
         select first_name, last_name from tblPatientCarers where patient_id = :patientId
     </sql-query>
 
-    <sql-query name="getCoordinates">
-        select * from :DBView
-    </sql-query>
-
 </hibernate-mapping>

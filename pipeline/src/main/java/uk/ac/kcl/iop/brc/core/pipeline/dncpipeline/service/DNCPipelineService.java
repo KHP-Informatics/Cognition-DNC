@@ -136,4 +136,20 @@ public class DNCPipelineService {
     public void setConversionFormat(String conversionFormat) {
         this.conversionFormat = conversionFormat;
     }
+
+    public void startCreateModeWithDBView(String viewName) {
+        logger.info("Retrieving coordinates from "+viewName);
+        
+//        List<DNCWorkCoordinate> DNCWorkCoordinates = jsonHelper.loadListFromFile(new File(filePath));
+//
+//        DNCWorkCoordinates.parallelStream().forEach(coordinate -> {
+//            logger.info("Processing coordinate " + coordinate);
+//            if (coordinate.isBinary()) {
+//                anonymiseBinaryCoordinate(coordinate);
+//            } else {
+//                anonymiseTextCoordinate(coordinate);
+//            }
+//        });
+//        logger.info("Finished all.");
+    }
 }
