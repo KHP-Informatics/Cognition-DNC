@@ -60,7 +60,6 @@ public class DNCWorkUnitDaoTest extends IntegrationTest {
 
     @Test
     public void shouldSaveAnonymisedTextToTargetDB() {
-        //insert into :targetTable (src_table, src_col, doc_ID, processedText) values(':sourceTable', ':sourceColumn', :sourceId, ':anonymisedText')
         dao.executeSQLQueryForTarget("create table SaveTable(src_table varchar(100), src_col varchar(100), doc_ID int, processedText varchar(100), updatetime varchar(100))");
         DNCWorkCoordinate coordinate = new DNCWorkCoordinate().sourceTable("SaveTable")
                 .sourceColumn("someBinaryColumn").idInSourceTable(4L);

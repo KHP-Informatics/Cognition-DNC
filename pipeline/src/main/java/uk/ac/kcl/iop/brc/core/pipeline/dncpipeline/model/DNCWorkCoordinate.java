@@ -22,7 +22,7 @@ import com.google.gson.annotations.SerializedName;
 public class DNCWorkCoordinate {
 
     @SerializedName("patientId")
-    private Long patientId;
+    private long patientId;
 
     @SerializedName("sourceTable")
     private String sourceTable;
@@ -31,7 +31,7 @@ public class DNCWorkCoordinate {
     private String sourceColumn;
 
     @SerializedName("idInSourceTable")
-    private Long idInSourceTable;
+    private long idInSourceTable;
 
     @SerializedName("pkColumnName")
     private String pkColumnName;
@@ -42,7 +42,7 @@ public class DNCWorkCoordinate {
     @SerializedName("updatetime")
     private String updateTime;
 
-    public DNCWorkCoordinate patientId(Long id) {
+    public DNCWorkCoordinate patientId(long id) {
         this.patientId = id;
         return this;
     }
@@ -88,11 +88,11 @@ public class DNCWorkCoordinate {
         this.sourceColumn = sourceColumn;
     }
 
-    public Long getIdInSourceTable() {
+    public long getIdInSourceTable() {
         return idInSourceTable;
     }
 
-    public void setIdInSourceTable(Long idInSourceTable) {
+    public void setIdInSourceTable(long idInSourceTable) {
         this.idInSourceTable = idInSourceTable;
     }
 
@@ -104,11 +104,11 @@ public class DNCWorkCoordinate {
         this.pkColumnName = pkColumnName;
     }
 
-    public Long getPatientId() {
+    public long getPatientId() {
         return patientId;
     }
 
-    public void setPatientId(Long patientId) {
+    public void setPatientId(long patientId) {
         this.patientId = patientId;
     }
 
@@ -140,12 +140,6 @@ public class DNCWorkCoordinate {
         return "binary".equalsIgnoreCase(type);
     }
 
-    public String getUniqueIdentifier() {
-        if (idInSourceTable == null) {
-            return "";
-        }
-        return String.valueOf(idInSourceTable);
-    }
 
     @Override
     public String toString() {

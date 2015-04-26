@@ -16,13 +16,13 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.commandline;
 
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.DNCPipelineService;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.DNCPipelineService;
 
 @Component
 public class CommandCreateModeFromDBView implements CommandProcessor {
@@ -32,9 +32,7 @@ public class CommandCreateModeFromDBView implements CommandProcessor {
 
     @Override
     public boolean isResponsibleFor(CommandLine cmd) {
-        boolean createMode = cmd.hasOption("createModeFromDBView");
-        boolean viewName = cmd.hasOption("viewName");
-        return createMode && viewName;
+        return cmd.hasOption("createModeFromDBView");
     }
 
     @Override
@@ -50,13 +48,9 @@ public class CommandCreateModeFromDBView implements CommandProcessor {
 
     @Override
     public void addOption(Options options) {
-        options.addOption(OptionBuilder.withLongOpt("createMode")
+        options.addOption(OptionBuilder.withLongOpt("createModeFromDBView")
                 .withDescription("Application processes all records from scratch.").
-                        withArgName("createMode").create());
-
-        options.addOption(OptionBuilder.withLongOpt("file")
-                .withDescription("Json file to process").hasOptionalArg().
-                        withArgName("file").create());
+                        withArgName("createModeFromDBView").create());
     }
 
 }

@@ -37,4 +37,11 @@
         select first_name, last_name from tblPatientCarers where patient_id = :patientId
     </sql-query>
 
+    <sql-query name="getCoordinates">
+        select patientId as "patientId", sourceTable as "sourceTable", sourceColumn as "sourceColumn",
+        idInSourceTable as "idInSourceTable", pkColumnName as "pkColumnName", type as "type", updateTime as "updateTime"
+        from testCoordinateView
+    </sql-query>
+
+
 </hibernate-mapping>

@@ -16,7 +16,6 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.transform.Transformers;

@@ -5,18 +5,15 @@
  */
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data;
 
-import com.google.gson.annotations.SerializedName;
-import java.util.List;
-import static org.hamcrest.CoreMatchers.equalTo;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.kcl.iop.brc.core.pipeline.common.testutils.IntegrationTest;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.DNCWorkCoordinate;
+
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 
 public class CoordinatesDaoTest extends IntegrationTest {
@@ -24,23 +21,16 @@ public class CoordinatesDaoTest extends IntegrationTest {
     @Autowired
     private CoordinatesDao dao;
 
-    @Before
-    public void setUp() {
-        dao.executeSQLQueryForSource("create table testCoordinateView(patientId int, sourceTable varchar(100), sourceColumn varchar(100), idInSourceTable int, pkColumnName varchar(100), type varchar(100), updateTime varchar(100)"); 
-    }
-    
-    @After
-    public void tearDown() {
-         dao.executeSQLQueryForSource("drop table testCoordinateView"); 
-    }
-
     @Test
-    public void shouldLoadCoordinatesFromView() {  
+    public void shouldLoadCoordinatesFromView() {
+        dao.executeSQLQueryForSource("create table testCoordinateView(patientId int, sourceTable varchar(100), sourceColumn varchar(100), idInSourceTable int, pkColumnName varchar(100), type varchar(100), updateTime varchar(100))");
         dao.executeSQLQueryForSource("insert into testCoordinateView values(5, 'patientDocuments', 'binaryData', 13, 'id', 'binary', '2015-10-10')");
         
-        List<DNCWorkCoordinate> result = dao.list("testCoordinateView");
+        List<DNCWorkCoordinate> result = dao.getCoordinates();
         
         assertThat(result.size(), equalTo(1));
+
+        dao.executeSQLQueryForSource("drop table testCoordinateView");
     }
     
 }

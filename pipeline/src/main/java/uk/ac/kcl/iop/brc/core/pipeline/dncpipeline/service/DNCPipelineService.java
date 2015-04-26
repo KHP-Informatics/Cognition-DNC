@@ -26,6 +26,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import uk.ac.kcl.iop.brc.core.pipeline.common.helper.JsonHelper;
 import uk.ac.kcl.iop.brc.core.pipeline.common.service.DocumentConversionService;
 import uk.ac.kcl.iop.brc.core.pipeline.common.service.FileTypeService;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.CoordinatesDao;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.DNCWorkUnitDao;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.PatientDao;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.exception.CanNotApplyOCRToNonPDFFilesException;
@@ -58,6 +59,9 @@ public class DNCPipelineService {
 
     @Autowired
     private FileTypeService fileTypeService;
+
+    @Autowired
+    private CoordinatesDao coordinatesDao;
 
     @Value("${ocrEnabled}")
     private String ocrEnabled;
@@ -163,16 +167,16 @@ public class DNCPipelineService {
     public void startCreateModeWithDBView(String viewName) {
         logger.info("Retrieving coordinates from "+viewName);
         
-//        List<DNCWorkCoordinate> DNCWorkCoordinates = jsonHelper.loadListFromFile(new File(filePath));
-//
-//        DNCWorkCoordinates.parallelStream().forEach(coordinate -> {
-//            logger.info("Processing coordinate " + coordinate);
-//            if (coordinate.isBinary()) {
-//                anonymiseBinaryCoordinate(coordinate);
-//            } else {
-//                anonymiseTextCoordinate(coordinate);
-//            }
-//        });
-//        logger.info("Finished all.");
+        List<DNCWorkCoordinate> dncWorkCoordinates = coordinatesDao.getCoordinates();
+
+        dncWorkCoordinates.parallelStream().forEach(coordinate -> {
+            logger.info("Processing coordinate " + coordinate);
+            if (coordinate.isBinary()) {
+                anonymiseBinaryCoordinate(coordinate);
+            } else {
+                anonymiseTextCoordinate(coordinate);
+            }
+        });
+        logger.info("Finished all.");
     }
 }
