@@ -166,6 +166,10 @@ public class StringToolsTest {
         assertThat(window.isScoreAboveThreshold(0.6f), equalTo(true));
     }
 
+    @Test
+    public void shouldReturnZeroLevenshteinDistanceWhenWordIsNull() {
+        assertThat(StringTools.getMaxDistance(null), equalTo(0));
+    }
 
 
 }

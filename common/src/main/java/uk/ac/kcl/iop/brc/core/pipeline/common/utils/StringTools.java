@@ -81,6 +81,9 @@ public class StringTools {
      * @return Approximate Levenshtein distance for {@code word}.
      */
     protected static int getMaxDistance(String word) {
+        if (StringUtils.isBlank(word)) {
+            return 0;
+        }
         return Math.round((float)word.length()*15/100);
     }
 
