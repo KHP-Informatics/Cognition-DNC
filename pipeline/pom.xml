@@ -130,8 +130,8 @@
                         </manifest>
                         <manifestEntries>
                             <Class-Path>config/</Class-Path>
-                            <Specification-Vendor>${organization.name}</Specification-Vendor>
-                            <Implementation-Vendor>${organization.name}</Implementation-Vendor>
+                            <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+                            <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
                         </manifestEntries>
                     </archive>
                     <excludes>
