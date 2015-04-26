@@ -75,7 +75,6 @@
             <version>${hibernateVersion}</version>
         </dependency>
 
-
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -126,8 +125,8 @@
                             <mainClass>uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.Main</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>dependency-jars/</classpathPrefix>
-                            <!--<addDefaultImplementationEntries>true</addDefaultImplementationEntries>-->
-                            <!--<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>-->
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
                         <manifestEntries>
                             <Class-Path>config/</Class-Path>
@@ -187,7 +186,6 @@
             </plugin>
 
         </plugins>
-
 
 
     </build>

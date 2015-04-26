@@ -16,24 +16,22 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service;
 
-import net.sf.jmimemagic.MagicException;
-import net.sf.jmimemagic.MagicMatchNotFoundException;
-import net.sf.jmimemagic.MagicParseException;
 import org.apache.commons.lang.StringUtils;
-import uk.ac.kcl.iop.brc.core.pipeline.common.helper.JsonHelper;
-import uk.ac.kcl.iop.brc.core.pipeline.common.service.*;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.DNCWorkUnitDao;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.PatientDao;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.exception.CanNotApplyOCRToNonPDFFilesException;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.DNCWorkCoordinate;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.Patient;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.anonymisation.AnonymisationService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import uk.ac.kcl.iop.brc.core.pipeline.common.helper.JsonHelper;
+import uk.ac.kcl.iop.brc.core.pipeline.common.service.DocumentConversionService;
+import uk.ac.kcl.iop.brc.core.pipeline.common.service.FileTypeService;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.DNCWorkUnitDao;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.PatientDao;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.exception.CanNotApplyOCRToNonPDFFilesException;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.DNCWorkCoordinate;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.Patient;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.anonymisation.AnonymisationService;
 
 import java.io.File;
 import java.util.List;
@@ -111,7 +109,7 @@ public class DNCPipelineService {
             Patient patient = patientDao.getPatient(coordinate.getPatientId());
             byte[] bytes = dncWorkUnitDao.getByteFromCoordinate(coordinate);
             String text = convertBinary(bytes);
-            if (emptyTextAndOCRIsEnabled(text)) {
+            if (StringUtils.isBlank(text) && ocrIsEnabled()) {
                 text = tryOCR(bytes);
             }
             text = anonymsisePatientText(patient, text);
@@ -122,8 +120,8 @@ public class DNCPipelineService {
         }
     }
 
-    private boolean emptyTextAndOCRIsEnabled(String text) {
-        return StringUtils.isBlank(text) && ("true".equalsIgnoreCase(ocrEnabled) || "1".equals(ocrEnabled));
+    private boolean ocrIsEnabled() {
+        return "true".equalsIgnoreCase(ocrEnabled) || "1".equals(ocrEnabled);
     }
 
     private String tryOCR(byte[] bytes) throws Exception {

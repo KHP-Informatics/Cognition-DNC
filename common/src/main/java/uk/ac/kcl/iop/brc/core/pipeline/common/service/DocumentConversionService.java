@@ -21,14 +21,12 @@ import net.sourceforge.tess4j.TesseractException;
 import org.apache.commons.lang.math.RandomUtils;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
-import org.apache.tika.parser.ocr.TesseractOCRParser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.apache.tika.sax.ToXMLContentHandler;
 import org.springframework.stereotype.Service;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.*;
-import java.nio.file.Files;
 
 @Service
 public class DocumentConversionService {

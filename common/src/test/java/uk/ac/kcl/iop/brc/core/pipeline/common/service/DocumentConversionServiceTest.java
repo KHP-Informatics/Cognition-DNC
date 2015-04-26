@@ -71,7 +71,7 @@ public class DocumentConversionServiceTest {
         InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("testPdfImage.pdf");
         byte[] bytes = IOUtils.toByteArray(resourceAsStream);
 
-        String text = service.getContentFromImagePDF(bytes);
-        System.out.println(text);
+//        String text = service.getContentFromImagePDF(bytes);
+//        System.out.println(text);
     }
 }

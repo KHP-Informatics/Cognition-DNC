@@ -9,6 +9,7 @@
         <springVersion>4.1.4.RELEASE</springVersion>
         <hibernateVersion>4.1.7.Final</hibernateVersion>
         <springTestVersion>4.0.3.RELEASE</springTestVersion>
+        <tikaVersion>1.8</tikaVersion>
     </properties>
 
     <groupId>uk.ac.kcl.iop.brc.core.pipeline</groupId>
