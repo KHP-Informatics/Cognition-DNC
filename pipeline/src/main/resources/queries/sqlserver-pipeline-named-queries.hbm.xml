@@ -38,7 +38,9 @@
     </sql-query>
 
     <sql-query name="getCoordinates">
-        select * from :DBView
+        select patientId as "patientId", sourceTable as "sourceTable", sourceColumn as "sourceColumn",
+        idInSourceTable as "idInSourceTable", pkColumnName as "pkColumnName", type as "type", updateTime as "updateTime"
+        from testCoordinateView
     </sql-query>
 
 </hibernate-mapping>

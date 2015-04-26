@@ -164,8 +164,12 @@ public class DNCPipelineService {
         this.conversionFormat = conversionFormat;
     }
 
-    public void startCreateModeWithDBView(String viewName) {
-        logger.info("Retrieving coordinates from "+viewName);
+    /**
+     * Anonymise the DNC Work Coordinates (DWC) specified in a view/table in the source DB.
+     *
+     */
+    public void startCreateModeWithDBView() {
+        logger.info("Retrieving coordinates from view");
         
         List<DNCWorkCoordinate> dncWorkCoordinates = coordinatesDao.getCoordinates();
 

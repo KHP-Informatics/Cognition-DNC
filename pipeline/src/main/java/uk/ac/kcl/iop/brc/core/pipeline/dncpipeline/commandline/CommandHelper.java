@@ -36,13 +36,13 @@ public class CommandHelper {
                 "Create mode\n" +
                 "--------------------\n" +
                 "From jSON file:     --createMode --file=/path/to/file\n" +
-                "From web service:   --createMode --webService\n" +
+                "From view/table     --createMode --coordinatesFromDB\n" +
                 "\n" +
                 "\n" +
                 "Append (update) mode\n" +
                 "--------------------\n" +
                 "From jSON file:     --appendMode --file=/path/to/file\n" +
-                "From web service:   --appendMode --webService\n");
+                "From view/table:    --appendMode --coordinatesFromDB\n");
     }
 
 

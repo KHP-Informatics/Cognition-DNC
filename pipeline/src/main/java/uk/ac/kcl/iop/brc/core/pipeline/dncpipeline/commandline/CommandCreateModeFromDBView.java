@@ -32,25 +32,19 @@ public class CommandCreateModeFromDBView implements CommandProcessor {
 
     @Override
     public boolean isResponsibleFor(CommandLine cmd) {
-        return cmd.hasOption("createModeFromDBView");
+        return cmd.hasOption("coordinatesFromDB") && cmd.hasOption("createMode");
     }
 
     @Override
     public void process(CommandLine cmd) {       
-        String viewName = cmd.getOptionValue("viewName");
-        
-        if (StringUtils.isEmpty(viewName)) {
-            throw new IllegalArgumentException("viewName argument must be specified.");
-        }
-
-        dncPipelineService.startCreateModeWithDBView(viewName);
+        dncPipelineService.startCreateModeWithDBView();
     }
 
     @Override
     public void addOption(Options options) {
-        options.addOption(OptionBuilder.withLongOpt("createModeFromDBView")
-                .withDescription("Application processes all records from scratch.").
-                        withArgName("createModeFromDBView").create());
+        options.addOption(OptionBuilder.withLongOpt("coordinatesFromDB")
+                .withDescription("Document coordinates are fetched from a DB view/table.").
+                        withArgName("coordinatesFromDB").create());
     }
 
 }
