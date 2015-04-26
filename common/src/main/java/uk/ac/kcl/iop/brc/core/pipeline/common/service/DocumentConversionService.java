@@ -16,6 +16,9 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.common.service;
 
+import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.TesseractException;
+import org.apache.commons.lang.math.RandomUtils;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
@@ -23,8 +26,7 @@ import org.apache.tika.sax.ToXMLContentHandler;
 import org.springframework.stereotype.Service;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.*;
 
 @Service
 public class DocumentConversionService {
@@ -47,6 +49,23 @@ public class DocumentConversionService {
             e.printStackTrace();
         }
 
+        return "";
+    }
+
+    public String getContentFromImagePDF(byte[] bytes) throws IOException {
+        String tempFileName = "tempForOCR" + RandomUtils.nextInt() + ".pdf";
+        FileOutputStream fos = new FileOutputStream(tempFileName);
+        fos.write(bytes);
+        fos.close();
+        File file = new File(tempFileName);
+        Tesseract tesseract = Tesseract.getInstance();
+        try {
+            return tesseract.doOCR(file);
+        } catch (TesseractException e) {
+            e.printStackTrace();
+        } finally {
+            file.delete();
+        }
         return "";
     }
 }

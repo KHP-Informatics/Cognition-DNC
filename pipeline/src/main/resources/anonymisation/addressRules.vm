@@ -2,11 +2,11 @@
   #foreach( $address in $patient.getAddresses()  )
 
     #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $address.getPostCode()) )
-    {"regexp": "(?i)$approximateMatch", "placeHolder": "PPPPP"},
+    {"regexp": "(?i)\\Q$approximateMatch\\E", "placeHolder": "PPPPP"},
     #end
 
-    #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $address.getAddress()) )
-    {"regexp": "(?i)$approximateMatch", "placeHolder": "AAAAA"},
+    #foreach( $window in $StringTools.getMatchingWindowsAboveThreshold($sourceText, $address.getAddress(), 0.3) )
+      {"regexp": "(?i)\\Q$window.getMatchingText()\\E", "placeHolder": "AAAAA"},
     #end
 
   #end

@@ -136,4 +136,40 @@ public class StringToolsTest {
 
         assertThat(result, equalTo("07881) 618299"));
     }
+
+    @Test
+    public void shouldFindWindowOfGivenText() {
+        String string = "I am Ismail Emre Kartoglu. My address changes. It is now 33 Marmora Road, SE22 0RX, London, UK." +
+                " This is some extra text.";
+
+        String address = "33, London, Marmora Road, SE22 0RX";
+
+        MatchingWindow window = StringTools.getMatchingWindowsAboveThreshold(string, address, 0.5f).get(0);
+
+        assertThat(window.getMatchingText(), equalTo("33 Marmora Road, SE22 0RX, London,"));
+
+        assertThat(string.substring(window.getBegin(), window.getEnd()), equalTo("33 Marmora Road, SE22 0RX, London,"));
+    }
+
+    @Test
+    public void shouldFindWindowOfGivenTextWhenWindowIsAtTheBorder() {
+        String string = "I am Ismail Emre Kartoglu. My address changes. It is now 33 Marmora Road, SE22 0RX, London";
+
+        String address = "33, London, Marmora Road, SE22 0RX";
+
+        MatchingWindow window = StringTools.getMatchingWindowsAboveThreshold(string, address, 0.5f).get(0);
+
+        assertThat(window.getMatchingText(), equalTo("33 Marmora Road, SE22 0RX, London"));
+
+        assertThat(string.substring(window.getBegin(), window.getEnd()), equalTo("33 Marmora Road, SE22 0RX, London"));
+
+        assertThat(window.isScoreAboveThreshold(0.6f), equalTo(true));
+    }
+
+    @Test
+    public void shouldReturnZeroLevenshteinDistanceWhenWordIsNull() {
+        assertThat(StringTools.getMaxDistance(null), equalTo(0));
+    }
+
+
 }

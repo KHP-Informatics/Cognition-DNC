@@ -1,5 +1,5 @@
 [
   #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $patient.getNHSNumber(), 2) )
-    {"regexp": "(?i)$approximateMatch", "placeHolder": "HHHHH"},
+    {"regexp": "(?i)\\Q$approximateMatch\\E", "placeHolder": "HHHHH"},
   #end
 ]

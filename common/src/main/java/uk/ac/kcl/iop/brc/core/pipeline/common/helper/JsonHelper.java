@@ -33,10 +33,6 @@ public class JsonHelper<T> {
     }
 
 
-    public List<T> loadFromFile(String path) {
-        return loadListFromFile(new File(path));
-    }
-
     /**
      * Given a File object, this method converts the jSON in the file to a list of Java objects.
      * @param file The File whose contents to be converted to a List of Java objects.
@@ -66,10 +62,6 @@ public class JsonHelper<T> {
 
         Object[] data = gson.fromJson(jsonReader, clazz);
         return Arrays.asList((T[]) data);
-    }
-
-    public List<T> loadListFromInputStream(InputStream input) {
-        return loadFromReader(new InputStreamReader(input));
     }
 
     public List<T> loadListFromString(String jsonRules) {

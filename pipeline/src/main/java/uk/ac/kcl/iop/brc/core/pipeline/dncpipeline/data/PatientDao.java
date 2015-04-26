@@ -16,6 +16,7 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.transform.Transformers;
@@ -105,7 +106,10 @@ public class PatientDao extends BaseDao {
             addressObjects.forEach(object -> {
                 Object[] addressRow = (Object[]) object;
                 String addressStr = clobHelper.getStringFromExpectedClob(addressRow[0]);
-                String postCode = clobHelper.getStringFromExpectedClob(addressRow[1]);
+                String postCode = "";
+                if (addressRow.length > 1) {
+                    postCode = clobHelper.getStringFromExpectedClob(addressRow[1]);
+                }
                 PatientAddress address = PatientAddress.newAddressPostCode(addressStr, postCode);
                 patient.addAddress(address);
             });

@@ -1,7 +1,7 @@
 [
   #foreach( $phone in $patient.getPhoneNumbers()  )
     #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $phone, 4) )
-      {"regexp": "(?i)$approximateMatch", "placeHolder": "FFFFF"},
+      {"regexp": "(?i)\\Q$approximateMatch\\E", "placeHolder": "FFFFF"},
     #end
   #end
 ]

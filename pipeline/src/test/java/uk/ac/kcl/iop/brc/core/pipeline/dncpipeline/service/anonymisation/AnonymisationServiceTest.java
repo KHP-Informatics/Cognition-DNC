@@ -179,4 +179,74 @@ public class AnonymisationServiceTest extends IntegrationTest {
         assertFalse(anonymisedText.contains("XXXXX XXXXX XXXXXson"));
     }
 
+    @Test
+    public void shouldAnonymisePartiallyMatchingAddress() {
+        Patient patient = new Patient();
+        patient.addForeName("rich");
+        patient.addForeName("richard");
+        patient.addSurname("Jack");
+        patient.addSurname("Jackson");
+        patient.setNHSNumber("11122");
+        PatientAddress patientAddress1 = new PatientAddress();
+        patientAddress1.setAddress("Kidderpore Avenue Hampstead, London");
+        patientAddress1.setPostCode("cb4 2za");
+        patient.addAddress(patientAddress1);
+        patient.addPhoneNumber("50090051234");
+        patient.addPhoneNumber("11090051234");
+        String anonymisedText = anonymisationService.anonymisePatientPlainText(patient, "\n" +
+                "\n" +
+                "Richard RICH Jackson\n" +
+                "\n" +
+                "Ism MrK\n" +
+                "\n" +
+                "\n" +
+                "11122\n" +
+                "(0500) 9005 1234 " +
+                "Some random text that shouldn't be anonymised." +
+                "" +
+                "Address is Kidderpore Ave, (Hampstead, London.");
+        System.out.println(anonymisedText);
+        assertTrue(anonymisedText.contains("HHHHH"));
+        assertTrue(anonymisedText.contains("FFFFF"));
+        assertTrue(anonymisedText.contains("XXXXX XXXXX XXXXX"));
+        assertTrue(anonymisedText.contains("Some random text that shouldn't be anonymised."));
+        assertFalse(anonymisedText.contains("XXXXX XXXXX XXXXXson"));
+        assertTrue(anonymisedText.contains("Address is AAAAA"));
+    }
+
+    @Test
+    public void shouldWorkInPresenceOfDoubleQuotationMarks() {
+        Patient patient = new Patient();
+        patient.addForeName("rich");
+        patient.addForeName("richard");
+        patient.addSurname("Jack");
+        patient.addSurname("Jackson");
+        patient.setNHSNumber("11122");
+        PatientAddress patientAddress1 = new PatientAddress();
+        patientAddress1.setAddress("Kidderpore Avenue Hampstead, London");
+        patientAddress1.setPostCode("cb4 2za");
+        patient.addAddress(patientAddress1);
+        patient.addPhoneNumber("50090051234");
+        patient.addPhoneNumber("11090051234");
+        String anonymisedText = anonymisationService.anonymisePatientPlainText(patient, "\n" +
+                "\n" +
+                "Richard RICH Jackson\n" +
+                "\n" +
+                "Ism MrK\n" +
+                "\n" +
+                "\n" +
+                "11122\n" +
+                "(0500) 9005 1234 " +
+                "Some random text that shouldn't be anonymised." +
+                "" +
+                "Address is Kidderpore Ave, (Hampstead, London.");
+        System.out.println(anonymisedText);
+        assertTrue(anonymisedText.contains("HHHHH"));
+        assertTrue(anonymisedText.contains("FFFFF"));
+        assertTrue(anonymisedText.contains("XXXXX XXXXX XXXXX"));
+        assertTrue(anonymisedText.contains("Some random text that shouldn't be anonymised."));
+        assertFalse(anonymisedText.contains("XXXXX XXXXX XXXXXson"));
+        assertTrue(anonymisedText.contains("Address is AAAAA"));
+    }
+
 }
