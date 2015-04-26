@@ -8,3 +8,4 @@ cachedir/
 *.pyc
 column_mapping.json
 velocity.log*
+.DS_*
