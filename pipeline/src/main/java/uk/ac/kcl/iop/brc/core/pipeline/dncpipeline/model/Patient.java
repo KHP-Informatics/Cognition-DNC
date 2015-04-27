@@ -170,18 +170,40 @@ public class Patient {
 
     public List<String> getCarerForeNames() {
         List<String> names = new ArrayList<>();
-        carers.forEach(carer -> {
-            names.add(carer.getFirstName());
-        });
+        carers.forEach(carer -> names.addAll(carer.getSeparatedFirstNames()));
 
         return names;
     }
     public List<String> getCarerLastNames() {
         List<String> lastNames = new ArrayList<>();
-        carers.forEach(carer -> {
-            lastNames.add(carer.getLastName());
-        });
+        carers.forEach(carer -> lastNames.addAll(carer.getSeparatedSurnames()));
 
         return lastNames;
+    }
+
+    public List<String> getSeparatedForeNames() {
+        if (getForeNames() == null) {
+            return new ArrayList<>();
+        }
+        List<String> names = new ArrayList<>();
+        for (String name : getForeNames()) {
+            String[] nameSplit = name.split(" ");
+            Collections.addAll(names, nameSplit);
+
+        }
+        return names;
+    }
+
+    public List<String> getSeparatedSurnames() {
+        if (getSurnames() == null) {
+            return new ArrayList<>();
+        }
+        List<String> names = new ArrayList<>();
+        for (String name : getSurnames()) {
+            String[] nameSplit = name.split(" ");
+            Collections.addAll(names, nameSplit);
+
+        }
+        return names;
     }
 }

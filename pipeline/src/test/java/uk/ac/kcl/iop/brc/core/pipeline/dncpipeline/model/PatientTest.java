@@ -62,4 +62,39 @@ public class PatientTest {
         assertThat(names.get(0), equalTo("Ismail"));
     }
 
+    @Test
+    public void shouldSeparateNamesWithMultipleWords() {
+        Patient patient = new Patient();
+        patient.addForeName("Michael Gregorski");
+
+        List<String> names = patient.getSeparatedForeNames();
+
+        assertThat(names.get(0), equalTo("Michael"));
+        assertThat(names.get(1), equalTo("Gregorski"));
+    }
+
+    @Test
+    public void shouldSeparateSurnamesWithMultipleWords() {
+        Patient patient = new Patient();
+        patient.addSurname("Michael Gregorski");
+
+        List<String> names = patient.getSeparatedSurnames();
+
+        assertThat(names.get(0), equalTo("Michael"));
+        assertThat(names.get(1), equalTo("Gregorski"));
+    }
+
+    @Test
+    public void shouldReturnEmptyListWhenNamesListIsNull() {
+        Patient patient = new Patient();
+        patient.setForeNames(null);
+        patient.setSurnames(null);
+
+        List<String> names = patient.getSeparatedForeNames();
+        List<String> surnames = patient.getSeparatedForeNames();
+
+        assertThat(names.size(), equalTo(0));
+        assertThat(surnames.size(), equalTo(0));
+    }
+
 }

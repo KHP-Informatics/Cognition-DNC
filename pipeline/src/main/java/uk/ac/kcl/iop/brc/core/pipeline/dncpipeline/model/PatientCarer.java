@@ -16,6 +16,12 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model;
 
+import org.apache.commons.lang.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class PatientCarer {
 
     private String firstName;
@@ -43,5 +49,21 @@ public class PatientCarer {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public List<String> getSeparatedFirstNames() {
+        if (StringUtils.isBlank(firstName)) {
+            return new ArrayList<>();
+        }
+        String[] split = firstName.split(" ");
+        return Arrays.asList(split);
+    }
+
+    public List<String> getSeparatedSurnames() {
+        if (StringUtils.isBlank(lastName)) {
+            return new ArrayList<>();
+        }
+        String[] split = lastName.split(" ");
+        return Arrays.asList(split);
     }
 }

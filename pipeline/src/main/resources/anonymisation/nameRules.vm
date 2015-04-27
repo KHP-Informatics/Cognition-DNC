@@ -12,6 +12,18 @@
     #end
   #end
 
+  #foreach( $forename in $patient.ggetSeparatedForeNames()  )
+    #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $forename) )
+    {"regexp": "(?i)\\Q$approximateMatch\\E", "placeHolder": "XXXXX"},
+    #end
+  #end
+
+  #foreach( $forename in $patient.getSeparatedSurnames()  )
+    #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $forename) )
+    {"regexp": "(?i)\\Q$approximateMatch\\E", "placeHolder": "XXXXX"},
+    #end
+  #end
+
   #foreach( $forename in $patient.getCarerForeNames()  )
     #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $forename) )
     {"regexp": "(?i)\\Q$approximateMatch\\E", "placeHolder": "YYYYY"},
