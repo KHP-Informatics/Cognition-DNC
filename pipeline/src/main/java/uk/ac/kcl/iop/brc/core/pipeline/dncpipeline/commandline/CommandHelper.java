@@ -22,9 +22,11 @@ public class CommandHelper {
         System.out.println(
                 "*************************************************************\n" +
                 "\n" +
-                "    Anonymisation Pipeline Runner (APR)\n" +
-                "    Ismail Emre Kartoglu, 2015\n" +
-                "    ismailemrekartoglu@gmail.com\n" +
+                "    Cognition-DNC (Dynamic Name Concealer)\n" +
+                "    Ismail E. Kartoglu\n" +
+                "    ismail.e.kartoglu@kcl.ac.uk\n\n" +
+                "    Richard Jackson\n" +
+                "    richard.r.jackson@kcl.ac.uk\n" +
                 "\n" +
                 "*************************************************************\n" +
                 "\n");
