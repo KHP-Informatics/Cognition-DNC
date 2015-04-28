@@ -37,7 +37,7 @@ You can download the latest binary distribution from the release page. To use it
 
 To build from source, ensure Maven is installed and navigate to the Cognition-DNC directory:
 
-` mvn clean install`
+` mvn clean package`
 
 This will produce a .jar executable file in the following directory
 
