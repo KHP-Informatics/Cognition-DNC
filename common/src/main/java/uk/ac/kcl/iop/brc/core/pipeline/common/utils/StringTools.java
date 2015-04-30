@@ -16,7 +16,8 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.common.utils;
 
-import org.apache.commons.lang.StringUtils;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -42,7 +43,7 @@ public class StringTools {
 
 
     public static Set<String> getApproximatelyMatchingStringList(String sourceString, String search) {
-        return getApproximatelyMatchingStringList(sourceString, search, getMaxDistance(search));
+        return getApproximatelyMatchingStringList(sourceString, search, getMaxAllowedLevenshteinDistanceFor(search));
     }
 
     /**
@@ -80,7 +81,7 @@ public class StringTools {
      * @param word
      * @return Approximate Levenshtein distance for {@code word}.
      */
-    protected static int getMaxDistance(String word) {
+    protected static int getMaxAllowedLevenshteinDistanceFor(String word) {
         if (StringUtils.isBlank(word)) {
             return 0;
         }
@@ -161,4 +162,5 @@ public class StringTools {
 
         return window;
     }
+
 }

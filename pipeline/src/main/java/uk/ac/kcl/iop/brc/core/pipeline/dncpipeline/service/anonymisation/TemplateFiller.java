@@ -16,7 +16,7 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.anonymisation;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import uk.ac.kcl.iop.brc.core.pipeline.common.utils.TimeUtil;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;

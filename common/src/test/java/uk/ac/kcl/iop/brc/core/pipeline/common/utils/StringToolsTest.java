@@ -16,9 +16,10 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.common.utils;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -106,16 +107,16 @@ public class StringToolsTest {
 
     @Test
     public void shouldGetMaxLevenshteinDistanceAsFifteenPercentOfWordLength() {
-        int dist = StringTools.getMaxDistance("Ismail");
+        int dist = StringTools.getMaxAllowedLevenshteinDistanceFor("Ismail");
         assertThat(dist, equalTo(1));
 
-        dist = StringTools.getMaxDistance("Bob");
+        dist = StringTools.getMaxAllowedLevenshteinDistanceFor("Bob");
         assertThat(dist, equalTo(0));
 
-        dist = StringTools.getMaxDistance("Craig");
+        dist = StringTools.getMaxAllowedLevenshteinDistanceFor("Craig");
         assertThat(dist, equalTo(1));
 
-        dist = StringTools.getMaxDistance("07881618299");
+        dist = StringTools.getMaxAllowedLevenshteinDistanceFor("07881618299");
         assertThat(dist, equalTo(2));
     }
 
@@ -168,8 +169,12 @@ public class StringToolsTest {
 
     @Test
     public void shouldReturnZeroLevenshteinDistanceWhenWordIsNull() {
-        assertThat(StringTools.getMaxDistance(null), equalTo(0));
+        assertThat(StringTools.getMaxAllowedLevenshteinDistanceFor(null), equalTo(0));
     }
 
+    @Test
+    public void shouldRoundLevenshteinDistanceUpWhenEqualToOrAboveHalf() {
+        assertThat(StringTools.getMaxAllowedLevenshteinDistanceFor("department"), equalTo(2));
+    }
 
 }
