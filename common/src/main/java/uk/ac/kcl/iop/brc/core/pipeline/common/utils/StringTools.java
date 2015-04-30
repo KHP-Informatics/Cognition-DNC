@@ -26,17 +26,6 @@ import java.util.stream.Collectors;
 
 public class StringTools {
 
-    public static String shortenString(String string) {
-        if (string == null) {
-            return "";
-        }
-        if (string.length() < 200) {
-            return string;
-        }
-
-        return string.substring(0, 100);
-    }
-
     public static int getLevenshteinDistance(String str1, String str2) {
         return StringUtils.getLevenshteinDistance(str1, str2);
     }

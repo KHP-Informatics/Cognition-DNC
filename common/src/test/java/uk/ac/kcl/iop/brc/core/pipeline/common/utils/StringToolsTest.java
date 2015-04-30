@@ -30,19 +30,6 @@ import static org.springframework.test.util.MatcherAssertionErrors.assertThat;
 public class StringToolsTest {
 
     @Test
-    public void shouldShortenString() {
-        String string = "hello world this is some text " +
-                "hello world this is some text hello world " +
-                "this is some text hello world this is some text hello world this is some text " +
-                "hello world this is some text hello world this is some text hello world this is some text" +
-                "hello world this is some text hello world this is some text hello world this is some text" +
-                "hello world this is some text hello world this is some text hello world this is some text";
-        String shortened = StringTools.shortenString(string);
-
-        assertTrue(string.length() > shortened.length());
-    }
-
-    @Test
     public void shouldReturnLevenshteinDistance() {
         int distance = StringTools.getLevenshteinDistance("hello", "ello");
 
