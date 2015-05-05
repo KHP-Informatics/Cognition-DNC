@@ -37,7 +37,7 @@ public class StringTools {
 
     /**
      * @param sourceString Source string to search for approximately matching segments.
-     * @param search String to search in @sourceString.
+     * @param search String to search in {@code sourceString}.
      * @param maxDistance Maximum edit distance that should be satisfied.
      * @return A list of substrings from the @sourceString each of which approximately matches {@code search}.
      */
