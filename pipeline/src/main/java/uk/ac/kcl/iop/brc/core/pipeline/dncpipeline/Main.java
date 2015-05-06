@@ -45,7 +45,8 @@ public class Main {
             System.exit(0);
         }
 
-        String path = "file:" + getCurrentFolder() + "/config/applicationContext.xml";
+        String path = "file:" + getCurrentFolder() + File.separator + "config" + File.separator + "applicationContext.xml";
+        logger.info("Loading context from " + path);
 
         context = new ClassPathXmlApplicationContext(path);
 

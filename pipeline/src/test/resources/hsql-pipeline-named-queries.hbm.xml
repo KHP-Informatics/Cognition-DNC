@@ -26,11 +26,11 @@
     </sql-query>
 
     <sql-query name="getNhsNumbers">
-        select nhs_no as "NHSNumber" from tblPatient where ID = :patientId
+        select nhs_no as "NHSNumber" from nhsNumbers where patient_id = :patientId
     </sql-query>
 
     <sql-query name="getDateOfBirths">
-        select dob as "dateOfBirth" from tblPatient where ID = :patientId
+        select dob as "dateOfBirth" from dateOfBirths where patient_id = :patientId
     </sql-query>
 
     <sql-query name="getPhoneNumbers">
