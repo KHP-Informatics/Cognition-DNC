@@ -33,11 +33,11 @@ public class Patient {
     @SerializedName("surnames")
     private List<String> surnames = new ArrayList<>();
 
-    @SerializedName("NHSNumber")
-    private String NHSNumber;
+    @SerializedName("nhsNumbers")
+    private List<String> nhsNumbers = new ArrayList<>();
 
     @SerializedName("dateOfBirth")
-    private Date dateOfBirth;
+    private List<Date> dateOfBirths = new ArrayList<>();
 
     @SerializedName("addresses")
     private List<PatientAddress> addresses = new ArrayList<>();
@@ -53,14 +53,6 @@ public class Patient {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getNHSNumber() {
-        return NHSNumber;
-    }
-
-    public void setNHSNumber(String NHSNumber) {
-        this.NHSNumber = NHSNumber;
     }
 
     public List<PatientAddress> getAddresses() {
@@ -93,14 +85,6 @@ public class Patient {
 
     public void setSurnames(List<String> surnames) {
         this.surnames = surnames;
-    }
-
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
     }
 
     public String toJson() {
@@ -205,5 +189,29 @@ public class Patient {
 
         }
         return names;
+    }
+
+    public List<String> getNhsNumbers() {
+        return nhsNumbers;
+    }
+
+    public void setNhsNumbers(List<String> nhsNumbers) {
+        this.nhsNumbers = nhsNumbers;
+    }
+
+    public List<Date> getDateOfBirths() {
+        return dateOfBirths;
+    }
+
+    public void setDateOfBirths(List<Date> dateOfBirths) {
+        this.dateOfBirths = dateOfBirths;
+    }
+
+    public void addNhsNumber(String number) {
+        nhsNumbers.add(number);
+    }
+
+    public void addDateOfBirth(Date dateOfBirth) {
+        dateOfBirths.add(dateOfBirth);
     }
 }

@@ -6,11 +6,7 @@
 <hibernate-mapping>
 
     <sql-query name="getPatient">
-        select ID as "id", nhs_no as "NHSNumber", dob as "dateOfBirth" from tblPatient where ID = :patientId
-    </sql-query>
-
-    <sql-query name="getAllPatients">
-        select ID as "id", nhs_no as "NHSNumber" from tblPatient
+        select ID as "id" from tblPatient where ID = :patientId
     </sql-query>
 
     <sql-query name="getObjectFromCoordinate">
@@ -27,6 +23,14 @@
 
     <sql-query name="getAddresses">
         select Address1, postcode from tblPatientAddresses where patient_id = :patientId
+    </sql-query>
+
+    <sql-query name="getNhsNumbers">
+        select nhs_no as "NHSNumber" from tblPatient where ID = :patientId
+    </sql-query>
+
+    <sql-query name="getDateOfBirths">
+        select dob as "dateOfBirth" from tblPatient where ID = :patientId
     </sql-query>
 
     <sql-query name="getPhoneNumbers">

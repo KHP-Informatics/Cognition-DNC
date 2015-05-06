@@ -71,12 +71,12 @@ public class PatientDaoTest extends IntegrationTest {
 
         assertThat(patient.getForeNames().contains("michael"), equalTo(true));
         assertThat(patient.getSurnames().contains("gregorski"), equalTo(true));
-        assertThat(patient.getNHSNumber(), equalTo("123123"));
+        assertThat(patient.getNhsNumbers().contains("123123"), equalTo(true));
         assertThat(patient.getPhoneNumbers().contains("0778"), equalTo(true));
         assertThat(patient.getAddresses().get(0).getAddress(), equalTo("address1"));
         assertThat(patient.getAddresses().get(0).getPostCode(), equalTo("cb4 2za"));
         assertThat(patient.getAddresses().get(1).getPostCode(), equalTo("cb1 2za"));
-        assertThat(TimeUtil.getFormattedDate(patient.getDateOfBirth(), "dd/MM/yyyy"), equalTo("09/05/1990"));
+        assertThat(TimeUtil.getFormattedDate(patient.getDateOfBirths().get(0), "dd/MM/yyyy"), equalTo("09/05/1990"));
         List<PatientCarer> carers = patient.getCarers();
         assertThat(carers.size(), equalTo(2));
         assertThat(carers.get(0).getFirstName(), equalTo("Richard"));
@@ -100,20 +100,6 @@ public class PatientDaoTest extends IntegrationTest {
         patientDao.executeSQLQueryForSource("create table tblPatientCarers(first_name varchar(100), last_name varchar(100), patient_id int)");
 
         assertThat(patient.getForeNames().contains("michael"), equalTo(true));
-    }
-
-
-    @Test
-    public void shouldFetchPatientsWithLimit() {
-        patientDao.executeSQLQueryForSource("insert into tblPatient values(1, '123123', '1990-05-09')");
-        patientDao.executeSQLQueryForSource("insert into tblPatient values(2, '123123', '1990-05-09')");
-        patientDao.executeSQLQueryForSource("insert into tblPatient values(3, '123123', '1990-05-09')");
-        patientDao.executeSQLQueryForSource("insert into tblPatient values(4, '123123', '1990-05-09')");
-        patientDao.executeSQLQueryForSource("insert into tblPatient values(5, '123123', '1990-05-09')");
-
-        List<Patient> patients = patientDao.getPatientsWithBetween(1, 3);
-
-        assertThat(patients.size(), equalTo(3));
     }
 
     @Test

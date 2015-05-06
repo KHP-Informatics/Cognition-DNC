@@ -29,6 +29,7 @@ import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.PatientAddress;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.PatientCarer;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -59,8 +60,48 @@ public class PatientDao extends BaseDao {
         setPhoneNumbers(patient);
         setAddresses(patient);
         setCarers(patient);
+        setNhsNumbers(patient);
+        setDateOfBirths(patient);
 
         return patient;
+    }
+
+    private void setNhsNumbers(Patient patient) {
+        try {
+            Query getNhsNumbers = getCurrentSourceSession().getNamedQuery("getNhsNumbers");
+            getNhsNumbers.setParameter("patientId", patient.getId());
+            List nhsNumbers = getNhsNumbers.list();
+            nhsNumbers.forEach(object -> {
+                if (object instanceof String) {
+                    patient.addNhsNumber((String) object);
+                } else {
+                    Object[] nhsNumberRow = (Object[]) object;
+                    String number = clobHelper.getStringFromExpectedClob(nhsNumberRow[0]);
+                    patient.addNhsNumber(number);
+                }
+            });
+        } catch (Exception ex) {
+            logger.warn("Error while loading NHS Numbers. Does the specified table exist?");
+        }
+    }
+
+    private void setDateOfBirths(Patient patient) {
+        try {
+            Query getDateOfBirths = getCurrentSourceSession().getNamedQuery("getDateOfBirths");
+            getDateOfBirths.setParameter("patientId", patient.getId());
+            List dateOfBirths = getDateOfBirths.list();
+            dateOfBirths.forEach(object -> {
+                if (object instanceof Date) {
+                    patient.addDateOfBirth((Date) object);
+                } else {
+                    Object[] dateOfBirthRow = (Object[]) object;
+                    Date dateOfBirth = (Date) dateOfBirthRow[0];
+                    patient.addDateOfBirth(dateOfBirth);
+                }
+            });
+        } catch (Exception ex) {
+            logger.warn("Error while loading Date of Births. Does the specified table exist?");
+        }
     }
 
     private void setCarers(Patient patient) {
@@ -133,21 +174,6 @@ public class PatientDao extends BaseDao {
             patient.addForeName(name);
             patient.addSurname(lastName);
         }
-    }
-
-    /**
-     * Return patients between row start and end.
-     *
-     * @param start
-     * @param end
-     * @return List of patients
-     */
-    public List<Patient> getPatientsWithBetween(int start, int end) {
-        Query getAllPatients = getCurrentSourceSession().getNamedQuery("getAllPatients");
-        List<Patient> patients = getAllPatients.
-                setFirstResult(start).setMaxResults(end).
-                setResultTransformer(Transformers.aliasToBean(Patient.class)).list();
-        return patients;
     }
 
 }

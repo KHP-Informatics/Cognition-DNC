@@ -39,11 +39,11 @@ public class TemplateFillerTest {
 
         Map<String, Object> map = new HashMap<>();
         Patient value = new Patient();
-        value.setNHSNumber("NHS Number");
+        value.addNhsNumber("NHS Number");
         map.put("test", value);
         String filledTemplate = templateFiller.getFilledTemplate("velocityTemplateExample.json", map);
 
-        assertThat(filledTemplate, equalTo("[\n  {\"test\":\"NHS Number\"},\n  {\"test\": \"${someStr.substring(0,2)} ${someStr.substring(2, 4)}\"}\n]"));
+        assertThat(filledTemplate, equalTo("[\n  {\"test\": \"${someStr.substring(0,2)} ${someStr.substring(2, 4)}\"}\n]"));
     }
 
     @Test
@@ -60,7 +60,6 @@ public class TemplateFillerTest {
         String filledTemplate = templateFiller.getFilledTemplate("velocityTemplateExample.json", map);
 
         assertThat(filledTemplate, equalTo("[\n" +
-                "  {\"test\":\"${test.getNHSNumber()}\"},\n" +
                 "  {\"test\": \"so me\"}\n" +
                 "]"));
     }

@@ -31,7 +31,7 @@ public class PatientTest {
         Patient patient = new Patient();
         patient.addForeName("Ismail");
         patient.addSurname("Kartoglu");
-        patient.setNHSNumber("111");
+        patient.addNhsNumber("111");
         PatientAddress patientAddress1 = new PatientAddress();
         patientAddress1.setAddress("addressText");
         patientAddress1.setPostCode("cb4 2za");

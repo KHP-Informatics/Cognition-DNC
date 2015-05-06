@@ -41,7 +41,7 @@ public class AnonymisationSanityChecker {
         patient.addForeName("TestName2");
         patient.addSurname("TestLastName1");
         patient.addSurname("TestLastName1");
-        patient.setNHSNumber("11122");
+        patient.addNhsNumber("11122");
         PatientAddress patientAddress1 = new PatientAddress();
         patientAddress1.setAddress("Kidderpore Avenue Hampstead, London");
         patientAddress1.setPostCode("cb4 2za");
@@ -52,7 +52,7 @@ public class AnonymisationSanityChecker {
         patient.addAddress(patientAddress2);
         patient.addPhoneNumber("50090051234");
         patient.addPhoneNumber("11090051234");
-        patient.setDateOfBirth(TimeUtil.getDateFromString("09/05/1990", "dd/MM/yyyy"));
+        patient.addDateOfBirth(TimeUtil.getDateFromString("09/05/1990", "dd/MM/yyyy"));
 
         String anonymisedText = anonymisationService.anonymisePatientPlainText(patient, "\n" +
                 "\n" +

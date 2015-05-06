@@ -17,6 +17,7 @@
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.anonymisation;
 
 
+import org.apache.commons.collections.CollectionUtils;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.Patient;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class NHSNumberPseudonymiser extends Pseudonymiser {
 
     @Override
     public boolean canIgnore(Patient patient) {
-        return StringUtils.isBlank(patient.getNHSNumber());
+        return CollectionUtils.isEmpty(patient.getNhsNumbers());
     }
 
 }

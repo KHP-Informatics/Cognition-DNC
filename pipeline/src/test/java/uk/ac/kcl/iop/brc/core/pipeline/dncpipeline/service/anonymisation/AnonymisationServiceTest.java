@@ -40,7 +40,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
         Patient patient = new Patient();
         patient.addForeName("Ismail");
         patient.addSurname("Kartoglu");
-        patient.setNHSNumber("11111");
+        patient.addNhsNumber("11111");
         PatientAddress patientAddress1 = new PatientAddress();
         patientAddress1.setAddress("addressText");
         patientAddress1.setPostCode("cb4 2za");
@@ -51,7 +51,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
         patient.addAddress(patientAddress2);
         patient.addPhoneNumber("50090051234");
         patient.addPhoneNumber("11090051234");
-        patient.setDateOfBirth(TimeUtil.getDateFromString("09/05/1990", "dd/MM/yyyy"));
+        patient.addDateOfBirth(TimeUtil.getDateFromString("09/05/1990", "dd/MM/yyyy"));
         patient.addCarer(new PatientCarer("xyz", "abc"));
         String anonymisedText = anonymisationService.anonymisePatientHTML(patient, "<html>\n" +
                 "<body>\n" +
@@ -75,7 +75,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
         Patient patient = new Patient();
         patient.addForeName("Ismail");
         patient.addSurname("Kartoglu");
-        patient.setNHSNumber("11111");
+        patient.addNhsNumber("11111");
         PatientAddress patientAddress1 = new PatientAddress();
         patientAddress1.setAddress("addressText");
         patientAddress1.setPostCode("cb4 2za");
@@ -86,7 +86,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
         patient.addAddress(patientAddress2);
         patient.addPhoneNumber("50090051234");
         patient.addPhoneNumber("11090051234");
-        patient.setDateOfBirth(TimeUtil.getDateFromString("09/05/1990", "dd/MM/yyyy"));
+        patient.addDateOfBirth(TimeUtil.getDateFromString("09/05/1990", "dd/MM/yyyy"));
         String anonymisedText = anonymisationService.anonymisePatientHTML(patient, "<html>\n" +
                 "<body>\n" +
                 "<h>Ismail</h>\n" +
@@ -118,7 +118,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
         patient.addForeName("rich");
         patient.addForeName("richard");
         patient.addSurname("Jackson");
-        patient.setNHSNumber("11122");
+        patient.addNhsNumber("11122");
         PatientAddress patientAddress1 = new PatientAddress();
         patientAddress1.setAddress("addressText");
         patientAddress1.setPostCode("cb4 2za");
@@ -150,7 +150,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
         patient.addForeName("richard");
         patient.addSurname("Jack");
         patient.addSurname("Jackson");
-        patient.setNHSNumber("11122");
+        patient.addNhsNumber("11122");
         PatientAddress patientAddress1 = new PatientAddress();
         patientAddress1.setAddress("addressText");
         patientAddress1.setPostCode("cb4 2za");
@@ -186,7 +186,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
         patient.addForeName("richard");
         patient.addSurname("Jack");
         patient.addSurname("Jackson");
-        patient.setNHSNumber("11122");
+        patient.addNhsNumber("11122");
         PatientAddress patientAddress1 = new PatientAddress();
         patientAddress1.setAddress("Kidderpore Avenue Hampstead, London");
         patientAddress1.setPostCode("cb4 2za");
@@ -221,7 +221,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
         patient.addForeName("richard");
         patient.addSurname("Jack");
         patient.addSurname("Jackson");
-        patient.setNHSNumber("11122");
+        patient.addNhsNumber("11122");
         PatientAddress patientAddress1 = new PatientAddress();
         patientAddress1.setAddress("Kidderpore Avenue Hampstead, London");
         patientAddress1.setPostCode("cb4 2za");

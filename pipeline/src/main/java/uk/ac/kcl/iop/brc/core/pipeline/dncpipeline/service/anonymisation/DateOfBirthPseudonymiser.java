@@ -17,6 +17,7 @@
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.anonymisation;
 
 
+import org.apache.commons.collections.CollectionUtils;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.Patient;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,7 @@ public class DateOfBirthPseudonymiser extends Pseudonymiser {
 
     @Override
     public boolean canIgnore(Patient patient) {
-        return patient.getDateOfBirth() == null;
+        return CollectionUtils.isEmpty(patient.getDateOfBirths());
     }
 
 }
