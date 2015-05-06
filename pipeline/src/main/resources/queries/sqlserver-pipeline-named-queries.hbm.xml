@@ -1,24 +1,13 @@
 <?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-        "http://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd"> 
 
 <!-- Sql Server pipeline queries -->
 <hibernate-mapping>
 
     <sql-query name="getPatient">
-        select ID as "id" from tblPatient where ID = :patientId
-    </sql-query>
-
-    <sql-query name="getNhsNumbers">
-        select nhs_no as "NHSNumber" from tblPatient where ID = :patientId
-    </sql-query>
-
-    <sql-query name="getDateOfBirths">
-        select dob as "dateOfBirth" from tblPatient where ID = :patientId
-    </sql-query>
-
-    <sql-query name="getAllPatients">
-        select ID as "id", nhs_no as "NHSNumber" from tblPatient
+        select Patient_ID as "id" from DBAdmin.dbo.tblpatient where Patient_ID = :patientId
     </sql-query>
 
     <sql-query name="getObjectFromCoordinate">
@@ -26,29 +15,37 @@
     </sql-query>
 
     <sql-query name="saveTextToCoordinate">
-        insert into targetForPseudo (src_table, src_col, doc_ID, processedText, updatetime) values(':sourceTable', ':sourceColumn', :sourceId, ':anonymisedText', ':updateTime')
+        insert into SaveTable (src_table, src_col, doc_ID, processedText, updatetime) values(':sourceTable', ':sourceColumn', :sourceId, ':anonymisedText', ':updateTime')
     </sql-query>
 
     <sql-query name="getPatientNames">
-        select first_name, last_name from tblPatientNames where patient_id = :patientId
+        select Forename, Surname from DBAdmin.dbo.VW_COG_patientname where Patient_ID = :patientId
     </sql-query>
 
     <sql-query name="getAddresses">
-        select Address1, postcode from tblPatientAddresses where patient_id = :patientId
+        select address1, postcode from DBAdmin.dbo.VW_COG_tbladdress where Patient_ID = :patientId
+    </sql-query>
+
+    <sql-query name="getNhsNumbers">
+        select NHS_Number as "NHSNumber" from DBAdmin.dbo.tblpatient where Patient_ID = :patientId
+    </sql-query>
+
+    <sql-query name="getDateOfBirths">
+        select Date_Of_Birth as "dateOfBirth" from DBAdmin.dbo.tblpatient where Patient_ID = :patientId
     </sql-query>
 
     <sql-query name="getPhoneNumbers">
-        select number from tblPatientPhoneNumbers where patient_id = :patientId
+        select home_telephone from DBAdmin.dbo.tblcontact where Patient_ID = :patientId
     </sql-query>
 
     <sql-query name="getCarers">
-        select first_name, last_name from tblPatientCarers where patient_id = :patientId
+        select forename, surname from DBAdmin.dbo.VW_COG_tblcarers where Patient_ID = :patientId
     </sql-query>
 
     <sql-query name="getCoordinates">
-        select patientId as "patientId", sourceTable as "sourceTable", sourceColumn as "sourceColumn",
-        idInSourceTable as "idInSourceTable", pkColumnName as "pkColumnName", type as "type", updateTime as "updateTime"
-        from testCoordinateView
+        select id as "patientId", src_table  as "sourceTable", src_col as "sourceColumn",
+        doc_id as "idInSourceTable", pkColumnName as "pkColumnName", type as "type"
+        from DBAdmin.dbo.vw_COG_target_for_pseudo
     </sql-query>
 
 </hibernate-mapping>
