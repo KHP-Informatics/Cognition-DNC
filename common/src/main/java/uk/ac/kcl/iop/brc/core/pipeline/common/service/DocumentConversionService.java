@@ -52,7 +52,7 @@ public class DocumentConversionService {
         return "";
     }
 
-    public String getContentFromImagePDF(byte[] bytes) throws IOException {
+    public synchronized String getContentFromImagePDF(byte[] bytes) throws IOException {
         String tempFileName = "tempForOCR" + RandomUtils.nextInt() + ".pdf";
         FileOutputStream fos = new FileOutputStream(tempFileName);
         fos.write(bytes);

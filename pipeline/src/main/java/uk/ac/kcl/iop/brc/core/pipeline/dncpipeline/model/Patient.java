@@ -18,6 +18,8 @@ package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 
 import javax.persistence.Entity;
 import java.util.*;
@@ -109,14 +111,22 @@ public class Patient {
     }
 
     public List<String> getForeNamesInDescendingLengthOrder() {
-        if (getForeNames() == null) {
+        if (CollectionUtils.isEmpty(foreNames)) {
             return new ArrayList<>();
         }
 
-        List<String> foreNames = new ArrayList<>(getForeNames());
+        List<String> foreNames = new ArrayList<>();
+        for (String name : getForeNames()) {
+            if (! StringUtils.isBlank(name)) {
+                foreNames.add(name);
+            }
+        }
         Collections.sort(foreNames, new Comparator<String>() {
             @Override
             public int compare(String s1, String s2) {
+                if (s1 == null || s2 == null) {
+                    return -1;
+                }
                 return -Integer.valueOf(s1.length()).compareTo(Integer.valueOf(s2.length()));
             }
         });
@@ -125,14 +135,23 @@ public class Patient {
     }
 
     public List<String> getLastNamesInDescendingLengthOrder() {
-        if (getSurnames() == null) {
+        if (CollectionUtils.isEmpty(surnames)) {
             return new ArrayList<>();
         }
 
-        List<String> surnames = new ArrayList<>(getSurnames());
+        List<String> surnames = new ArrayList<>();
+
+        for (String name : getSurnames()) {
+            if (! StringUtils.isBlank(name)) {
+                surnames.add(name);
+            }
+        }
         Collections.sort(surnames, new Comparator<String>() {
             @Override
             public int compare(String s1, String s2) {
+                if (s1 == null || s2 == null) {
+                    return -1;
+                }
                 return -Integer.valueOf(s1.length()).compareTo(Integer.valueOf(s2.length()));
             }
         });
@@ -171,6 +190,9 @@ public class Patient {
         }
         List<String> names = new ArrayList<>();
         for (String name : getForeNames()) {
+            if (StringUtils.isBlank(name)) {
+                continue;
+            }
             String[] nameSplit = name.split(" ");
             Collections.addAll(names, nameSplit);
 
@@ -184,6 +206,9 @@ public class Patient {
         }
         List<String> names = new ArrayList<>();
         for (String name : getSurnames()) {
+            if (StringUtils.isBlank(name)) {
+                continue;
+            }
             String[] nameSplit = name.split(" ");
             Collections.addAll(names, nameSplit);
 

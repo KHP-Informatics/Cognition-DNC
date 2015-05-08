@@ -1,39 +1,47 @@
 [
 
   #foreach( $forename in $patient.getForeNamesInDescendingLengthOrder()  )
-      #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $forename) )
-        {"regexp": "(?i)\\Q$approximateMatch\\E", "placeHolder": "XXXXX"},
+    {"regexp": "(?i)\\b\\Q$forename\\E\\b", "placeHolder": "XXXXX"},
+  #end
+
+  #foreach( $forename in $patient.getForeNamesInDescendingLengthOrder()  )
+      #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $forename, 1) )
+        {"regexp": "(?i)\\b\\Q$approximateMatch\\E\\b", "placeHolder": "XXXXX"},
       #end
   #end
 
   #foreach( $surname in $patient.getLastNamesInDescendingLengthOrder()  )
-    #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $surname) )
-    {"regexp": "(?i)\\Q$approximateMatch\\E", "placeHolder": "XXXXX"},
+    #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $surname, 1) )
+    {"regexp": "(?i)\\b\\Q$approximateMatch\\E\\b", "placeHolder": "XXXXX"},
     #end
   #end
 
-  #foreach( $forename in $patient.ggetSeparatedForeNames()  )
-    #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $forename) )
-    {"regexp": "(?i)\\Q$approximateMatch\\E", "placeHolder": "XXXXX"},
+  #foreach( $surname in $patient.getLastNamesInDescendingLengthOrder()  )
+    {"regexp": "(?i)\\b\\Q$surname\\E\\b", "placeHolder": "XXXXX"},
+  #end
+
+  #foreach( $forename in $patient.getSeparatedForeNames()  )
+    #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $forename, 1) )
+    {"regexp": "(?i)\\b\\Q$approximateMatch\\E\\b", "placeHolder": "XXXXX"},
     #end
   #end
 
   #foreach( $forename in $patient.getSeparatedSurnames()  )
-    #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $forename) )
-    {"regexp": "(?i)\\Q$approximateMatch\\E", "placeHolder": "XXXXX"},
+    #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $forename, 1) )
+    {"regexp": "(?i)\\b\\Q$approximateMatch\\E\\b", "placeHolder": "XXXXX"},
     #end
   #end
 
   #foreach( $forename in $patient.getCarerForeNames()  )
-    #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $forename) )
-    {"regexp": "(?i)\\Q$approximateMatch\\E", "placeHolder": "YYYYY"},
-    #end
+      #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $forename, 1) )
+      {"regexp": "(?i)\\b\\Q$approximateMatch\\E\\b", "placeHolder": "YYYYY"},
+      #end
   #end
 
   #foreach( $surname in $patient.getCarerLastNames()  )
-    #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $surname) )
-    {"regexp": "(?i)\\Q$approximateMatch\\E", "placeHolder": "YYYYY"},
-    #end
+      #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $surname, 1) )
+      {"regexp": "(?i)\\b\\Q$approximateMatch\\E\\b", "placeHolder": "YYYYY"},
+      #end
   #end
 
 ]

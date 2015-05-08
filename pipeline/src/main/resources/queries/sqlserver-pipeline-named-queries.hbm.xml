@@ -15,7 +15,7 @@
     </sql-query>
 
     <sql-query name="saveTextToCoordinate">
-        insert into SaveTable (src_table, src_col, doc_ID, processedText, updatetime) values(':sourceTable', ':sourceColumn', :sourceId, ':anonymisedText', ':updateTime')
+        insert into SaveTable (src_table, src_col, doc_ID, processedText) values(':sourceTable', ':sourceColumn', :sourceId, ':anonymisedText')
     </sql-query>
 
     <sql-query name="getPatientNames">

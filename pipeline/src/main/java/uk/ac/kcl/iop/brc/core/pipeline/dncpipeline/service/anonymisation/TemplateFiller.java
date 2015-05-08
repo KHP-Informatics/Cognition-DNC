@@ -17,6 +17,7 @@
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.anonymisation;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.velocity.runtime.ParserPoolImpl;
 import uk.ac.kcl.iop.brc.core.pipeline.common.utils.TimeUtil;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -37,6 +38,7 @@ public class TemplateFiller {
 
     @PostConstruct
     public void init() {
+        velocityEngine.setProperty("parser.pool.size", 200);
         velocityEngine.init();
     }
 

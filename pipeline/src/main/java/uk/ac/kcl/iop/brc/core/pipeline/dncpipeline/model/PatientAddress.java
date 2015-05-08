@@ -17,6 +17,7 @@
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model;
 
 import com.google.gson.annotations.SerializedName;
+import org.apache.commons.lang.StringUtils;
 
 public class PatientAddress {
 
@@ -47,5 +48,13 @@ public class PatientAddress {
 
     public void setPostCode(String postCode) {
         this.postCode = postCode;
+    }
+
+    public boolean isNotTooShort() {
+        if (StringUtils.isBlank(address)) {
+            return false;
+        }
+
+        return address.length() > 3;
     }
 }

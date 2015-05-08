@@ -26,6 +26,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import uk.ac.kcl.iop.brc.core.pipeline.common.helper.JsonHelper;
 import uk.ac.kcl.iop.brc.core.pipeline.common.service.DocumentConversionService;
 import uk.ac.kcl.iop.brc.core.pipeline.common.service.FileTypeService;
+import uk.ac.kcl.iop.brc.core.pipeline.common.utils.StringTools;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.CoordinatesDao;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.DNCWorkUnitDao;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.PatientDao;
@@ -68,6 +69,8 @@ public class DNCPipelineService {
 
     private JsonHelper<DNCWorkCoordinate> jsonHelper = new JsonHelper(DNCWorkCoordinate[].class);
 
+    private boolean noPseudonym = false;
+
     public void startCreateModeFromWS() {
         throw new NotImplementedException();
     }
@@ -98,7 +101,9 @@ public class DNCPipelineService {
             logger.info("Anonymising text, coordinates: " + coordinate);
             String text = dncWorkUnitDao.getTextFromCoordinate(coordinate);
             Patient patient = patientDao.getPatient(coordinate.getPatientId());
-            text = anonymisationService.anonymisePatientPlainText(patient, text);
+            if (! noPseudonym) {
+                text = anonymisationService.anonymisePatientPlainText(patient, text);
+            }
             saveAnonymisedText(coordinate, text);
         } catch (Exception ex) {
             logger.info("Could not process coodinate " + coordinate);
@@ -113,10 +118,13 @@ public class DNCPipelineService {
             Patient patient = patientDao.getPatient(coordinate.getPatientId());
             byte[] bytes = dncWorkUnitDao.getByteFromCoordinate(coordinate);
             String text = convertBinary(bytes);
-            if (StringUtils.isBlank(text) && ocrIsEnabled()) {
+            if (StringTools.noContentInHtml(text) && ocrIsEnabled()) {
+                logger.info("Trying OCR for coordinate: " + coordinate);
                 text = tryOCR(bytes);
             }
-            text = anonymsisePatientText(patient, text);
+            if (! noPseudonym) {
+                text = anonymsisePatientText(patient, text);
+            }
             saveAnonymisedText(coordinate, text);
         } catch (Exception ex) {
             logger.error("Could not process coordinate " + coordinate);
@@ -182,5 +190,9 @@ public class DNCPipelineService {
             }
         });
         logger.info("Finished all.");
+    }
+
+    public void setNoPseudonym(boolean noPseudonym) {
+        this.noPseudonym = noPseudonym;
     }
 }

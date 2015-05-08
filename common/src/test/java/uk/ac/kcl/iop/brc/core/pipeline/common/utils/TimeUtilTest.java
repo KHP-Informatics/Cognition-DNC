@@ -29,8 +29,7 @@ public class TimeUtilTest {
     @Test
     public void shouldGetDateFromString() throws ParseException {
         Date dateFromString = TimeUtil.getDateFromString("09/05/1990", "dd/MM/yyyy");
-
-        assertThat(TimeUtil.getFormattedDate(dateFromString, "dd/MM/yyyy"), equalTo("09/05/1990"));
+		assertThat(TimeUtil.getFormattedDate(dateFromString, "dd/MM/yyyy"), equalTo("09/05/1990"));
     }
 
 	@Test

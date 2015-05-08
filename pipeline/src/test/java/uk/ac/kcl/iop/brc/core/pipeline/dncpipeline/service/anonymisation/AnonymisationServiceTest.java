@@ -249,4 +249,29 @@ public class AnonymisationServiceTest extends IntegrationTest {
         assertTrue(anonymisedText.contains("Address is AAAAA"));
     }
 
+    @Test
+    public void shouldWOrkWithShortNames() {
+        Patient patient = new Patient();
+        patient.addForeName("Christine");
+        PatientAddress patientAddress1 = new PatientAddress();
+        patientAddress1.setAddress("Kidderpore Avenue Hampstead, London");
+        patientAddress1.setPostCode("cb4 2za");
+        patient.addAddress(patientAddress1);
+        patient.addPhoneNumber("50090051234");
+        patient.addPhoneNumber("11090051234");
+        String anonymisedText = anonymisationService.anonymisePatientPlainText(patient, "\n" +
+                "\n" +
+                "she was angry\n" +
+                "\n" +
+                "Ism MrK\n" +
+                "\n" +
+                "\n" +
+                "11122\n" +
+                "(0500) 9005 1234 " +
+                "Some random text that shouldn't be anonymised." +
+                "" +
+                "Address is Kidderpore Ave, (Hampstead, London.");
+        System.out.println(anonymisedText);
+        assertTrue(anonymisedText.contains("she was angry"));
+    }
 }

@@ -32,7 +32,7 @@ public class MatchingWindow implements Comparable<MatchingWindow> {
         int match = 0;
         for (String word : wordSet) {
             for (String addressWord : wordsToMatch) {
-                if (StringTools.getLevenshteinDistance(word, addressWord) <= 2) {
+                if (StringTools.getLevenshteinDistance(word, addressWord) <= 1) {
                     match += 1;
                     break;
                 }

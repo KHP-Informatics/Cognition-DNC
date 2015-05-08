@@ -164,4 +164,51 @@ public class StringToolsTest {
         assertThat(StringTools.getMaxAllowedLevenshteinDistanceFor("department"), equalTo(2));
     }
 
+    @Test
+    public void shouldSplitIntoWordsWithLengthHigherThan() {
+        Set<String> set = StringTools.splitIntoWordsWithLengthHigherThan("hello world 2 aaaaa", 3);
+
+        assertThat(set.contains("hello"), equalTo(true));
+        assertThat(set.contains("world"), equalTo(true));
+        assertThat(set.contains("2"), equalTo(false));
+        assertThat(set.contains("aaaaa"), equalTo(true));
+    }
+
+    @Test
+    public void shouldReturnTrueIfThereIsNoTextContentInHtml() {
+        String test = "<html><head><title>Test</title></head><body><div id=\"test\"></div></body></html>";
+
+        assertThat(StringTools.noContentInHtml(test), equalTo(true));
+    }
+
+    @Test
+    public void shouldReturnFalseIfThereIsTextContentInHtml() {
+        String test = "<html><head><title>Test</title></head><body><div id=\"test\">Some content</div></body></html>";
+
+        assertThat(StringTools.noContentInHtml(test), equalTo(false));
+    }
+
+    @Test
+    public void shouldNotIncludeIgnoreWordsWhenSplittingString() {
+        String test = "Some area of London. Testing ignore words.";
+
+        Set<String> strings = StringTools.splitIntoWordsWithLengthHigherThan(test, 3, "ignore", "area", "of", "some");
+
+        assertThat(strings.contains("London."), equalTo(true));
+        assertThat(strings.contains("Testing"), equalTo(true));
+        assertThat(strings.contains("some"), equalTo(false));
+        assertThat(strings.contains("of"), equalTo(false));
+        assertThat(strings.contains("area"), equalTo(false));
+        assertThat(strings.contains("ignore"), equalTo(false));
+    }
+
+    @Test
+    public void shouldReturnEmptySetWhenStringIsBlank() {
+        String test = " ";
+
+        Set<String> strings = StringTools.splitIntoWordsWithLengthHigherThan(test, 3, "ignore", "area", "of", "some");
+
+        assertThat(strings.size(), equalTo(0));
+    }
+
 }

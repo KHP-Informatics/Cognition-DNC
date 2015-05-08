@@ -16,6 +16,7 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.transform.Transformers;
@@ -51,7 +52,7 @@ public class PatientDao extends BaseDao {
     public Patient getPatient(Long id) {
         Query getPatient = getCurrentSourceSession().getNamedQuery("getPatient");
         getPatient.setParameter("patientId", id);
-
+        logger.info("Loading patient " + id);
         Patient patient = (Patient) getPatient.
                 setFirstResult(0).setMaxResults(1).
                 setResultTransformer(Transformers.aliasToBean(Patient.class)).uniqueResult();
@@ -81,7 +82,7 @@ public class PatientDao extends BaseDao {
                 }
             });
         } catch (Exception ex) {
-            logger.warn("Error while loading NHS Numbers. Does the specified table exist?");
+            logger.warn("Error while loading NHS Numbers of patient " + patient.getId() + ". Does the specified table exist? " + ex.getMessage());
         }
     }
 
@@ -100,7 +101,7 @@ public class PatientDao extends BaseDao {
                 }
             });
         } catch (Exception ex) {
-            logger.warn("Error while loading Date of Births. Does the specified table exist?");
+            logger.warn("Error while loading date of births of patient " + patient.getId() + ". Does the specified table exist? " + ex.getMessage());
         }
     }
 
@@ -117,7 +118,7 @@ public class PatientDao extends BaseDao {
                 patient.addCarer(carer);
             });
         } catch (Exception ex) {
-            logger.warn("Error while loading carers. Does the specified carer table exist?");
+            logger.warn("Error while loading carers of patient " + patient.getId() + ". Does the specified carer table exist? " + ex.getMessage());
         }
     }
 
@@ -154,7 +155,7 @@ public class PatientDao extends BaseDao {
                 patient.addAddress(address);
             });
         } catch (Exception ex) {
-            logger.warn("Error while loading addresses. Does the specified address table exist?");
+            logger.warn("Error while loading addresses of patient " + patient.getId() + ". Does the specified address table exist? " + ex.getMessage());
         }
     }
 
@@ -164,15 +165,23 @@ public class PatientDao extends BaseDao {
      * @param patient
      */
     private void setNames(Patient patient) {
-        Query getForeNames = getCurrentSourceSession().getNamedQuery("getPatientNames");
-        getForeNames.setParameter("patientId", patient.getId());
-        List foreNames = getForeNames.list();
-        for (Object dbObject : foreNames) {
-            Object[] namePair = (Object[]) dbObject;
-            String name = clobHelper.getStringFromExpectedClob(namePair[0]);
-            String lastName = clobHelper.getStringFromExpectedClob(namePair[1]);
-            patient.addForeName(name);
-            patient.addSurname(lastName);
+        try {
+            Query getForeNames = getCurrentSourceSession().getNamedQuery("getPatientNames");
+            getForeNames.setParameter("patientId", patient.getId());
+            List foreNames = getForeNames.list();
+            if (CollectionUtils.isEmpty(foreNames)) {
+                logger.warn("!! No name/surname was found for patient with id " + patient.getId());
+                return;
+            }
+            for (Object dbObject : foreNames) {
+                Object[] namePair = (Object[]) dbObject;
+                String name = clobHelper.getStringFromExpectedClob(namePair[0]);
+                String lastName = clobHelper.getStringFromExpectedClob(namePair[1]);
+                patient.addForeName(name);
+                patient.addSurname(lastName);
+            }
+        } catch (Exception ex) {
+            logger.warn("Error while loading names of patient " + patient.getId() + ". Does the specified address table exist? " + ex.getMessage());
         }
     }
 

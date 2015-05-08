@@ -18,6 +18,8 @@ package uk.ac.kcl.iop.brc.core.pipeline.common.utils;
 
 
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -35,6 +37,14 @@ public class StringTools {
         return getApproximatelyMatchingStringList(sourceString, search, getMaxAllowedLevenshteinDistanceFor(search));
     }
 
+    public boolean isNotTooShort(String string) {
+        if (StringUtils.isBlank(string)) {
+            return false;
+        }
+
+        return string.trim().length() > 3;
+    }
+
     /**
      * @param sourceString Source string to search for approximately matching segments.
      * @param search String to search in {@code sourceString}.
@@ -46,7 +56,16 @@ public class StringTools {
         if (StringUtils.isBlank(search)) {
             return matches;
         }
+        search = search.trim();
+
         int searchLength = search.length();
+        if (searchLength <= 1) {
+            return matches;
+        }
+        if (searchLength <= 3) {
+            matches.add(search);
+            return matches;
+        }
         sourceString = sourceString.toLowerCase().trim();
         search = search.toLowerCase().trim();
         for (int i = 0; i < sourceString.length(); i++) {
@@ -152,4 +171,44 @@ public class StringTools {
         return window;
     }
 
+    public static Set<String> splitIntoWordsWithLengthHigherThan(String string, int minLength) {
+        Set<String> strings = new HashSet<>();
+
+        if (StringUtils.isBlank(string)) {
+            return strings;
+        }
+
+        String[] splitArray = string.split(" ");
+        for (String word : splitArray) {
+            if (word.length() > minLength) {
+                strings.add(word);
+            }
+        }
+        return strings;
+    }
+
+    public static Set<String> splitIntoWordsWithLengthHigherThan(String string, int minLength, String... ignoreWords) {
+        if (StringUtils.isBlank(string)) {
+            return new HashSet<>();
+        }
+        for (String ignoreWord : ignoreWords) {
+            string = string.replaceAll("(?i)"+ignoreWord, "");
+        }
+        return splitIntoWordsWithLengthHigherThan(string, minLength);
+    }
+
+    public static boolean noContentInHtml(String text) {
+        if (StringUtils.isBlank(text)) {
+            return false;
+        }
+        try {
+            Document doc = Jsoup.parse(text);
+
+            String bodyText = doc.body().text();
+
+            return StringUtils.isBlank(bodyText);
+        } catch (Exception ex) {
+            return false;
+        }
+    }
 }

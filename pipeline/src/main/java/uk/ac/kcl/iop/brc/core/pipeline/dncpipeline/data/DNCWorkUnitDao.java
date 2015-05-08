@@ -16,16 +16,16 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data;
 
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 import uk.ac.kcl.iop.brc.core.pipeline.common.data.BaseDao;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.helper.BlobHelper;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.helper.ClobHelper;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.exception.WorkCoordinateNotFound;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.DNCWorkCoordinate;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.hibernate.Query;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -78,13 +78,12 @@ public class DNCWorkUnitDao extends BaseDao {
     public void saveConvertedText(DNCWorkCoordinate coordinate, String anonymisedText) {
         Query query = getCurrentTargetSession().getNamedQuery("saveTextToCoordinate");
         String queryString = query.getQueryString();
-        queryString = queryString.replace(":sourceTable", coordinate.getSourceTable())
-                .replace(":sourceColumn", coordinate.getSourceColumn())
-                .replace(":sourceId", Long.toString(coordinate.getIdInSourceTable()))
-                .replace(":anonymisedText", StringEscapeUtils.escapeSql(anonymisedText))
-                .replace(":updateTime", coordinate.getUpdateTime());
-
-        executeSQLQueryForTarget(queryString);
+        SQLQuery sqlQuery = getCurrentTargetSession().createSQLQuery(queryString);
+        sqlQuery.setParameter(0, coordinate.getSourceTable());
+        sqlQuery.setParameter(1, coordinate.getSourceColumn());
+        sqlQuery.setParameter(2, coordinate.getIdInSourceTable());
+        sqlQuery.setParameter(3, anonymisedText);
+        sqlQuery.executeUpdate();
     }
 
 }
