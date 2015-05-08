@@ -84,13 +84,13 @@ Cognition currently has support for the following common identifiers, but these 
 
 Identifier|
 ----------|
-NHS number|
-Date of Birth|
-First Name|
-Last Name|
-Address|
-Post Code|
-Phone number|
+NHS numbers|
+Date of Births|
+First Names|
+Last Names|
+Addresses|
+Post Codes|
+Phone numbers|
 
 <h5>
 Masking Algorithm Customisation
