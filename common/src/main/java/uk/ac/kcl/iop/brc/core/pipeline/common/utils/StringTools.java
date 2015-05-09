@@ -87,7 +87,7 @@ public class StringTools {
 
     /**
      * @param word
-     * @return Approximate Levenshtein distance for {@code word}.
+     * @return Max heuristic Levenshtein distance for {@code word}.
      */
     protected static int getMaxAllowedLevenshteinDistanceFor(String word) {
         if (StringUtils.isBlank(word)) {

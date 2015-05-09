@@ -67,11 +67,11 @@ public class DocumentConversionServiceTest {
     @Test
     @Ignore
     public void shouldApplyOCR() throws IOException {
-//        DocumentConversionService service = new DocumentConversionService();
-//        InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("testPdfImage.pdf");
-//        byte[] bytes = IOUtils.toByteArray(resourceAsStream);
-//
-//        String text = service.getContentFromImagePDF(bytes);
-//        System.out.println(text);
+        DocumentConversionService service = new DocumentConversionService();
+        InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("testPdfImage.pdf");
+        byte[] bytes = IOUtils.toByteArray(resourceAsStream);
+
+        String text = service.getContentFromImagePDF(bytes);
+        System.out.println(text);
     }
 }
