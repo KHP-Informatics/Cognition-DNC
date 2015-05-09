@@ -46,6 +46,10 @@ public class CommandCreateModeFromFile implements CommandProcessor {
             throw new IllegalArgumentException("File argument must be specified.");
         }
 
+        if (cmd.hasOption("noPseudonym")) {
+            dncPipelineService.setNoPseudonym(true);
+        }
+
         dncPipelineService.startCreateModeWithFile(filePath);
     }
 

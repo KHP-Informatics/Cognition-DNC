@@ -195,4 +195,8 @@ public class DNCPipelineService {
     public void setNoPseudonym(boolean noPseudonym) {
         this.noPseudonym = noPseudonym;
     }
+
+    public void startCreateModeWithFileNoPseudonym(String filePath) {
+
+    }
 }

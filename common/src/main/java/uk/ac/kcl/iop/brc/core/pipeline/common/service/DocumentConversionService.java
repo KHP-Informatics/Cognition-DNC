@@ -53,18 +53,17 @@ public class DocumentConversionService {
     }
 
     public synchronized String getContentFromImagePDF(byte[] bytes) throws IOException {
-        String tempFileName = "tempForOCR" + RandomUtils.nextInt() + ".pdf";
-        FileOutputStream fos = new FileOutputStream(tempFileName);
+        File tempFile = File.createTempFile("tempForOCR" + RandomUtils.nextInt(), ".pdf");
+        FileOutputStream fos = new FileOutputStream(tempFile);
         fos.write(bytes);
         fos.close();
-        File file = new File(tempFileName);
         Tesseract tesseract = Tesseract.getInstance();
         try {
-            return tesseract.doOCR(file);
+            return tesseract.doOCR(tempFile);
         } catch (TesseractException e) {
             e.printStackTrace();
         } finally {
-            file.delete();
+            tempFile.delete();
         }
         return "";
     }
