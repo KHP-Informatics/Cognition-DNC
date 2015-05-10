@@ -56,13 +56,13 @@ public class AnonymisationService {
     @Autowired
     private AddressPseudonymiser addressPseudonymiser;
 
-    public String anonymisePatientHTML(Patient patient, String text) {
+    public String pseudonymisePersonHTML(Patient patient, String text) {
         Document document = Jsoup.parse(text);
         traverseAndAnonymise(document, patient);
         return document.toString();
     }
 
-    public String anonymisePatientPlainText(Patient patient, String text) {
+    public String pseudonymisePersonPlainText(Patient patient, String text) {
         return pseudonymiseAll(patient, text);
     }
 

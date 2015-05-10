@@ -54,7 +54,7 @@ public class AnonymisationSanityChecker {
         patient.addPhoneNumber("11090051234");
         patient.addDateOfBirth(TimeUtil.getDateFromString("09/05/1990", "dd/MM/yyyy"));
 
-        String anonymisedText = anonymisationService.anonymisePatientPlainText(patient, "\n" +
+        String anonymisedText = anonymisationService.pseudonymisePersonPlainText(patient, "\n" +
                 "\n" +
                 "TestName1 TestName2 TestLastName1 TestLastName2\n" +
                 "\n" +

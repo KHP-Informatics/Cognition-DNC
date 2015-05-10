@@ -53,7 +53,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
         patient.addPhoneNumber("11090051234");
         patient.addDateOfBirth(TimeUtil.getDateFromString("09/05/1990", "dd/MM/yyyy"));
         patient.addCarer(new PatientCarer("xyz", "abc"));
-        String anonymisedText = anonymisationService.anonymisePatientHTML(patient, "<html>\n" +
+        String anonymisedText = anonymisationService.pseudonymisePersonHTML(patient, "<html>\n" +
                 "<body>\n" +
                 "<h>Ismail</h>\n" +
                 "\n" +
@@ -87,7 +87,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
         patient.addPhoneNumber("50090051234");
         patient.addPhoneNumber("11090051234");
         patient.addDateOfBirth(TimeUtil.getDateFromString("09/05/1990", "dd/MM/yyyy"));
-        String anonymisedText = anonymisationService.anonymisePatientHTML(patient, "<html>\n" +
+        String anonymisedText = anonymisationService.pseudonymisePersonHTML(patient, "<html>\n" +
                 "<body>\n" +
                 "<h>Ismail</h>\n" +
                 "\n" +
@@ -129,7 +129,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
         patient.addAddress(patientAddress2);
         patient.addPhoneNumber("50090051234");
         patient.addPhoneNumber("11090051234");
-        String anonymisedText = anonymisationService.anonymisePatientHTML(patient, "<html>\n" +
+        String anonymisedText = anonymisationService.pseudonymisePersonHTML(patient, "<html>\n" +
                 "<body>\n" +
                 "<rich>Richard RICH Jackson</rich>\n" +
                 "\n" +
@@ -161,7 +161,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
         patient.addAddress(patientAddress2);
         patient.addPhoneNumber("50090051234");
         patient.addPhoneNumber("11090051234");
-        String anonymisedText = anonymisationService.anonymisePatientPlainText(patient, "\n" +
+        String anonymisedText = anonymisationService.pseudonymisePersonPlainText(patient, "\n" +
                 "\n" +
                 "Richard RICH Jackson\n" +
                 "\n" +
@@ -193,7 +193,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
         patient.addAddress(patientAddress1);
         patient.addPhoneNumber("50090051234");
         patient.addPhoneNumber("11090051234");
-        String anonymisedText = anonymisationService.anonymisePatientPlainText(patient, "\n" +
+        String anonymisedText = anonymisationService.pseudonymisePersonPlainText(patient, "\n" +
                 "\n" +
                 "Richard RICH Jackson\n" +
                 "\n" +
@@ -228,7 +228,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
         patient.addAddress(patientAddress1);
         patient.addPhoneNumber("50090051234");
         patient.addPhoneNumber("11090051234");
-        String anonymisedText = anonymisationService.anonymisePatientPlainText(patient, "\n" +
+        String anonymisedText = anonymisationService.pseudonymisePersonPlainText(patient, "\n" +
                 "\n" +
                 "Richard RICH Jackson\n" +
                 "\n" +
@@ -259,7 +259,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
         patient.addAddress(patientAddress1);
         patient.addPhoneNumber("50090051234");
         patient.addPhoneNumber("11090051234");
-        String anonymisedText = anonymisationService.anonymisePatientPlainText(patient, "\n" +
+        String anonymisedText = anonymisationService.pseudonymisePersonPlainText(patient, "\n" +
                 "\n" +
                 "she was angry\n" +
                 "\n" +

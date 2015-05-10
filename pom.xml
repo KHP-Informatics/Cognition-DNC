@@ -14,7 +14,7 @@
 
     <groupId>uk.ac.kcl.iop.brc.core.pipeline</groupId>
     <artifactId>Pipeline</artifactId>
-    <version>0.1</version>
+    <version>0.3</version>
     <packaging>pom</packaging>
     <organization>
         <name>Cognition-DNC</name>

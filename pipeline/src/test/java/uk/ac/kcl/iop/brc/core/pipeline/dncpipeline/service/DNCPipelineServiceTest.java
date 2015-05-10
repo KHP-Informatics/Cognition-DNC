@@ -70,13 +70,13 @@ public class DNCPipelineServiceTest {
         when(mockJsonHelper.loadListFromFile(any(File.class))).thenReturn(DNCWorkCoordinates);
         when(DNCWorkUnitDao.getTextFromCoordinate(any(DNCWorkCoordinate.class))).thenReturn("val");
         when(patientDao.getPatient(1L)).thenReturn(patient);
-        when(anonymisationService.anonymisePatientPlainText(patient, "val")).thenReturn("anonymised");
+        when(anonymisationService.pseudonymisePersonPlainText(patient, "val")).thenReturn("anonymised");
 
         service.startCreateModeWithFile("mockFile");
 
         verify(DNCWorkUnitDao).getTextFromCoordinate(any(DNCWorkCoordinate.class));
         verify(patientDao).getPatient(1L);
-        verify(anonymisationService).anonymisePatientPlainText(patient, "val");
+        verify(anonymisationService).pseudonymisePersonPlainText(patient, "val");
         verify(DNCWorkUnitDao).saveConvertedText(cwc, "anonymised");
         verify(documentConversionService, times(0)).convertToText(any(byte[].class));
         verify(documentConversionService, times(0)).convertToXHTML(any(byte[].class));
@@ -95,14 +95,14 @@ public class DNCPipelineServiceTest {
         when(mockJsonHelper.loadListFromFile(any(File.class))).thenReturn(DNCWorkCoordinates);
         when(DNCWorkUnitDao.getByteFromCoordinate(any(DNCWorkCoordinate.class))).thenReturn(new byte[1]);
         when(patientDao.getPatient(1L)).thenReturn(patient);
-        when(anonymisationService.anonymisePatientPlainText(patient, "val")).thenReturn("anonymised");
+        when(anonymisationService.pseudonymisePersonPlainText(patient, "val")).thenReturn("anonymised");
         when(documentConversionService.convertToText(any(byte[].class))).thenReturn("val");
 
         service.startCreateModeWithFile("mockFile");
 
         verify(DNCWorkUnitDao).getByteFromCoordinate(any(DNCWorkCoordinate.class));
         verify(patientDao).getPatient(1L);
-        verify(anonymisationService).anonymisePatientPlainText(patient, "val");
+        verify(anonymisationService).pseudonymisePersonPlainText(patient, "val");
         verify(DNCWorkUnitDao).saveConvertedText(cwc, "anonymised");
         verify(documentConversionService, times(1)).convertToText(any(byte[].class));
     }
@@ -120,14 +120,14 @@ public class DNCPipelineServiceTest {
         when(mockJsonHelper.loadListFromFile(any(File.class))).thenReturn(DNCWorkCoordinates);
         when(DNCWorkUnitDao.getByteFromCoordinate(any(DNCWorkCoordinate.class))).thenReturn(new byte[1]);
         when(patientDao.getPatient(1L)).thenReturn(patient);
-        when(anonymisationService.anonymisePatientHTML(patient, "val")).thenReturn("anonymised");
+        when(anonymisationService.pseudonymisePersonHTML(patient, "val")).thenReturn("anonymised");
         when(documentConversionService.convertToXHTML(any(byte[].class))).thenReturn("val");
 
         service.startCreateModeWithFile("mockFile");
 
         verify(DNCWorkUnitDao).getByteFromCoordinate(any(DNCWorkCoordinate.class));
         verify(patientDao).getPatient(1L);
-        verify(anonymisationService).anonymisePatientHTML(patient, "val");
+        verify(anonymisationService).pseudonymisePersonHTML(patient, "val");
         verify(DNCWorkUnitDao).saveConvertedText(cwc, "anonymised");
         verify(documentConversionService, times(1)).convertToXHTML(any(byte[].class));
     }

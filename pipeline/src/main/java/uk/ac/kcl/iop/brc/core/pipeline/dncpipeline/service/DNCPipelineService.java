@@ -16,7 +16,6 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -67,6 +66,9 @@ public class DNCPipelineService {
     @Value("${ocrEnabled}")
     private String ocrEnabled;
 
+    @Value("${pseudonymEnabled}")
+    private String pseudonymEnabled;
+
     private JsonHelper<DNCWorkCoordinate> jsonHelper = new JsonHelper(DNCWorkCoordinate[].class);
 
     private boolean noPseudonym = false;
@@ -82,29 +84,29 @@ public class DNCPipelineService {
      */
     public void startCreateModeWithFile(String filePath) {
         logger.info("Loading work units from file.");
-        List<DNCWorkCoordinate> DNCWorkCoordinates = jsonHelper.loadListFromFile(new File(filePath));
+        List<DNCWorkCoordinate> workCoordinates = jsonHelper.loadListFromFile(new File(filePath));
 
-        DNCWorkCoordinates.parallelStream().forEach(coordinate -> {
+        workCoordinates.parallelStream().forEach(coordinate -> {
             logger.info("Processing coordinate " + coordinate);
             if (coordinate.isBinary()) {
-                anonymiseBinaryCoordinate(coordinate);
+                processBinaryCoordinate(coordinate);
             } else {
-                anonymiseTextCoordinate(coordinate);
+                processTextCoordinate(coordinate);
             }
         });
         logger.info("Finished all.");
     }
 
     @Transactional("targetTX")
-    private void anonymiseTextCoordinate(DNCWorkCoordinate coordinate) {
+    private void processTextCoordinate(DNCWorkCoordinate coordinate) {
         try {
             logger.info("Anonymising text, coordinates: " + coordinate);
             String text = dncWorkUnitDao.getTextFromCoordinate(coordinate);
-            Patient patient = patientDao.getPatient(coordinate.getPatientId());
-            if (! noPseudonym) {
-                text = anonymisationService.anonymisePatientPlainText(patient, text);
+            if (pseudonymisationIsEnabled()) {
+                Patient patient = patientDao.getPatient(coordinate.getPatientId());
+                text = anonymisationService.pseudonymisePersonPlainText(patient, text);
             }
-            saveAnonymisedText(coordinate, text);
+            saveText(coordinate, text);
         } catch (Exception ex) {
             logger.info("Could not process coodinate " + coordinate);
             ex.printStackTrace();
@@ -112,24 +114,31 @@ public class DNCPipelineService {
     }
 
     @Transactional("targetTX")
-    private void anonymiseBinaryCoordinate(DNCWorkCoordinate coordinate) {
+    private void processBinaryCoordinate(DNCWorkCoordinate coordinate) {
         try {
-            logger.info("Anonymising binary, coordinates: " + coordinate);
-            Patient patient = patientDao.getPatient(coordinate.getPatientId());
             byte[] bytes = dncWorkUnitDao.getByteFromCoordinate(coordinate);
             String text = convertBinary(bytes);
             if (StringTools.noContentInHtml(text) && ocrIsEnabled()) {
                 logger.info("Trying OCR for coordinate: " + coordinate);
                 text = tryOCR(bytes);
             }
-            if (! noPseudonym) {
-                text = anonymsisePatientText(patient, text);
+            if (pseudonymisationIsEnabled()) {
+                logger.info("Pseudonymising binary, coordinates: " + coordinate);
+                Patient patient = patientDao.getPatient(coordinate.getPatientId());
+                text = pseudonymisePersonText(patient, text);
             }
-            saveAnonymisedText(coordinate, text);
+            saveText(coordinate, text);
         } catch (Exception ex) {
             logger.error("Could not process coordinate " + coordinate);
             ex.printStackTrace();
         }
+    }
+
+    private boolean pseudonymisationIsEnabled() {
+        if (! noPseudonym) {
+            return true;
+        }
+        return "1".equals(pseudonymEnabled) || "true".equalsIgnoreCase(pseudonymEnabled);
     }
 
     private boolean ocrIsEnabled() {
@@ -144,11 +153,11 @@ public class DNCPipelineService {
         return documentConversionService.getContentFromImagePDF(bytes);
     }
 
-    private String anonymsisePatientText(Patient patient, String text) {
+    private String pseudonymisePersonText(Patient patient, String text) {
         if (conversionPreferenceIsHTML()) {
-            text = anonymisationService.anonymisePatientHTML(patient, text);
+            text = anonymisationService.pseudonymisePersonHTML(patient, text);
         } else {
-            text = anonymisationService.anonymisePatientPlainText(patient, text);
+            text = anonymisationService.pseudonymisePersonPlainText(patient, text);
         }
         return text;
     }
@@ -164,7 +173,7 @@ public class DNCPipelineService {
         return conversionFormat.equalsIgnoreCase("html") || conversionFormat.equalsIgnoreCase("xhtml");
     }
 
-    private void saveAnonymisedText(DNCWorkCoordinate coordinate, String text) {
+    private void saveText(DNCWorkCoordinate coordinate, String text) {
         dncWorkUnitDao.saveConvertedText(coordinate, text);
     }
 
@@ -184,9 +193,9 @@ public class DNCPipelineService {
         dncWorkCoordinates.parallelStream().forEach(coordinate -> {
             logger.info("Processing coordinate " + coordinate);
             if (coordinate.isBinary()) {
-                anonymiseBinaryCoordinate(coordinate);
+                processBinaryCoordinate(coordinate);
             } else {
-                anonymiseTextCoordinate(coordinate);
+                processTextCoordinate(coordinate);
             }
         });
         logger.info("Finished all.");
@@ -196,7 +205,4 @@ public class DNCPipelineService {
         this.noPseudonym = noPseudonym;
     }
 
-    public void startCreateModeWithFileNoPseudonym(String filePath) {
-
-    }
 }
