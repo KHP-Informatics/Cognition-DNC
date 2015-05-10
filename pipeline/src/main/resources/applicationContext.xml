@@ -88,7 +88,6 @@
 
         <property name="mappingResources">
             <list>
-                <value>queries/sqlserver-metadata-named-queries.hbm.xml</value>
                 <value>queries/sqlserver-pipeline-named-queries.hbm.xml</value>
             </list>
         </property>
@@ -120,7 +119,6 @@
 
         <property name="mappingResources">
             <list>
-                <value>queries/sqlserver-metadata-named-queries.hbm.xml</value>
                 <value>queries/sqlserver-pipeline-named-queries.hbm.xml</value>
             </list>
         </property>

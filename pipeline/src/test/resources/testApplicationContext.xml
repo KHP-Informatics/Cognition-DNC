@@ -68,7 +68,6 @@
         </property>
         <property name="mappingResources">
             <list>
-                <value>hsql-metadata-named-queries.hbm.xml</value>
                 <value>hsql-pipeline-named-queries.hbm.xml</value>
             </list>
         </property>
@@ -108,7 +107,6 @@
         </property>
         <property name="mappingResources">
             <list>
-                <value>hsql-metadata-named-queries.hbm.xml</value>
                 <value>hsql-pipeline-named-queries.hbm.xml</value>
             </list>
         </property>
