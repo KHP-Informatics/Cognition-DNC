@@ -16,12 +16,12 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import uk.ac.kcl.iop.brc.core.pipeline.common.helper.JsonHelper;
 import uk.ac.kcl.iop.brc.core.pipeline.common.service.DocumentConversionService;
 import uk.ac.kcl.iop.brc.core.pipeline.common.service.FileTypeService;
@@ -35,7 +35,10 @@ import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.Patient;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.anonymisation.AnonymisationService;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Service
 public class DNCPipelineService {
@@ -69,13 +72,15 @@ public class DNCPipelineService {
     @Value("${pseudonymEnabled}")
     private String pseudonymEnabled;
 
+    @Value("${saveProgressAfter}")
+    private String saveProgressAfter = "20";
+
     private JsonHelper<DNCWorkCoordinate> jsonHelper = new JsonHelper(DNCWorkCoordinate[].class);
 
     private boolean noPseudonym = false;
 
-    public void startCreateModeFromWS() {
-        throw new NotImplementedException();
-    }
+    private Integer skipN;
+
 
     /**
      * Anonymise the DNC Work Coordinates (DWC) specified in the jSON file
@@ -86,6 +91,9 @@ public class DNCPipelineService {
         logger.info("Loading work units from file.");
         List<DNCWorkCoordinate> workCoordinates = jsonHelper.loadListFromFile(new File(filePath));
 
+        AtomicInteger processedCount = new AtomicInteger();
+        workCoordinates = skipWorkCoordinates(workCoordinates, processedCount);
+
         workCoordinates.parallelStream().forEach(coordinate -> {
             logger.info("Processing coordinate " + coordinate);
             if (coordinate.isBinary()) {
@@ -93,8 +101,29 @@ public class DNCPipelineService {
             } else {
                 processTextCoordinate(coordinate);
             }
+            int i = processedCount.addAndGet(1);
+            if (timeToSaveProgress(i)) {
+                saveProgress(i);
+            }
         });
         logger.info("Finished all.");
+    }
+
+    private boolean skipAlreadyProcessedDocuments() {
+        return skipN != null && skipN > 0L;
+    }
+
+    private boolean timeToSaveProgress(int i) {
+        return i % Integer.valueOf(saveProgressAfter) == 0;
+    }
+
+    private synchronized void saveProgress(int offset) {
+        final File file = new File("progress");
+        try {
+            FileUtils.writeStringToFile(file, String.valueOf(offset), "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Transactional("targetTX")
@@ -189,6 +218,8 @@ public class DNCPipelineService {
         logger.info("Retrieving coordinates from view");
         
         List<DNCWorkCoordinate> dncWorkCoordinates = coordinatesDao.getCoordinates();
+        AtomicInteger progress = new AtomicInteger();
+        dncWorkCoordinates = skipWorkCoordinates(dncWorkCoordinates, progress);
 
         dncWorkCoordinates.parallelStream().forEach(coordinate -> {
             logger.info("Processing coordinate " + coordinate);
@@ -197,12 +228,32 @@ public class DNCPipelineService {
             } else {
                 processTextCoordinate(coordinate);
             }
+            int i = progress.addAndGet(1);
+            if (timeToSaveProgress(i)) {
+                saveProgress(i);
+            }
         });
         logger.info("Finished all.");
+    }
+
+    private List<DNCWorkCoordinate> skipWorkCoordinates(List<DNCWorkCoordinate> dncWorkCoordinates, AtomicInteger progress) {
+        if (skipAlreadyProcessedDocuments()) {
+            logger.info("Skipping first " + skipN + " documents!");
+            progress.set(skipN);
+            dncWorkCoordinates = dncWorkCoordinates.stream().skip(skipN).collect(Collectors.toList());
+        }
+        return dncWorkCoordinates;
     }
 
     public void setNoPseudonym(boolean noPseudonym) {
         this.noPseudonym = noPseudonym;
     }
 
+    public void setSaveProgressAfter(String saveProgressAfter) {
+        this.saveProgressAfter = saveProgressAfter;
+    }
+
+    public void setSkipN(Integer skipN) {
+        this.skipN = skipN;
+    }
 }

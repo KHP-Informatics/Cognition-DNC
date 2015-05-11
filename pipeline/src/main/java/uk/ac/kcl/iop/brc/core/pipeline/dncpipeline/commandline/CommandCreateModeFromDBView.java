@@ -40,6 +40,9 @@ public class CommandCreateModeFromDBView implements CommandProcessor {
         if (cmd.hasOption("noPseudonym")) {
             dncPipelineService.setNoPseudonym(true);
         }
+        if (cmd.hasOption("skipN")) {
+            dncPipelineService.setSkipN(Integer.valueOf(cmd.getOptionValue("skipN")));
+        }
         dncPipelineService.startCreateModeWithDBView();
     }
 
@@ -47,9 +50,15 @@ public class CommandCreateModeFromDBView implements CommandProcessor {
     public void addOption(Options options) {
         options.addOption(OptionBuilder.withLongOpt("coordinatesFromDB")
                 .withDescription("Document coordinates are fetched from a DB view/table.").
-                        withArgName("coordinatesFromDB").create()).addOption(OptionBuilder.withLongOpt("noPseudonym")
-                .withDescription("Do not apply pseudonymisation.").
-                        withArgName("noPseudonym").create());
+                        withArgName("coordinatesFromDB").create()).
+
+                addOption(OptionBuilder.withLongOpt("noPseudonym")
+                        .withDescription("Do not apply pseudonymisation.").
+                                withArgName("noPseudonym").create()).
+
+                addOption(OptionBuilder.withLongOpt("skipN")
+                .withDescription("Skip first N coordinates.").hasArg().
+                        withArgName("skipN").create());
     }
 
 }

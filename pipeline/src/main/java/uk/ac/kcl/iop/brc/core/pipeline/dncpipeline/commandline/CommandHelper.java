@@ -39,12 +39,10 @@ public class CommandHelper {
                 "--------------------\n" +
                 "From jSON file:     --createMode --file=/path/to/file\n" +
                 "From view/table     --createMode --coordinatesFromDB\n" +
-                "\n" +
-                "\n" +
-                "Append (update) mode\n" +
-                "--------------------\n" +
-                "From jSON file:     --appendMode --file=/path/to/file\n" +
-                "From view/table:    --appendMode --coordinatesFromDB\n");
+
+                "\n\nAdd --noPseudonym argument to skip pseudonymisation." +
+                "\n\nAdd --skipN=? argument to skip the first N coordinates.");
+
     }
 
 

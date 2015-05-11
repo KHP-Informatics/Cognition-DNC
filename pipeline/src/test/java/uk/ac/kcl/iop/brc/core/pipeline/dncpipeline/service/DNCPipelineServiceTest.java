@@ -16,6 +16,7 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service;
 
+import org.junit.Before;
 import uk.ac.kcl.iop.brc.core.pipeline.common.helper.JsonHelper;
 import uk.ac.kcl.iop.brc.core.pipeline.common.service.DocumentConversionService;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.DNCWorkUnitDao;
@@ -56,6 +57,11 @@ public class DNCPipelineServiceTest {
 
     @Mock
     private DocumentConversionService documentConversionService;
+
+    @Before
+    public void init() {
+        service.setSaveProgressAfter("20");
+    }
 
     @Test
     public void shouldCallTextPipelineFromFileCorrectly() {
