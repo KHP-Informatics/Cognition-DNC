@@ -73,7 +73,7 @@ public class DNCPipelineService {
     private String pseudonymEnabled;
 
     @Value("${saveProgressAfter}")
-    private String saveProgressAfter = "20";
+    private String saveProgressAfter = "100";
 
     private JsonHelper<DNCWorkCoordinate> jsonHelper = new JsonHelper(DNCWorkCoordinate[].class);
 
