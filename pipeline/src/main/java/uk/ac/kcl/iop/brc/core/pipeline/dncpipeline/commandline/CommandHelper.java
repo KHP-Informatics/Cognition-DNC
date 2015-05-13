@@ -35,10 +35,18 @@ public class CommandHelper {
                 "Usage:\n" +
                 "===============================\n" +
                 "\n" +
-                "Create mode\n" +
+                "Standalone create mode\n" +
                 "--------------------\n" +
                 "From jSON file:     --createMode --file=/path/to/file\n" +
-                "From view/table     --createMode --coordinatesFromDB\n" +
+                "From view/table     --createMode --coordinatesFromDB\n\n" +
+
+                "Coordinator (web server assigning coordinates to clients)\n" +
+                "--------------------\n" +
+                "From view/table     --coordinator\n" +
+
+                "Clients (clients requesting coordinates from the server)\n" +
+                "--------------------\n" +
+                "From view/table     --client --server=http://ip_of_coordinator:4567 --cognitionName=ClientName01" +
 
                 "\n\nAdd --noPseudonym argument to skip pseudonymisation." +
                 "\n\nAdd --skipN=? argument to skip the first N coordinates.");
