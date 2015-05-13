@@ -65,21 +65,25 @@ public class CoordinatorClientService {
                 workCoordinates = getDncWorkCoordinates(jsonCoordinates);
                 pipelineService.processCoordinates(workCoordinates);
             } catch (Exception e) {
-                String failedCoordinateFile = "failedCoordinates" + RandomUtils.nextInt() + ".json";
-                saveCoordinatesInFile(jsonCoordinates, failedCoordinateFile);
-                e.printStackTrace();
-                System.out.println("There were errors in the last batch. " +
-                        "Last batch's coordinates were written in " + failedCoordinateFile + " file. " +
-                        "So you can re-process them by using --createMode --file=" + failedCoordinateFile + " arguments. " +
-                        "Press enter to continue on to the next batch.");
-                try {
-                    int read = System.in.read();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+                handleException(jsonCoordinates, e);
             }
         }
 
+    }
+
+    private void handleException(String jsonCoordinates, Exception e) {
+        String failedCoordinateFile = "failedCoordinates" + RandomUtils.nextInt() + ".json";
+        saveCoordinatesInFile(jsonCoordinates, failedCoordinateFile);
+        e.printStackTrace();
+        System.out.println("There were errors in the last batch. " +
+                "Last batch's coordinates were written in " + failedCoordinateFile + " file. " +
+                "So you can re-process them by using --createMode --file=" + failedCoordinateFile + " arguments. " +
+                "Press enter to continue on to the next batch.");
+        try {
+            int read = System.in.read();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
     }
 
     private List<DNCWorkCoordinate> getDncWorkCoordinates(String jsonCoordinates) throws UnirestException {
