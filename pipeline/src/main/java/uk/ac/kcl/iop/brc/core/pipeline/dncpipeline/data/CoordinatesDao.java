@@ -21,6 +21,8 @@ import org.hibernate.Query;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 import uk.ac.kcl.iop.brc.core.pipeline.common.data.BaseDao;
+
+import java.util.ArrayList;
 import java.util.List;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.DNCWorkCoordinate;
 
@@ -30,10 +32,15 @@ public class CoordinatesDao extends BaseDao {
     private static Logger logger = Logger.getLogger(CoordinatesDao.class);
 
     public List<DNCWorkCoordinate> getCoordinates() {
-        Query getCoordinates = getCurrentSourceSession().getNamedQuery("getCoordinates");
-        List<DNCWorkCoordinate> coordinateList = getCoordinates
-                .setResultTransformer(Transformers.aliasToBean(DNCWorkCoordinate.class))
-                .list();
-        return coordinateList;
+        try {
+            Query getCoordinates = getCurrentSourceSession().getNamedQuery("getCoordinates");
+            List<DNCWorkCoordinate> coordinateList = getCoordinates
+                    .setResultTransformer(Transformers.aliasToBean(DNCWorkCoordinate.class))
+                    .list();
+            return coordinateList;
+        } catch (Exception ex) {
+            logger.error("Error loading coordinates. Please check getCoordinates query. " + ex.getMessage());
+            return new ArrayList<>();
+        }
     }
 }

@@ -89,9 +89,9 @@ public class DNCPipelineService {
      */
     public void startCreateModeWithFile(String filePath) {
         logger.info("Loading work units from file.");
-        List<DNCWorkCoordinate> workCoordinates = jsonHelper.loadListFromFile(new File(filePath));
-
         AtomicInteger processedCount = new AtomicInteger();
+
+        List<DNCWorkCoordinate> workCoordinates = jsonHelper.loadListFromFile(new File(filePath));
         workCoordinates = skipWorkCoordinates(workCoordinates, processedCount);
 
         workCoordinates.parallelStream().forEach(coordinate -> {
@@ -101,12 +101,16 @@ public class DNCPipelineService {
             } else {
                 processTextCoordinate(coordinate);
             }
-            int i = processedCount.addAndGet(1);
-            if (timeToSaveProgress(i)) {
-                saveProgress(i);
-            }
+            updateProgress(processedCount);
         });
         logger.info("Finished all.");
+    }
+
+    private void updateProgress(AtomicInteger processedCount) {
+        int i = processedCount.addAndGet(1);
+        if (timeToSaveProgress(i)) {
+            saveProgress(i);
+        }
     }
 
     private boolean skipAlreadyProcessedDocuments() {
@@ -216,9 +220,9 @@ public class DNCPipelineService {
      */
     public void startCreateModeWithDBView() {
         logger.info("Retrieving coordinates from view");
-        
-        List<DNCWorkCoordinate> dncWorkCoordinates = coordinatesDao.getCoordinates();
+
         AtomicInteger progress = new AtomicInteger();
+        List<DNCWorkCoordinate> dncWorkCoordinates = coordinatesDao.getCoordinates();
         dncWorkCoordinates = skipWorkCoordinates(dncWorkCoordinates, progress);
 
         dncWorkCoordinates.parallelStream().forEach(coordinate -> {
@@ -228,10 +232,7 @@ public class DNCPipelineService {
             } else {
                 processTextCoordinate(coordinate);
             }
-            int i = progress.addAndGet(1);
-            if (timeToSaveProgress(i)) {
-                saveProgress(i);
-            }
+            updateProgress(progress);
         });
         logger.info("Finished all.");
     }

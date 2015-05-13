@@ -45,7 +45,7 @@ public class Patient {
     private List<PatientAddress> addresses = new ArrayList<>();
 
     @SerializedName("phoneNumbers")
-    private List<String> phoneNumbers = new ArrayList();
+    private List<String> phoneNumbers = new ArrayList<>();
 
     private List<PatientCarer> carers = new ArrayList<>();
 
