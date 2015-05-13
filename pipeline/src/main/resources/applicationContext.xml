@@ -129,8 +129,4 @@
         <property name="targetSessionFactory" ref="targetSessionFactory"/>
     </bean>
 
-    <bean id="sqlServerTypeHandler" class="uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.typehandlers.SqlServerTypeHandler">
-        <property name="configurationService" ref="configurationService" />
-    </bean>
-
 </beans>

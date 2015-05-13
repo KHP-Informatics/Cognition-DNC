@@ -18,6 +18,7 @@ package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service;
 
 import com.google.gson.Gson;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,28 +46,38 @@ public class CoordinatorService {
 
     private int chunkSize = 200;
 
-    @PostConstruct
-    public void init() {
+    public void startServer() {
         logger.info("Loading coordinates from DB.");
         allCoordinates = coordinatesDao.getCoordinates();
-    }
-
-    public void startServer() {
+        if (CollectionUtils.isEmpty(allCoordinates)) {
+            logger.warn("No coordinates to process! Exiting!");
+            return;
+        }
         get("/", (request, response) -> handleRequest(request));
     }
 
     private synchronized String handleRequest(Request request) {
-        String cognitionName = request.headers("CognitionName");
-        logger.info("Handling request from " + cognitionName + " " + request.ip());
-        if (CollectionUtils.isEmpty(allCoordinates)) {
-            logger.warn("No coordinates to process!");
+        if (! relevantRequest(request)) {
             return "";
         }
+        String cognitionName = request.headers("CognitionName");
+        logger.info("Handling request from " + cognitionName + " " + request.ip());
+
         List<DNCWorkCoordinate> workLoad = allCoordinates.stream().skip(lastCheckpoint).limit(chunkSize).collect(Collectors.toList());
-        logger.info("Serving from " + lastCheckpoint + " to " +
-                (lastCheckpoint + chunkSize) + " to " + cognitionName + " " + request.ip());
-        lastCheckpoint += chunkSize;
+        long newCheckPoint = lastCheckpoint + chunkSize;
+        logger.info("Serving from " + lastCheckpoint + " to " + newCheckPoint + " to " + cognitionName + " " + request.ip());
+        lastCheckpoint = newCheckPoint;
+
         return new Gson().toJson(workLoad);
+    }
+
+    private boolean relevantRequest(Request request) {
+        if (request == null) {
+            return false;
+        }
+        String dncRequest = request.headers("DNCRequest");
+
+        return !StringUtils.isBlank(dncRequest) && "true".equalsIgnoreCase(dncRequest);
     }
 
     public void setChunkSize(int chunkSize) {

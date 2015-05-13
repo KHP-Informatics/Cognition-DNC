@@ -87,6 +87,7 @@ public class CoordinatorClientService {
     private String getCoordinatesAsJsonFromServer() throws UnirestException {
         HttpResponse<JsonNode> jsonResponse = Unirest.get(serverAddress)
                 .header("accept", "application/json")
+                .header("DNCRequest", "true")
                 .header("CognitionName", cognitionName)
                 .asJson();
 
