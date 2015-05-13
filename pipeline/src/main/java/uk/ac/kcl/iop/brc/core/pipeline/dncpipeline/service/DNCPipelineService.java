@@ -106,6 +106,17 @@ public class DNCPipelineService {
         logger.info("Finished all.");
     }
 
+    public void processCoordinates(List<DNCWorkCoordinate> coordinates) {
+        coordinates.parallelStream().forEach(coordinate -> {
+            logger.info("Processing coordinate " + coordinate);
+            if (coordinate.isBinary()) {
+                processBinaryCoordinate(coordinate);
+            } else {
+                processTextCoordinate(coordinate);
+            }
+        });
+    }
+
     private void updateProgress(AtomicInteger processedCount) {
         int i = processedCount.addAndGet(1);
         if (timeToSaveProgress(i)) {

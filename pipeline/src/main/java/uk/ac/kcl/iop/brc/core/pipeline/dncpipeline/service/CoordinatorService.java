@@ -19,7 +19,6 @@ package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service;
 import com.google.gson.Gson;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
-import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import spark.Request;
