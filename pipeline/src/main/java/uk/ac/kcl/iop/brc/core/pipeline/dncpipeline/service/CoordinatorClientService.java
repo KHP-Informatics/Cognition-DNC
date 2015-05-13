@@ -26,17 +26,17 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.ac.kcl.iop.brc.core.pipeline.common.helper.JsonHelper;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.CoordinatesDao;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.DNCWorkCoordinate;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
 @Service
 public class CoordinatorClientService {
 
-    private static String COORDINATE_FILE_NAME = "lastBatchOfCoordinates.json";
+    private static String LAST_SET_OF_COORDINATES_FILENAME = "lastBatchOfCoordinates.json";
 
     private static Logger logger = Logger.getLogger(CoordinatorClientService.class);
 
@@ -58,25 +58,38 @@ public class CoordinatorClientService {
         logger.info(cognitionName + " is starting processing documents now.");
 
         List<DNCWorkCoordinate> workCoordinates;
-        try {
-            workCoordinates = getDncWorkCoordinates();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
+        String jsonCoordinates = "";
+        while (! jsonCoordinates.equalsIgnoreCase(CoordinatorService.NO_COORDINATE_LEFT)) {
+            try {
+                jsonCoordinates = getCoordinatesAsJsonFromServer();
+                workCoordinates = getDncWorkCoordinates(jsonCoordinates);
+                pipelineService.processCoordinates(workCoordinates);
+            } catch (Exception e) {
+                String failedCoordinateFile = "failedCoordinates" + RandomUtils.nextInt() + ".json";
+                saveCoordinatesInFile(jsonCoordinates, failedCoordinateFile);
+                e.printStackTrace();
+                System.out.println("There were errors in the last batch. " +
+                        "Last batch's coordinates were written in " + failedCoordinateFile + " file. " +
+                        "So you can re-process them by using --createMode --file=" + failedCoordinateFile + " arguments. " +
+                        "Press enter to continue on to the next batch.");
+                try {
+                    int read = System.in.read();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
         }
-        pipelineService.processCoordinates(workCoordinates);
+
     }
 
-    private List<DNCWorkCoordinate> getDncWorkCoordinates() throws UnirestException {
-        String jsonCoordinates = getCoordinatesAsJsonFromServer();
-
-        saveCoordinatesInFile(jsonCoordinates);
-        return jsonHelper.loadListFromFile(new File(COORDINATE_FILE_NAME));
+    private List<DNCWorkCoordinate> getDncWorkCoordinates(String jsonCoordinates) throws UnirestException {
+        saveCoordinatesInFile(jsonCoordinates, LAST_SET_OF_COORDINATES_FILENAME);
+        return jsonHelper.loadListFromFile(new File(LAST_SET_OF_COORDINATES_FILENAME));
     }
 
-    private void saveCoordinatesInFile(String jsonCoordinates) {
+    private void saveCoordinatesInFile(String jsonCoordinates, String fileName) {
         try {
-            PrintWriter writer = new PrintWriter(COORDINATE_FILE_NAME, "UTF-8");
+            PrintWriter writer = new PrintWriter(LAST_SET_OF_COORDINATES_FILENAME, "UTF-8");
             writer.println(jsonCoordinates);
             writer.close();
         } catch (Exception e) {

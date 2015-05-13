@@ -36,6 +36,7 @@ import static spark.Spark.get;
 public class CoordinatorService {
 
     private static Logger logger = Logger.getLogger(CoordinatorService.class);
+    public static String NO_COORDINATE_LEFT = "NO_COORDINATE_TO_PROCESS";
 
     @Autowired
     private CoordinatesDao coordinatesDao;
@@ -63,7 +64,10 @@ public class CoordinatorService {
         String cognitionName = request.headers("CognitionName");
         logger.info("Handling request from " + cognitionName + " " + request.ip());
 
-        List<DNCWorkCoordinate> workLoad = allCoordinates.stream().skip(lastCheckpoint).limit(chunkSize).collect(Collectors.toList());
+        List<DNCWorkCoordinate> workLoad = getChunkOfList(allCoordinates, lastCheckpoint, chunkSize);
+        if (CollectionUtils.isEmpty(workLoad)) {
+            return NO_COORDINATE_LEFT;
+        }
         long newCheckPoint = lastCheckpoint + chunkSize;
         logger.info("Serving from " + lastCheckpoint + " to " + newCheckPoint + " to " + cognitionName + " " + request.ip());
         lastCheckpoint = newCheckPoint;
@@ -84,4 +88,7 @@ public class CoordinatorService {
         this.chunkSize = chunkSize;
     }
 
+    public List<DNCWorkCoordinate> getChunkOfList(List<DNCWorkCoordinate> coordinateList, long start, int size) {
+        return coordinateList.stream().skip(start).limit(size).collect(Collectors.toList());
+    }
 }
