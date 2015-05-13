@@ -21,9 +21,10 @@ import org.apache.commons.cli.Options;
 
 public interface CommandProcessor {
 
-    public boolean isResponsibleFor(CommandLine cmd);
+	boolean isResponsibleFor(CommandLine cmd);
 
-    public void process(CommandLine cmd);
+    void process(CommandLine cmd);
 
-    public void addOption(Options options);
+    void addOption(Options options);
+
 }
