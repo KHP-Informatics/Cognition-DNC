@@ -16,14 +16,15 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.common.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.io.IOUtils;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 public class DocumentConversionServiceTest {
 
@@ -64,14 +65,13 @@ public class DocumentConversionServiceTest {
         assertTrue(text.contains("Introduction"));
     }
 
-    @Test
-    @Ignore
-    public void shouldApplyOCR() throws IOException {
+    @Test(threadPoolSize = 3) // invocationCount = 3
+    public void shouldApplyOCR() throws Exception {
         DocumentConversionService service = new DocumentConversionService();
         InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("testPdfImage.pdf");
         byte[] bytes = IOUtils.toByteArray(resourceAsStream);
 
         String text = service.getContentFromImagePDF(bytes);
-        System.out.println(text);
+        assertFalse(StringUtils.isEmpty(text));
     }
 }

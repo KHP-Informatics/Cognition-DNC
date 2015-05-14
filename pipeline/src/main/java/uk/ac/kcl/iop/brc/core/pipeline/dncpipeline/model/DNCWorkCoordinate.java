@@ -42,6 +42,8 @@ public class DNCWorkCoordinate {
     @SerializedName("updatetime")
     private String updateTime;
 
+    private boolean markedAsOCR = false;
+
     public DNCWorkCoordinate patientId(long id) {
         this.patientId = id;
         return this;
@@ -144,5 +146,13 @@ public class DNCWorkCoordinate {
     @Override
     public String toString() {
         return String.format("Patient Id: %d, Source table: %s, Source column: %s, DocId: %d", patientId, sourceTable, sourceColumn, idInSourceTable);
+    }
+
+    public boolean isMarkedAsOCR() {
+        return markedAsOCR;
+    }
+
+    public void setMarkedAsOCR(boolean markedAsOCR) {
+        this.markedAsOCR = markedAsOCR;
     }
 }

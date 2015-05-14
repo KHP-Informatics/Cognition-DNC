@@ -31,6 +31,8 @@ import java.io.*;
 @Service
 public class DocumentConversionService {
 
+    private Tesseract tesseract = new Tesseract();
+
     public String convertToText(byte[] data) {
         return convertWithHandler(data, new BodyContentHandler(-1));
     }
@@ -53,12 +55,13 @@ public class DocumentConversionService {
     }
 
     public synchronized String getContentFromImagePDF(byte[] bytes) throws IOException {
-        String tempFileName = "tempForOCR" + RandomUtils.nextInt() + ".pdf";
-        FileOutputStream fos = new FileOutputStream(tempFileName);
+        String tempFileName = "tempForOCR" + RandomUtils.nextInt();
+        File file = File.createTempFile(tempFileName, ".pdf");
+        file.deleteOnExit();
+        FileOutputStream fos = new FileOutputStream(file);
         fos.write(bytes);
         fos.close();
-        File file = new File(tempFileName);
-        Tesseract tesseract = new Tesseract();
+
         try {
             return tesseract.doOCR(file);
         } catch (TesseractException e) {

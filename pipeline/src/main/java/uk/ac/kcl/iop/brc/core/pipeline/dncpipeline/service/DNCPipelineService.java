@@ -36,6 +36,8 @@ import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.anonymisation.Anonymi
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -81,6 +83,27 @@ public class DNCPipelineService {
 
     private Integer skipN;
 
+    private List<DNCWorkCoordinate> ocrQueue = Collections.synchronizedList(new ArrayList<>());
+
+    /**
+     * Anonymise the DNC Work Coordinates (DWC) specified in a view/table in the source DB.
+     *
+     */
+    public void startCreateModeWithDBView() {
+        logger.info("Retrieving coordinates from view");
+
+        AtomicInteger progress = new AtomicInteger();
+        List<DNCWorkCoordinate> dncWorkCoordinates = coordinatesDao.getCoordinates();
+        dncWorkCoordinates = skipWorkCoordinates(dncWorkCoordinates, progress);
+
+        dncWorkCoordinates.parallelStream().forEach(coordinate -> {
+            processSingleCoordinate(coordinate);
+            updateProgress(progress);
+        });
+        logger.info("Finished all non-OCR. Processing the OCR queue now.");
+        processOCRQueue();
+        logger.info("Finished all.");
+    }
 
     /**
      * Anonymise the DNC Work Coordinates (DWC) specified in the jSON file
@@ -95,26 +118,16 @@ public class DNCPipelineService {
         workCoordinates = skipWorkCoordinates(workCoordinates, processedCount);
 
         workCoordinates.parallelStream().forEach(coordinate -> {
-            logger.info("Processing coordinate " + coordinate);
-            if (coordinate.isBinary()) {
-                processBinaryCoordinate(coordinate);
-            } else {
-                processTextCoordinate(coordinate);
-            }
+            processSingleCoordinate(coordinate);
             updateProgress(processedCount);
         });
+        logger.info("Finished all non-OCR. Processing the OCR queue now.");
+        processOCRQueue();
         logger.info("Finished all.");
     }
 
     public void processCoordinates(List<DNCWorkCoordinate> coordinates) {
-        coordinates.parallelStream().forEach(coordinate -> {
-            logger.info("Processing coordinate " + coordinate);
-            if (coordinate.isBinary()) {
-                processBinaryCoordinate(coordinate);
-            } else {
-                processTextCoordinate(coordinate);
-            }
-        });
+        coordinates.parallelStream().forEach(this::processSingleCoordinate);
     }
 
     private void updateProgress(AtomicInteger processedCount) {
@@ -163,8 +176,8 @@ public class DNCPipelineService {
             byte[] bytes = dncWorkUnitDao.getByteFromCoordinate(coordinate);
             String text = convertBinary(bytes);
             if (StringTools.noContentInHtml(text) && ocrIsEnabled()) {
-                logger.info("Trying OCR for coordinate: " + coordinate);
-                text = tryOCR(bytes);
+                ocrQueue.add(coordinate);
+                return;
             }
             if (pseudonymisationIsEnabled()) {
                 logger.info("Pseudonymising binary, coordinates: " + coordinate);
@@ -191,7 +204,7 @@ public class DNCPipelineService {
 
     private String tryOCR(byte[] bytes) throws Exception {
         if (! fileTypeService.isPDF(bytes)) {
-            throw new CanNotApplyOCRToNonPDFFilesException("OCR cannot be applied to Non-PDF Files.");
+            logger.info("Ignoring non-PDF file for OCR. OCR cannot be applied to Non-PDF Files.");
         }
 
         return documentConversionService.getContentFromImagePDF(bytes);
@@ -225,27 +238,30 @@ public class DNCPipelineService {
         this.conversionFormat = conversionFormat;
     }
 
-    /**
-     * Anonymise the DNC Work Coordinates (DWC) specified in a view/table in the source DB.
-     *
-     */
-    public void startCreateModeWithDBView() {
-        logger.info("Retrieving coordinates from view");
-
-        AtomicInteger progress = new AtomicInteger();
-        List<DNCWorkCoordinate> dncWorkCoordinates = coordinatesDao.getCoordinates();
-        dncWorkCoordinates = skipWorkCoordinates(dncWorkCoordinates, progress);
-
-        dncWorkCoordinates.parallelStream().forEach(coordinate -> {
-            logger.info("Processing coordinate " + coordinate);
-            if (coordinate.isBinary()) {
-                processBinaryCoordinate(coordinate);
-            } else {
-                processTextCoordinate(coordinate);
+    private void processOCRQueue() {
+        ocrQueue.parallelStream().forEach(coordinate -> {
+            logger.info("Processing OCR coordinate " + coordinate);
+            byte[] bytes = dncWorkUnitDao.getByteFromCoordinate(coordinate);
+            try {
+                String text = tryOCR(bytes);
+                if (pseudonymisationIsEnabled()) {
+                    Patient patient = patientDao.getPatient(coordinate.getPatientId());
+                    text = pseudonymisePersonText(patient, text);
+                }
+                saveText(coordinate, text);
+            } catch (Exception e) {
+                logger.error(e.getMessage());
             }
-            updateProgress(progress);
         });
-        logger.info("Finished all.");
+    }
+
+    private void processSingleCoordinate(DNCWorkCoordinate coordinate) {
+        logger.info("Processing coordinate " + coordinate);
+        if (coordinate.isBinary()) {
+            processBinaryCoordinate(coordinate);
+        } else {
+            processTextCoordinate(coordinate);
+        }
     }
 
     private List<DNCWorkCoordinate> skipWorkCoordinates(List<DNCWorkCoordinate> dncWorkCoordinates, AtomicInteger progress) {
