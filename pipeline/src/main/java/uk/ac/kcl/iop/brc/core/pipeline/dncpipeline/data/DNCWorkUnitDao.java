@@ -38,6 +38,11 @@ public class DNCWorkUnitDao extends BaseDao {
     @Autowired
     private ClobHelper clobHelper;
 
+    /**
+     *
+     * @param coordinate Coordinate of the text in the source database.
+     * @return The text in the coordinate.
+     */
     public String getTextFromCoordinate(DNCWorkCoordinate coordinate) {
         if (coordinate.isBinary()) {
             throw new IllegalArgumentException("Coordinate is not a text coordinate. It's a binary one.");
@@ -48,6 +53,11 @@ public class DNCWorkUnitDao extends BaseDao {
         return clobHelper.getStringFromExpectedClob(result);
     }
 
+    /**
+     *
+     * @param coordinate Coordinate of the binary object in the source database.
+     * @return A byte array of the binary object.
+     */
     public byte[] getByteFromCoordinate(DNCWorkCoordinate coordinate) {
         if (! coordinate.isBinary()) {
             throw new IllegalArgumentException("Coordinate is a text coordinate but binary is expected");
@@ -75,14 +85,19 @@ public class DNCWorkUnitDao extends BaseDao {
         return result.get(0);
     }
 
-    public void saveConvertedText(DNCWorkCoordinate coordinate, String anonymisedText) {
+    /**
+     *
+     * @param coordinate The original coordinate of the text
+     * @param processedText The processed text to be saved via saveTextToCoordinate named-query.
+     */
+    public void saveConvertedText(DNCWorkCoordinate coordinate, String processedText) {
         Query query = getCurrentTargetSession().getNamedQuery("saveTextToCoordinate");
         String queryString = query.getQueryString();
         SQLQuery sqlQuery = getCurrentTargetSession().createSQLQuery(queryString);
         sqlQuery.setParameter(0, coordinate.getSourceTable());
         sqlQuery.setParameter(1, coordinate.getSourceColumn());
         sqlQuery.setParameter(2, coordinate.getIdInSourceTable());
-        sqlQuery.setParameter(3, anonymisedText);
+        sqlQuery.setParameter(3, processedText);
         sqlQuery.executeUpdate();
     }
 

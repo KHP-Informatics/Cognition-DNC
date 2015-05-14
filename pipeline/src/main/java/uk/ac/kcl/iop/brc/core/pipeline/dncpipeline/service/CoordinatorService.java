@@ -47,6 +47,9 @@ public class CoordinatorService {
 
     private int chunkSize = 200;
 
+    /**
+     * Starts serving coordinates to clients who request work.
+     */
     public void startServer() {
         logger.info("Loading coordinates from DB.");
         allCoordinates = coordinatesDao.getCoordinates();

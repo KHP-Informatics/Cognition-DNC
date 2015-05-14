@@ -31,6 +31,11 @@ public class CoordinatesDao extends BaseDao {
 
     private static Logger logger = Logger.getLogger(CoordinatesDao.class);
 
+    /**
+     *
+     * @return A list of all coordinates to be processed. Coordinates are retreieved
+     * via the named-query "getCoordinates".
+     */
     public List<DNCWorkCoordinate> getCoordinates() {
         try {
             Query getCoordinates = getCurrentSourceSession().getNamedQuery("getCoordinates");

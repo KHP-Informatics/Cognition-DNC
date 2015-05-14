@@ -46,13 +46,16 @@ public class CoordinatorClientService {
     private JsonHelper<DNCWorkCoordinate> jsonHelper = new JsonHelper(DNCWorkCoordinate[].class);
 
     private String serverAddress;
-    private String cognitionName;
 
+    private String cognitionName;
 
     public void setServerAddress(String serverAddress) {
         this.serverAddress = serverAddress;
     }
 
+    /**
+     * Starts retrieving coordinates from the coordinator server via HTTP.
+     */
     public void startProcessing() {
         setCognitionNameIfNull();
         logger.info(cognitionName + " is starting processing documents now.");
