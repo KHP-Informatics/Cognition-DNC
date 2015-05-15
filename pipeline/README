@@ -32,16 +32,13 @@ Configuration
 1) Edit config/applicationContext.xml so that
     a) The bean with id "sourceDataSource" points to the desired source DB.
     b) The bean with id "targetDataSource" points to the desired source DB.
-    c) The bean with "sourceSessionFactory" uses the correct SQL dialect.
-    d) The bean with "targetSessionFactory" uses the correct SQL dialect.
+
 
 
 2) Edit config/config.properties so that
     a) The variable "conversionFormat" defines what format you want the output to be in (text or html)
 
-3) Are you using SQL Server? If so, edit pipeline/src/main/resources/queries/sqlserver-pipeline-named-queries.hbm.xml
-so it respects your schema and patient model. If you're not using sql server then
-please add your DB support in config/queries, and put the query file in
-applicationContext.xml in "mappingResources" property.
+3)Edit pipeline/src/main/resources/queries/sqlserver-pipeline-named-queries.hbm.xml
+so it respects your schema and patient model. 
 
 
