@@ -176,6 +176,7 @@ public class DNCPipelineService {
             byte[] bytes = dncWorkUnitDao.getByteFromCoordinate(coordinate);
             String text = convertBinary(bytes);
             if (StringTools.noContentInHtml(text) && ocrIsEnabled()) {
+                logger.info("Skipping OCR coordinate " + coordinate);
                 ocrQueue.add(coordinate);
                 return;
             }
