@@ -62,21 +62,15 @@ so that:
 
 1. The bean with id "sourceDataSource" points to the desired source DB (with username/password specified).
 2. The bean with id "targetDataSource" points to the desired target DB (with username/password specified).
-3. The bean with "sourceSessionFactory" uses the correct SQL dialect.
-4. The bean with "targetSessionFactory" uses the correct SQL dialect.
 
 <h5>
 Query configuration
 </h5>
-Edit `pipeline/target/config/queries/sqlserver-pipeline-named-queries.hbm.xml` so it respects your schema and patient model. For example, the following assumes that you have a patient table in the target DB with the patient key = ID, and the patient date of birth = “dob”:
+Edit `pipeline/target/config/queries/sqlserver-pipeline-named-queries.hbm.xml` so it respects your schema and patient model. For example, the following assumes that you have a patient_name table in the target DB with the patient key = “Patient_ID”, the patient forename = “Forename”, and the patient surname = “Surname”:
 
 ```xml
-<sql-query name="getPatient">
-select ID as "id"
-  , nhs_no as "NHSNumber"
-  ,dob as "dateOfBirth" 
-  from tblPatient 
-  where ID = :patientId
+<sql-query name="getPatientNames">
+  select Forename, Surname from patient_name where Patient_ID = :patientId
 </sql-query>
 ```
 
