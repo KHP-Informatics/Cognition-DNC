@@ -34,8 +34,11 @@ Cognition is designed to be used in conjuction with structured data from a sourc
 Supported commands:
 </h3>
 Process coordinates from file: `java -jar DNCPipeline.jar --createMode --file=coordinates.json`
+
 Process coordinates form a DB table/view: `java -jar DNCPipeline.jar --createMode --coordinatesFromDB`
+
 Run a coordinator web server for horizontal scaling: `java -jar DNCPipeline.jar --coordinator --chunkSize=1000`
+
 Run a client that requests coordinates from server: `java -jar DNCPipeline.jar --client --server=http://url_to_server --cognitionName=Computer01`
 
 
