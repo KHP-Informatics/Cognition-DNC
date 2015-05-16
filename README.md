@@ -41,6 +41,7 @@ Run a coordinator web server for horizontal scaling: `java -jar DNCPipeline.jar 
 
 Run a client that requests coordinates from server: `java -jar DNCPipeline.jar --client --server=http://url_to_server --cognitionName=Computer01`
 
+Please see the Wiki pages for details. 
 
 <h3>
 Build Instructions:
