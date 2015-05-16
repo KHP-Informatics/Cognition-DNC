@@ -31,6 +31,15 @@ Cognition is designed to be used in conjuction with structured data from a sourc
 ![Cognition pipeline](https://github.com/KHP-Informatics/wiki-resources/blob/master/cognition.png)
 
 <h3>
+Supported commands:
+</h3>
+Process coordinates from file: `java -jar DNCPipeline.jar --createMode --file=coordinates.json`
+Process coordinates form a DB table/view: `java -jar DNCPipeline.jar --createMode --coordinatesFromDB`
+Run a coordinator web server for horizontal scaling: `java -jar DNCPipeline.jar --coordinator --chunkSize=1000`
+Run a client that requests coordinates from server: `java -jar DNCPipeline.jar --client --server=http://url_to_server --cognitionName=Computer01`
+
+
+<h3>
 Build Instructions:
 </h3>
 You can download the latest binary distribution from the release page. To use it, unzip the downloaded distribution, and apply the configurations as described in what follows.
@@ -89,7 +98,7 @@ Phone numbers|
 <h5>
 Masking Algorithm Customisation
 </h5>
-Finally, edit the files in `pipeline/target/config/anonymisation` to reflect the regular expressions you want to use to mask the identifiers. For example, you might want to add an expression to mask dates of birth in the format 
+Finally, optionally edit the files in `pipeline/target/config/anonymisation` to reflect the regular expressions you want to use to mask the identifiers. For example, you might want to add an expression to mask dates of birth in the format 
 
 `yyyy.MM.dd`
 
@@ -98,6 +107,8 @@ To do this, simply add a new json object to the json array in the `dateOfBirthRu
 ```json
   {"regexp": "(?i)${TimeUtil.getFormattedDate($patient.getDateOfBirth(), 'yyyy.MM.dd')}", "placeHolder" : "DDDDD"}
 ```
+
+By default, Cognition-DNC comes with some rules to pseudonymise common patterns and approximately matching patterns.
 
 <h4>
 Usage:
