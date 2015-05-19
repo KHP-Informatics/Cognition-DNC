@@ -38,7 +38,6 @@ public class TemplateFiller {
 
     @PostConstruct
     public void init() {
-        velocityEngine.setProperty("parser.pool.size", 200);
         velocityEngine.init();
     }
 

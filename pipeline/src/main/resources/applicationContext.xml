@@ -30,6 +30,7 @@
                 class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
             </value>
         </property>
+        <property name="configLocation" value="velocity.properties"/>
     </bean>
 
     <bean id="sourceTransactionManager"

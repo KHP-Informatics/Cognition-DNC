@@ -12,7 +12,7 @@
 
     <groupId>uk.ac.kcl.iop.brc.core.pipeline.dncpipeline</groupId>
     <artifactId>DNCPipeline</artifactId>
-    <version>0.1</version>
+    <version>0.3</version>
     <name>DNC Pipeline</name>
     <packaging>jar</packaging>
     <url>http://maven.apache.org</url>
