@@ -48,8 +48,7 @@ public class CommandHelper {
                 "--------------------\n" +
                 "From view/table     --client --server=http://ip_of_coordinator:4567 --cognitionName=ClientName01" +
 
-                "\n\nAdd --noPseudonym argument to skip pseudonymisation." +
-                "\n\nAdd --skipN=? argument to skip the first N coordinates.");
+                "\n\nAdd --noPseudonym argument to skip pseudonymisation.");
 
     }
 

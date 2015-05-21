@@ -81,8 +81,6 @@ public class DNCPipelineService {
 
     private boolean noPseudonym = false;
 
-    private Integer skipN;
-
     private List<DNCWorkCoordinate> ocrQueue = Collections.synchronizedList(new ArrayList<>());
 
     /**
@@ -94,7 +92,6 @@ public class DNCPipelineService {
 
         AtomicInteger progress = new AtomicInteger();
         List<DNCWorkCoordinate> dncWorkCoordinates = coordinatesDao.getCoordinates();
-        dncWorkCoordinates = skipWorkCoordinates(dncWorkCoordinates, progress);
 
         dncWorkCoordinates.parallelStream().forEach(coordinate -> {
             processSingleCoordinate(coordinate);
@@ -115,7 +112,6 @@ public class DNCPipelineService {
         AtomicInteger processedCount = new AtomicInteger();
 
         List<DNCWorkCoordinate> workCoordinates = jsonHelper.loadListFromFile(new File(filePath));
-        workCoordinates = skipWorkCoordinates(workCoordinates, processedCount);
 
         workCoordinates.parallelStream().forEach(coordinate -> {
             processSingleCoordinate(coordinate);
@@ -135,10 +131,6 @@ public class DNCPipelineService {
         if (timeToSaveProgress(i)) {
             saveProgress(i);
         }
-    }
-
-    private boolean skipAlreadyProcessedDocuments() {
-        return skipN != null && skipN > 0L;
     }
 
     private boolean timeToSaveProgress(int i) {
@@ -265,15 +257,6 @@ public class DNCPipelineService {
         }
     }
 
-    private List<DNCWorkCoordinate> skipWorkCoordinates(List<DNCWorkCoordinate> dncWorkCoordinates, AtomicInteger progress) {
-        if (skipAlreadyProcessedDocuments()) {
-            logger.info("Skipping first " + skipN + " documents!");
-            progress.set(skipN);
-            dncWorkCoordinates = dncWorkCoordinates.stream().skip(skipN).collect(Collectors.toList());
-        }
-        return dncWorkCoordinates;
-    }
-
     public void setNoPseudonym(boolean noPseudonym) {
         this.noPseudonym = noPseudonym;
     }
@@ -282,7 +265,4 @@ public class DNCPipelineService {
         this.saveProgressAfter = saveProgressAfter;
     }
 
-    public void setSkipN(Integer skipN) {
-        this.skipN = skipN;
-    }
 }

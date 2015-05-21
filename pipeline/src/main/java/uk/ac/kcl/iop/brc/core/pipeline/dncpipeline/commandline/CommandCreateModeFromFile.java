@@ -49,9 +49,6 @@ public class CommandCreateModeFromFile implements CommandProcessor {
         if (cmd.hasOption("noPseudonym")) {
             dncPipelineService.setNoPseudonym(true);
         }
-        if (cmd.hasOption("skipN")) {
-            dncPipelineService.setSkipN(Integer.valueOf(cmd.getOptionValue("skipN")));
-        }
 
         dncPipelineService.startCreateModeWithFile(filePath);
     }

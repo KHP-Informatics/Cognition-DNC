@@ -40,9 +40,6 @@ public class CommandCreateModeFromDBView implements CommandProcessor {
         if (cmd.hasOption("noPseudonym")) {
             dncPipelineService.setNoPseudonym(true);
         }
-        if (cmd.hasOption("skipN")) {
-            dncPipelineService.setSkipN(Integer.valueOf(cmd.getOptionValue("skipN")));
-        }
         dncPipelineService.startCreateModeWithDBView();
     }
 
@@ -54,11 +51,7 @@ public class CommandCreateModeFromDBView implements CommandProcessor {
 
                 addOption(OptionBuilder.withLongOpt("noPseudonym")
                         .withDescription("Do not apply pseudonymisation.").
-                                withArgName("noPseudonym").create()).
-
-                addOption(OptionBuilder.withLongOpt("skipN")
-                .withDescription("Skip first N coordinates.").hasArg().
-                        withArgName("skipN").create());
+                                withArgName("noPseudonym").create());
     }
 
 }
