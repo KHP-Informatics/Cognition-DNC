@@ -58,11 +58,6 @@ public class DNCPipelineServiceTest {
     @Mock
     private DocumentConversionService documentConversionService;
 
-    @Before
-    public void init() {
-        service.setSaveProgressAfter("20");
-    }
-
     @Test
     public void shouldCallTextPipelineFromFileCorrectly() {
         service.setConversionFormat("text");

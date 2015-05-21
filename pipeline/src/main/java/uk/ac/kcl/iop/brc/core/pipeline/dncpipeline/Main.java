@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.commandline.CommandHelper;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.commandline.CommandProcessor;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.DNCPipelineService;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -52,12 +53,21 @@ public class Main {
 
         Options options = getOptions();
         CommandLineParser parser = new GnuParser();
+
+        Runtime.getRuntime().addShutdownHook(getShutDownBehaviour());
         try {
             CommandLine cmd = parser.parse(options, args);
             processCommands(cmd);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static Thread getShutDownBehaviour() {
+        return new Thread(() -> {
+            DNCPipelineService dncPipelineService = context.getBean(DNCPipelineService.class);
+            dncPipelineService.dumpFailedCoordinates();
+        });
     }
 
     private static String getCurrentFolder() {

@@ -16,7 +16,8 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service;
 
-import org.apache.commons.io.FileUtils;
+import com.google.gson.Gson;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,18 +30,17 @@ import uk.ac.kcl.iop.brc.core.pipeline.common.utils.StringTools;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.CoordinatesDao;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.DNCWorkUnitDao;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.PatientDao;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.exception.CanNotApplyOCRToNonPDFFilesException;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.DNCWorkCoordinate;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.Patient;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.anonymisation.AnonymisationService;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @Service
 public class DNCPipelineService {
@@ -74,12 +74,11 @@ public class DNCPipelineService {
     @Value("${pseudonymEnabled}")
     private String pseudonymEnabled;
 
-    @Value("${saveProgressAfter}")
-    private String saveProgressAfter = "100";
-
     private JsonHelper<DNCWorkCoordinate> jsonHelper = new JsonHelper(DNCWorkCoordinate[].class);
 
     private boolean noPseudonym = false;
+
+    private List<DNCWorkCoordinate> failedCoordinates = Collections.synchronizedList(new ArrayList<>());
 
     private List<DNCWorkCoordinate> ocrQueue = Collections.synchronizedList(new ArrayList<>());
 
@@ -90,16 +89,13 @@ public class DNCPipelineService {
     public void startCreateModeWithDBView() {
         logger.info("Retrieving coordinates from view");
 
-        AtomicInteger progress = new AtomicInteger();
         List<DNCWorkCoordinate> dncWorkCoordinates = coordinatesDao.getCoordinates();
 
-        dncWorkCoordinates.parallelStream().forEach(coordinate -> {
-            processSingleCoordinate(coordinate);
-            updateProgress(progress);
-        });
+        dncWorkCoordinates.parallelStream().forEach(this::processSingleCoordinate);
         logger.info("Finished all non-OCR. Processing the OCR queue now.");
         processOCRQueue();
         logger.info("Finished all.");
+        dumpFailedCoordinates();
     }
 
     /**
@@ -109,41 +105,18 @@ public class DNCPipelineService {
      */
     public void startCreateModeWithFile(String filePath) {
         logger.info("Loading work units from file.");
-        AtomicInteger processedCount = new AtomicInteger();
 
         List<DNCWorkCoordinate> workCoordinates = jsonHelper.loadListFromFile(new File(filePath));
 
-        workCoordinates.parallelStream().forEach(coordinate -> {
-            processSingleCoordinate(coordinate);
-            updateProgress(processedCount);
-        });
+        workCoordinates.parallelStream().forEach(this::processSingleCoordinate);
         logger.info("Finished all non-OCR. Processing the OCR queue now.");
         processOCRQueue();
         logger.info("Finished all.");
+        dumpFailedCoordinates();
     }
 
     public void processCoordinates(List<DNCWorkCoordinate> coordinates) {
         coordinates.parallelStream().forEach(this::processSingleCoordinate);
-    }
-
-    private void updateProgress(AtomicInteger processedCount) {
-        int i = processedCount.addAndGet(1);
-        if (timeToSaveProgress(i)) {
-            saveProgress(i);
-        }
-    }
-
-    private boolean timeToSaveProgress(int i) {
-        return i % Integer.valueOf(saveProgressAfter) == 0;
-    }
-
-    private synchronized void saveProgress(int offset) {
-        final File file = new File("progress");
-        try {
-            FileUtils.writeStringToFile(file, String.valueOf(offset), "UTF-8");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Transactional("targetTX")
@@ -157,7 +130,8 @@ public class DNCPipelineService {
             }
             saveText(coordinate, text);
         } catch (Exception ex) {
-            logger.info("Could not process coodinate " + coordinate);
+            logger.info("Could not process coordinate " + coordinate);
+            failedCoordinates.add(coordinate);
             ex.printStackTrace();
         }
     }
@@ -179,7 +153,8 @@ public class DNCPipelineService {
             }
             saveText(coordinate, text);
         } catch (Exception ex) {
-            logger.error("Could not process coordinate " + coordinate);
+            logger.error("Could not process coordinate " + coordinate );
+            failedCoordinates.add(coordinate);
             ex.printStackTrace();
         }
     }
@@ -243,6 +218,7 @@ public class DNCPipelineService {
                 }
                 saveText(coordinate, text);
             } catch (Exception e) {
+                failedCoordinates.add(coordinate);
                 logger.error(e.getMessage());
             }
         });
@@ -261,8 +237,20 @@ public class DNCPipelineService {
         this.noPseudonym = noPseudonym;
     }
 
-    public void setSaveProgressAfter(String saveProgressAfter) {
-        this.saveProgressAfter = saveProgressAfter;
+    public void dumpFailedCoordinates() {
+        if (CollectionUtils.isEmpty(failedCoordinates)) {
+            return;
+        }
+        Gson gson = new Gson();
+        String failedJson = gson.toJson(failedCoordinates);
+        PrintWriter writer;
+        try {
+            writer = new PrintWriter("failedCoordinates.json", "UTF-8");
+            writer.println(failedJson);
+            writer.close();
+            logger.info("Dumped all failed coordinates to failedCoordinates.json. You can process them by --createMode --file=failedCoordinates.json");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
 }
