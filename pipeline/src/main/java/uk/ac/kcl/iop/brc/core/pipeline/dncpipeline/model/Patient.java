@@ -119,16 +119,14 @@ public class Patient {
         for (String name : getForeNames()) {
             if (! StringUtils.isBlank(name)) {
                 foreNames.add(name);
+                addToListBySplitting(foreNames, name);
             }
         }
-        Collections.sort(foreNames, new Comparator<String>() {
-            @Override
-            public int compare(String s1, String s2) {
-                if (s1 == null || s2 == null) {
-                    return -1;
-                }
-                return -Integer.valueOf(s1.length()).compareTo(Integer.valueOf(s2.length()));
+        Collections.sort(foreNames, (s1, s2) -> {
+            if (s1 == null || s2 == null) {
+                return -1;
             }
+            return -Integer.valueOf(s1.length()).compareTo(Integer.valueOf(s2.length()));
         });
 
         return foreNames;
@@ -144,6 +142,7 @@ public class Patient {
         for (String name : getSurnames()) {
             if (! StringUtils.isBlank(name)) {
                 surnames.add(name);
+                addToListBySplitting(surnames, name);
             }
         }
         Collections.sort(surnames, new Comparator<String>() {
@@ -157,6 +156,21 @@ public class Patient {
         });
 
         return surnames;
+    }
+
+    private void addToListBySplitting(List<String> surnames, String name) {
+        String[] splitBySpace = name.split(" ");
+        String[] splitByDash = name.split("-");
+        for (String nameSplit : splitBySpace) {
+            if (nameSplit.length() > 3) {
+                surnames.add(nameSplit);
+            }
+        }
+        for (String nameSplit : splitByDash) {
+            if (nameSplit.length() > 3) {
+                surnames.add(nameSplit);
+            }
+        }
     }
 
     public List<PatientCarer> getCarers() {

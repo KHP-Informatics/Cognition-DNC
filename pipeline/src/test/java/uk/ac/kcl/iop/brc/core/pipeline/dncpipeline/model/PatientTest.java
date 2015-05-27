@@ -18,6 +18,7 @@ package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model;
 
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -97,6 +98,42 @@ public class PatientTest {
         assertThat(surnames.size(), equalTo(0));
     }
 
+    @Test
+    public void shouldSplitForeNamesWhenThereIsDash() {
+        Patient patient = new Patient();
+        List<String> forenames = Arrays.asList("Richard-Jackson");
+        patient.setForeNames(forenames);
 
+        List<String> separatedForeNames = patient.getForeNamesInDescendingLengthOrder();
+
+        assertThat(separatedForeNames.contains("Richard-Jackson"), equalTo(true));
+        assertThat(separatedForeNames.contains("Richard"), equalTo(true));
+        assertThat(separatedForeNames.contains("Jackson"), equalTo(true));
+    }
+
+    @Test
+    public void shouldSplitLastNamesWhenThereIsDash() {
+        Patient patient = new Patient();
+        List<String> surnames = Arrays.asList("Richard-Jackson");
+        patient.setSurnames(surnames);
+
+        List<String> separatedSurnames = patient.getLastNamesInDescendingLengthOrder();
+
+        assertThat(separatedSurnames.contains("Richard-Jackson"), equalTo(true));
+        assertThat(separatedSurnames.contains("Richard"), equalTo(true));
+        assertThat(separatedSurnames.contains("Jackson"), equalTo(true));
+    }
+
+    @Test
+    public void shouldNotAddNamesWithLessThanFourCharacters() {
+        Patient patient = new Patient();
+        List<String> surnames = Arrays.asList("Richard-The");
+        patient.setSurnames(surnames);
+
+        List<String> separatedSurnames = patient.getLastNamesInDescendingLengthOrder();
+
+        assertThat(separatedSurnames.contains("Richard-The"), equalTo(true));
+        assertThat(separatedSurnames.contains("The"), equalTo(false));
+    }
 
 }
