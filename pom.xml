@@ -9,7 +9,7 @@
         <springVersion>4.1.4.RELEASE</springVersion>
         <hibernateVersion>4.1.7.Final</hibernateVersion>
         <springTestVersion>4.0.3.RELEASE</springTestVersion>
-        <tikaVersion>1.8</tikaVersion>
+        <tikaVersion>1.7</tikaVersion>
     </properties>
 
     <groupId>uk.ac.kcl.iop.brc.core.pipeline</groupId>
@@ -24,6 +24,12 @@
     <url>http://maven.apache.org</url>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.8.2</version>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>

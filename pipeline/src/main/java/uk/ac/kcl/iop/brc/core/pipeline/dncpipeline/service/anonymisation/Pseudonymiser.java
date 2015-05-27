@@ -16,16 +16,20 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.anonymisation;
 
+import org.apache.log4j.Logger;
 import uk.ac.kcl.iop.brc.core.pipeline.common.helper.JsonHelper;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
 public abstract class Pseudonymiser {
+
+    private static Logger logger = Logger.getLogger(Pseudonymiser.class);
 
     @Autowired
     private TemplateFiller templateFiller;
@@ -46,7 +50,13 @@ public abstract class Pseudonymiser {
 
         JsonHelper<PseudonymisationRule> jsonHelper = new JsonHelper<>(PseudonymisationRule[].class);
 
-        List<PseudonymisationRule> pseudonymisationRules = jsonHelper.loadListFromString(jsonRules);
+        List<PseudonymisationRule> pseudonymisationRules = new ArrayList<>();
+        try {
+            pseudonymisationRules = jsonHelper.loadListFromString(jsonRules);
+        } catch (Exception ex) {
+            logger.error("Error while loading pseudonymisation rules for Patient " + patient.getId() + " from " + getJsonRuleFilePath());
+            ex.printStackTrace();
+        }
 
         for (PseudonymisationRule rule : pseudonymisationRules) {
             if (rule == null) {

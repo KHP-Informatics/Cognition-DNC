@@ -17,6 +17,7 @@
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.transform.Transformers;
@@ -73,11 +74,14 @@ public class PatientDao extends BaseDao {
             getNhsNumbers.setParameter("patientId", patient.getId());
             List nhsNumbers = getNhsNumbers.list();
             nhsNumbers.forEach(object -> {
+                String number;
                 if (object instanceof String) {
-                    patient.addNhsNumber((String) object);
+                    number = (String) object;
                 } else {
                     Object[] nhsNumberRow = (Object[]) object;
-                    String number = clobHelper.getStringFromExpectedClob(nhsNumberRow[0]);
+                    number = clobHelper.getStringFromExpectedClob(nhsNumberRow[0]);
+                }
+                if (! StringUtils.isBlank(number)) {
                     patient.addNhsNumber(number);
                 }
             });
@@ -92,11 +96,14 @@ public class PatientDao extends BaseDao {
             getDateOfBirths.setParameter("patientId", patient.getId());
             List dateOfBirths = getDateOfBirths.list();
             dateOfBirths.forEach(object -> {
+                Date dateOfBirth;
                 if (object instanceof Date) {
-                    patient.addDateOfBirth((Date) object);
+                    dateOfBirth = (Date) object;
                 } else {
                     Object[] dateOfBirthRow = (Object[]) object;
-                    Date dateOfBirth = (Date) dateOfBirthRow[0];
+                    dateOfBirth = (Date) dateOfBirthRow[0];
+                }
+                if (dateOfBirth != null) {
                     patient.addDateOfBirth(dateOfBirth);
                 }
             });
@@ -129,7 +136,9 @@ public class PatientDao extends BaseDao {
         List<String> phoneNumbers = new ArrayList<>();
         list.forEach(object -> {
             String phone = clobHelper.getStringFromExpectedClob(object);
-            phoneNumbers.add(phone);
+            if (! StringUtils.isBlank(phone)) {
+                phoneNumbers.add(phone);
+            }
         });
         patient.setPhoneNumbers(phoneNumbers);
     }
@@ -177,8 +186,12 @@ public class PatientDao extends BaseDao {
                 Object[] namePair = (Object[]) dbObject;
                 String name = clobHelper.getStringFromExpectedClob(namePair[0]);
                 String lastName = clobHelper.getStringFromExpectedClob(namePair[1]);
-                patient.addForeName(name);
-                patient.addSurname(lastName);
+                if (! StringUtils.isBlank(name)) {
+                    patient.addForeName(name);
+                }
+                if (! StringUtils.isBlank(lastName)) {
+                    patient.addSurname(lastName);
+                }
             }
         } catch (Exception ex) {
             logger.warn("Error while loading names of patient " + patient.getId() + ". Does the specified address table exist? " + ex.getMessage());

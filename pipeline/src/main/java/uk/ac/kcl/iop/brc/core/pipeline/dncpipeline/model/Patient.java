@@ -99,7 +99,9 @@ public class Patient {
     }
 
     public void addAddress(PatientAddress patientAddress) {
-        addresses.add(patientAddress);
+        if (patientAddress.isNotEmpty()) {
+            addresses.add(patientAddress);
+        }
     }
 
     public void addForeName(String name) {
@@ -145,14 +147,11 @@ public class Patient {
                 addToListBySplitting(surnames, name);
             }
         }
-        Collections.sort(surnames, new Comparator<String>() {
-            @Override
-            public int compare(String s1, String s2) {
-                if (s1 == null || s2 == null) {
-                    return -1;
-                }
-                return -Integer.valueOf(s1.length()).compareTo(Integer.valueOf(s2.length()));
+        Collections.sort(surnames, (s1, s2) -> {
+            if (s1 == null || s2 == null) {
+                return -1;
             }
+            return -Integer.valueOf(s1.length()).compareTo(Integer.valueOf(s2.length()));
         });
 
         return surnames;

@@ -56,7 +56,11 @@ public class PatientCarer {
             return new ArrayList<>();
         }
         String[] split = firstName.split(" ");
-        return Arrays.asList(split);
+        List<String> names = new ArrayList<>();
+        for (String name : split) {
+            names.addAll(Arrays.asList(name.split("-")));
+        }
+        return names;
     }
 
     public List<String> getSeparatedSurnames() {
@@ -64,6 +68,10 @@ public class PatientCarer {
             return new ArrayList<>();
         }
         String[] split = lastName.split(" ");
-        return Arrays.asList(split);
+        List<String> names = new ArrayList<>();
+        for (String name : split) {
+            names.addAll(Arrays.asList(name.split("-")));
+        }
+        return names;
     }
 }

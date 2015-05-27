@@ -18,4 +18,14 @@ public class PatientAddressTest {
         assertThat(address.isNotTooShort(), equalTo(false));
     }
 
+    @Test
+    public void shouldReturnFalseWhenPostCodeAndAddressAreBothEmpty() {
+        PatientAddress address = new PatientAddress();
+
+        address.setAddress("");
+        address.setPostCode("");
+
+        assertThat(address.isNotEmpty(), equalTo(false));
+    }
+
 }

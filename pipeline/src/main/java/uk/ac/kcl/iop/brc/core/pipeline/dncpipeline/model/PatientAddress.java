@@ -57,4 +57,8 @@ public class PatientAddress {
 
         return address.length() > 3;
     }
+
+    public boolean isNotEmpty() {
+        return ! StringUtils.isBlank(address) && ! StringUtils.isBlank(postCode);
+    }
 }
