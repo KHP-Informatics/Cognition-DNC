@@ -35,7 +35,7 @@ Supported commands:
 </h3>
 Process coordinates from file: `java -jar DNCPipeline.jar --createMode --file=coordinates.json`
 
-Process coordinates form a DB table/view: `java -jar DNCPipeline.jar --createMode --coordinatesFromDB`
+Process coordinates from a DB table/view: `java -jar DNCPipeline.jar --createMode --coordinatesFromDB`
 
 Run a coordinator web server for horizontal scaling: `java -jar DNCPipeline.jar --coordinator --chunkSize=1000`
 
@@ -148,7 +148,7 @@ The second coordinate points to a plain text type to be anonymised.
 `java -jar /path/to/jar/file.jar --createMode --file=coordinates.json`
 
 
-That’s it! If all hs gone well, you should see richly formated XHTML strings appearing in your target table. 
+That’s it! If all hs gone well, you should see rich formated XHTML strings representing the converted (and optionally anonymised) documents appearing in your target table. 
 
 
 <h2>
