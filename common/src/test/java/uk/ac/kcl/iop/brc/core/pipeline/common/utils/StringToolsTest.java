@@ -211,4 +211,14 @@ public class StringToolsTest {
         assertThat(strings.size(), equalTo(0));
     }
 
+    @Test
+    public void shouldGetRegexResults() {
+        String test = "Some area of London. (07881 934) 43903. 34";
+
+        List<String> strings = StringTools.getRegexMatchesWithMinLength(test, "[()0-9]+\\s*[()0-9\\s]*", 3);
+
+        assertThat(strings.contains("(07881 934) 43903"), equalTo(true));
+        assertThat(strings.contains("34"), equalTo(false));
+    }
+
 }

@@ -250,7 +250,7 @@ public class AnonymisationServiceTest extends IntegrationTest {
     }
 
     @Test
-    public void shouldWOrkWithShortNames() {
+    public void shouldWorkWithShortNames() {
         Patient patient = new Patient();
         patient.addForeName("Christine");
         PatientAddress patientAddress1 = new PatientAddress();
@@ -273,5 +273,35 @@ public class AnonymisationServiceTest extends IntegrationTest {
                 "Address is Kidderpore Ave, (Hampstead, London.");
         System.out.println(anonymisedText);
         assertTrue(anonymisedText.contains("she was angry"));
+    }
+
+    @Test
+    public void shouldAnonymiseSplitPhoneNumbers() {
+        Patient patient = new Patient();
+        patient.addForeName("Christine");
+        PatientAddress patientAddress1 = new PatientAddress();
+        patientAddress1.setAddress("Kidderpore Avenue Hampstead, London");
+        patientAddress1.setPostCode("cb4 2za");
+        patient.addAddress(patientAddress1);
+        patient.addPhoneNumber("50090051234");
+        patient.addPhoneNumber("11090051234");
+        patient.addPhoneNumber("(07881) 618299");
+        String anonymisedText = anonymisationService.pseudonymisePersonPlainText(patient, "\n" +
+                "\n" +
+                "she was angry\n" +
+                "\n" +
+                "Ism MrK\n" +
+                "\n" +
+                "\n" +
+                "11122\n" +
+                "(0500) 9005 1234 " +
+                "Some random text that shouldn't be anonymised." +
+                "" +
+                "Address is Kidderpore Ave, (Hampstead, London. " +
+                "Phone number is (0)7881 618 299. )" +
+        "I repeat, phone number is 78816 182 99 OK?");
+        System.out.println(anonymisedText);
+        assertTrue(anonymisedText.contains("FFFFF."));
+        assertTrue(anonymisedText.contains(" FFFFF OK?"));
     }
 }

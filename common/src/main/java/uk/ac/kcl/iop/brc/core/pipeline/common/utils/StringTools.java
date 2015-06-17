@@ -171,6 +171,13 @@ public class StringTools {
         return window;
     }
 
+    /**
+     * Splits the given string into words and returns a set of those words that have a greater
+     * length than the argument {@code minLength}.
+     * @param string String to be split.
+     * @param minLength Minimum allowed length of a word.
+     * @return A set of words with length larger than {@code minLength}.
+     */
     public static Set<String> splitIntoWordsWithLengthHigherThan(String string, int minLength) {
         Set<String> strings = new HashSet<>();
 
@@ -211,4 +218,26 @@ public class StringTools {
             return false;
         }
     }
+
+    /**
+     * @param text
+     * @param regex
+     * @param minLength
+     * @return  Returns a list of strings with minimum length of {@code minLength}
+     * that match the given regular expression.
+     */
+    public static List<String> getRegexMatchesWithMinLength(String text, String regex, int minLength) {
+        List<String> result = new ArrayList<>();
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text);
+
+        while (matcher.find()) {
+            String match = matcher.group();
+            if (match.length() >= minLength) {
+                result.add(match);
+            }
+        }
+        return result;
+    }
+
 }
