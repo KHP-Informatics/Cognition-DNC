@@ -4,7 +4,7 @@
 <h1>
 Welcome to Cognition!
 </h1>
-Cognition is an open source database processing pipeline. Its purpose is to convert common document formats such as PDF and Word documents into a common representation such as XHTML, and modify them in a customisable manner (For example, applying pseudonymisation/anonymisation algorithms on them). Its primary use case is to facilitate electronic health record (EHR) informatics research by converting documents into a common format, and masking strong patient identifiers according to a customisable, approximate string matching & regular expression based algorithm. It can also be used solely for converting binary documents in a database to text, and storing the text in any other (or the same) database.
+Cognition is an open source database processing pipeline. Its purpose is to convert common binary documents such as PDF and Word documents in a relational database into a common representation such as XHTML, and optionally modify them in a customisable manner (For example, applying pseudonymisation/anonymisation algorithms on them). Its primary use case is to facilitate electronic health record (EHR) informatics research by converting documents into a common format, and masking strong patient identifiers according to a customisable, approximate string matching & regular expression based algorithm. It can also be used solely for converting binary documents in a database to text, and storing the text in any other (or the same) database.
 
 <h2>
 The Problem
