@@ -87,7 +87,7 @@ public class DNCPipelineService {
      *
      */
     public void startCreateModeWithDBView() {
-        logger.info("Retrieving coordinates from view");
+        logger.info("Retrieving coordinates from DB.");
 
         List<DNCWorkCoordinate> dncWorkCoordinates = coordinatesDao.getCoordinates();
 
