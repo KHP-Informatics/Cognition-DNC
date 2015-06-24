@@ -16,7 +16,7 @@ Informatics research into EHRs is a rapidly growing discipline across the globe,
 As part of other information governance controls, we propose the Cognition pipeline as a means to mask strong patient identifiers in the clinical text, while retaining as much structure as possible of the original document. The basic components of the pipeline proceed as follows:
 
 
-1. Cognition receives input in the form of a JSON array or from a database table/view. This array contains details of ‘co-ordinates’ from a source database - unique references to binary and character (free text) datatypes that need to be processed. <a href="https://github.com/KHP-Informatics/Cognition-DNC/wiki/What's-a-Cognition-coordinate%3F">Check this page</a> to read more about Cognition coordinates.
+1. Cognition receives input in the form of a JSON array or from a database table/view. This array contains details of ‘co-ordinates’ from a source database - unique references to binary and character (free text) datatypes that need to be processed. <a href="https://github.com/KHP-Informatics/Cognition-DNC/wiki/What's-a-Cognition-coordinate%3F">Check this page</a> to read more about <b>Cognition coordinates</b>.
 2. Character data types are passed directly to the anonymisation process
   1. Binary objects such as MS Word documents are converted to XHTML with the Apache Tika library. PDFs undergo OCR with Tesseract (if installed)
   2. The XHTML files are passed through an anonymisation algorithm (based on regular expressions), to mask strong patient identifiers
