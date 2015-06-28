@@ -45,7 +45,6 @@ public class CoordinatorService {
 
     private long lastCheckpoint = 0;
 
-    private int chunkSize = 200;
 
     /**
      * Starts serving coordinates to clients who request work.
@@ -67,6 +66,9 @@ public class CoordinatorService {
         String cognitionName = request.headers("CognitionName");
         logger.info("Handling request from " + cognitionName + " " + request.ip());
 
+        int chunkSize = Integer.valueOf(request.headers("ChunkSize"));
+        logger.info("Assigning " + chunkSize + " coordinates to " + cognitionName);
+
         List<DNCWorkCoordinate> workLoad = getChunkOfList(allCoordinates, lastCheckpoint, chunkSize);
         if (CollectionUtils.isEmpty(workLoad)) {
             return NO_COORDINATE_LEFT;
@@ -85,10 +87,6 @@ public class CoordinatorService {
         String dncRequest = request.headers("DNCRequest");
 
         return !StringUtils.isBlank(dncRequest) && "true".equalsIgnoreCase(dncRequest);
-    }
-
-    public void setChunkSize(int chunkSize) {
-        this.chunkSize = chunkSize;
     }
 
     public List<DNCWorkCoordinate> getChunkOfList(List<DNCWorkCoordinate> coordinateList, long start, int size) {
