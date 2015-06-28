@@ -49,6 +49,8 @@ public class CoordinatorClientService {
 
     private String cognitionName;
 
+    private String chunkSize;
+
     public void setServerAddress(String serverAddress) {
         this.serverAddress = serverAddress;
     }
@@ -109,6 +111,7 @@ public class CoordinatorClientService {
                 .header("accept", "application/json")
                 .header("DNCRequest", "true")
                 .header("CognitionName", cognitionName)
+                .header("ChunkSize", chunkSize)
                 .asJson();
 
         return jsonResponse.getBody().toString();
@@ -127,5 +130,13 @@ public class CoordinatorClientService {
 
     public String getCognitionName() {
         return cognitionName;
+    }
+
+    public void setChunkSize(String chunkSize) {
+        this.chunkSize = chunkSize;
+    }
+
+    public String getChunkSize() {
+        return chunkSize;
     }
 }

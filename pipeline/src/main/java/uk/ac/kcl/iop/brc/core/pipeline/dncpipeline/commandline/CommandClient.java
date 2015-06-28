@@ -44,6 +44,9 @@ public class CommandClient implements CommandProcessor {
         if (cmd.hasOption("cognitionName")) {
             clientService.setCognitionName(cmd.getOptionValue("cognitionName"));
         }
+        if (cmd.hasOption("chunkSize")) {
+            clientService.setChunkSize(cmd.getOptionValue("chunkSize"));
+        }
         clientService.startProcessing();
     }
 
@@ -60,7 +63,10 @@ public class CommandClient implements CommandProcessor {
                         .withDescription("Cognition name of the computer")
                         .hasArg()
                         .withArgName("cognitionName").create()
-        );
+                ).addOption(OptionBuilder.withLongOpt("chunkSize")
+                        .withDescription("Number of work coordinates to ask from server.")
+                        .hasArg()
+                        .withArgName("chunkSize").create());
     }
 
 }

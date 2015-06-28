@@ -38,9 +38,6 @@ public class CommandCoordinator implements CommandProcessor {
 
     @Override
     public void process(CommandLine cmd) {
-        if (cmd.hasOption("chunkSize")) {
-            coordinatorService.setChunkSize(Integer.valueOf(cmd.getOptionValue("chunkSize")));
-        }
         coordinatorService.startServer();
     }
 
@@ -48,11 +45,7 @@ public class CommandCoordinator implements CommandProcessor {
     public void addOption(Options options) {
         options.addOption(OptionBuilder.withLongOpt("coordinator")
                         .withDescription("Application runs as coordinator web server.")
-                        .withArgName("coordinator").create())
-                .addOption(OptionBuilder.withLongOpt("chunkSize")
-                                .withDescription("Number of work coordinates to ask from server.")
-                                .hasArg()
-                                .withArgName("chunkSize").create());
+                        .withArgName("coordinator").create());
     }
 
 }
