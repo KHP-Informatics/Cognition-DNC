@@ -49,7 +49,7 @@ public class CoordinatorClientService {
 
     private String cognitionName;
 
-    private String chunkSize;
+    private String chunkSize = "10000";
 
     public void setServerAddress(String serverAddress) {
         this.serverAddress = serverAddress;
@@ -85,7 +85,7 @@ public class CoordinatorClientService {
                 "So you can re-process them by using --createMode --file=" + failedCoordinateFile + " arguments. " +
                 "Press enter to continue on to the next batch.");
         try {
-            int read = System.in.read();
+            System.in.read();
         } catch (IOException e1) {
             e1.printStackTrace();
         }
