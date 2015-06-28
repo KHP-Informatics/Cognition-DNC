@@ -19,6 +19,7 @@ package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.commandline;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.CoordinatorClientService;
@@ -45,7 +46,11 @@ public class CommandClient implements CommandProcessor {
             clientService.setCognitionName(cmd.getOptionValue("cognitionName"));
         }
         if (cmd.hasOption("chunkSize")) {
-            clientService.setChunkSize(cmd.getOptionValue("chunkSize"));
+            String chunkSize = cmd.getOptionValue("chunkSize");
+            if (! StringUtils.isNumeric(chunkSize)) {
+                throw new IllegalArgumentException("The specified chunkSize must be an integer.");
+            }
+            clientService.setChunkSize(chunkSize);
         }
         clientService.startProcessing();
     }

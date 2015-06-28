@@ -67,7 +67,7 @@ public class CoordinatorClientService {
         while (! jsonCoordinates.equalsIgnoreCase(CoordinatorService.NO_COORDINATE_LEFT)) {
             try {
                 jsonCoordinates = getCoordinatesAsJsonFromServer();
-                workCoordinates = getDncWorkCoordinates(jsonCoordinates);
+                workCoordinates = convertJsonCoordinateToObjects(jsonCoordinates);
                 pipelineService.processCoordinates(workCoordinates);
             } catch (Exception e) {
                 handleException(jsonCoordinates, e);
@@ -91,7 +91,7 @@ public class CoordinatorClientService {
         }
     }
 
-    private List<DNCWorkCoordinate> getDncWorkCoordinates(String jsonCoordinates) throws UnirestException {
+    private List<DNCWorkCoordinate> convertJsonCoordinateToObjects(String jsonCoordinates) throws UnirestException {
         saveCoordinatesInFile(jsonCoordinates, LAST_SET_OF_COORDINATES_FILENAME);
         return jsonHelper.loadListFromFile(new File(LAST_SET_OF_COORDINATES_FILENAME));
     }
@@ -119,7 +119,7 @@ public class CoordinatorClientService {
 
     private void setCognitionNameIfNull() {
         if (StringUtils.isBlank(cognitionName)) {
-            cognitionName = "DNCCognitionClient" + RandomUtils.nextInt(100000);
+            cognitionName = "CognitionClient" + RandomUtils.nextInt(100000);
         }
 
     }
