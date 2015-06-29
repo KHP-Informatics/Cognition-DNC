@@ -221,4 +221,13 @@ public class StringToolsTest {
         assertThat(strings.contains("34"), equalTo(false));
     }
 
+    @Test
+    public void shouldGetRandomName() {
+        String name1 = StringTools.getRandomForeName();
+        String name2 = StringTools.getRandomForeName();
+
+        assertThat(name1.equals(name2), equalTo(false));
+    }
+
+
 }

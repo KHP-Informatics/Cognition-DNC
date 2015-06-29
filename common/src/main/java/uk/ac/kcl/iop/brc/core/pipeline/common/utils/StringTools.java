@@ -17,16 +17,24 @@
 package uk.ac.kcl.iop.brc.core.pipeline.common.utils;
 
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang.math.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class StringTools {
+
+    private static List<String> maleNames = new ArrayList<>();
+    private static List<String> femaleNames = new ArrayList<>();
+    private static List<String> lastNames = new ArrayList<>();
 
     public static int getLevenshteinDistance(String str1, String str2) {
         return StringUtils.getLevenshteinDistance(str1, str2);
@@ -238,6 +246,69 @@ public class StringTools {
             }
         }
         return result;
+    }
+
+    public static String getRandomForeName() {
+        if (CollectionUtils.isEmpty(maleNames)) {
+            loadMaleNames();
+            loadFemaleNames();
+            loadSurnames();
+        }
+
+
+        boolean male = RandomUtils.nextBoolean();
+        if (male) {
+            int randIndex = RandomUtils.nextInt(maleNames.size());
+            return maleNames.get(randIndex);
+        }
+
+        int randIndex = RandomUtils.nextInt(femaleNames.size());
+        return femaleNames.get(randIndex);
+    }
+
+    public static String getRandomSurname() {
+        if (CollectionUtils.isEmpty(lastNames)) {
+            loadSurnames();
+        }
+
+        int randIndex = RandomUtils.nextInt(lastNames.size());
+        return lastNames.get(randIndex);
+    }
+
+    private static void loadSurnames() {
+        InputStream resourceAsStream = StringTools.class.getClassLoader().getResourceAsStream("anonymisation/lastnames");
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(resourceAsStream))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                lastNames.add(WordUtils.capitalize(line));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void loadFemaleNames() {
+        InputStream resourceAsStream = StringTools.class.getClassLoader().getResourceAsStream("anonymisation/femaleNames");
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(resourceAsStream))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                femaleNames.add(WordUtils.capitalize(line));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void loadMaleNames() {
+        InputStream resourceAsStream = StringTools.class.getClassLoader().getResourceAsStream("anonymisation/maleNames");
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(resourceAsStream))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                maleNames.add(WordUtils.capitalize(line));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

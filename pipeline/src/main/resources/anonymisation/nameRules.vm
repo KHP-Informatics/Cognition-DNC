@@ -44,4 +44,49 @@
       #end
   #end
 
+
+##    #foreach( $forename in $patient.getForeNamesInDescendingLengthOrder()  )
+##    {"regexp": "(?i)\\b\\Q$forename\\E\\b", "placeHolder": "$StringTools.getRandomForeName()"},
+##    #end
+##
+##    #foreach( $forename in $patient.getForeNamesInDescendingLengthOrder()  )
+##        #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $forename, 1) )
+##        {"regexp": "(?i)\\b\\Q$approximateMatch\\E\\b", "placeHolder": "$StringTools.getRandomForeName()"},
+##        #end
+##    #end
+##
+##    #foreach( $surname in $patient.getLastNamesInDescendingLengthOrder()  )
+##        #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $surname, 1) )
+##        {"regexp": "(?i)\\b\\Q$approximateMatch\\E\\b", "placeHolder": "$StringTools.getRandomSurname()"},
+##        #end
+##    #end
+##
+##    #foreach( $surname in $patient.getLastNamesInDescendingLengthOrder()  )
+##    {"regexp": "(?i)\\b\\Q$surname\\E\\b", "placeHolder": "$StringTools.getRandomSurname()"},
+##    #end
+##
+##    #foreach( $forename in $patient.getSeparatedForeNames()  )
+##        #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $forename, 1) )
+##        {"regexp": "(?i)\\b\\Q$approximateMatch\\E\\b", "placeHolder": "$StringTools.getRandomForeName()"},
+##        #end
+##    #end
+##
+##    #foreach( $forename in $patient.getSeparatedSurnames()  )
+##        #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $forename, 1) )
+##        {"regexp": "(?i)\\b\\Q$approximateMatch\\E\\b", "placeHolder": "$StringTools.getRandomSurame()"},
+##        #end
+##    #end
+##
+##    #foreach( $forename in $patient.getCarerForeNames()  )
+##        #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $forename, 1) )
+##        {"regexp": "(?i)\\b\\Q$approximateMatch\\E\\b", "placeHolder": "$StringTools.getRandomForeName()"},
+##        #end
+##    #end
+##
+##    #foreach( $surname in $patient.getCarerLastNames()  )
+##        #foreach( $approximateMatch in $StringTools.getApproximatelyMatchingStringList($sourceText, $surname, 1) )
+##        {"regexp": "(?i)\\b\\Q$approximateMatch\\E\\b", "placeHolder": "$StringTools.getRandomSurame()"},
+##        #end
+##    #end
+
 ]
