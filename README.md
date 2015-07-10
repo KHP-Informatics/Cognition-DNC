@@ -69,12 +69,22 @@ Database Connection
 </h5>
 
 Edit 
-`pipeline/target/config/applicationContext.xml`
+`pipeline/target/config/config.properties`
 
-so that:
+so that the source database settings point to the source database where the data is, and the target database settings point to databse where you would like the results to be stored.
 
-1. The bean with id "sourceDataSource" points to the desired source DB (with username/password specified).
-2. The bean with id "targetDataSource" points to the desired target DB (with username/password specified).
+# SOURCE DATABASE SETTINGS
+sourceJdbcPath      = jdbc:jtds:sqlserver://127.0.0.1;databaseName=dbName
+sourceJdbcDriver    = net.sourceforge.jtds.jdbc.Driver
+sourceDbUsername    = username
+sourceDbPassword    = password
+
+
+# TARGET DATABASE SETTINGS
+targetJdbcPath      = jdbc:jtds:sqlserver://127.0.0.1;databaseName=dbName
+targetJdbcDriver    = net.sourceforge.jtds.jdbc.Driver
+targetDbUsername    = username
+targetDbPassword    = password
 
 <h5>
 Query configuration
