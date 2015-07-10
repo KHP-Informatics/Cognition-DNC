@@ -39,8 +39,8 @@
     </bean>
 
     <bean id="sourceDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="org.hsqldb.jdbcDriver" />
-        <property name="url" value="jdbc:hsqldb:hsql://localhost:9001/test" />
+        <property name="driverClassName" value="${sourceDriver}" />
+        <property name="url" value="${sourceJdbcPath}" />
     </bean>
 
     <bean id="sourceSessionFactory"
@@ -74,8 +74,8 @@
     </bean>
 
     <bean id="targetDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="org.hsqldb.jdbcDriver" />
-        <property name="url" value="jdbc:hsqldb:hsql://localhost:9002/test2" />
+        <property name="driverClassName" value="${targetDriver}" />
+        <property name="url" value="${targetJdbcPath}" />
     </bean>
 
     <bean id="targetTransactionManager"

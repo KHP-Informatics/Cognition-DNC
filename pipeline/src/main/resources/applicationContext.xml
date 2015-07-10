@@ -49,18 +49,18 @@
 
     <bean id="sourceDataSource" class="org.apache.commons.dbcp.BasicDataSource"
           destroy-method="close">
-        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver" />
-        <property name="url" value="jdbc:jtds:sqlserver://address;databaseName=dbName;integratedSecurity=true" />
-        <property name="username" value="username" />
-        <property name="password" value="password" />
+        <property name="driverClassName" value="${sourceJdbcDriver}" />
+        <property name="url" value="${sourceJdbcPath}" />
+        <property name="username" value="${sourceDbUsername}" />
+        <property name="password" value="${sourceDbPassword}" />
     </bean>
 
     <bean id="targetDataSource" class="org.apache.commons.dbcp.BasicDataSource"
           destroy-method="close">
-        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver" />
-        <property name="url" value="jdbc:jtds:sqlserver://address;databaseName=dbName;integratedSecurity=true" />
-        <property name="username" value="username" />
-        <property name="password" value="password" />
+        <property name="driverClassName" value="${targetJdbcDriver}" />
+        <property name="url" value="${targetJdbcPath}" />
+        <property name="username" value="${targetDbUsername}" />
+        <property name="password" value="${targetDbPassword}" />
     </bean>
 
     <bean id="sourceSessionFactory"
