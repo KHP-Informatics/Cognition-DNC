@@ -71,7 +71,7 @@ Database Connection
 Edit 
 `pipeline/target/config/config.properties`
 
-so that the source database settings point to the source database where the data is, and the target database settings point to databse where you would like the results to be stored.
+so that the source database settings point to the source database where the data is, and the target database settings point to database where you would like the results to be stored.
 
 ```
 # SOURCE DATABASE SETTINGS
