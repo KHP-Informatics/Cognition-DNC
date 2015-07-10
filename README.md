@@ -73,6 +73,7 @@ Edit
 
 so that the source database settings point to the source database where the data is, and the target database settings point to databse where you would like the results to be stored.
 
+```
 # SOURCE DATABASE SETTINGS
 sourceJdbcPath      = jdbc:jtds:sqlserver://127.0.0.1;databaseName=dbName
 sourceJdbcDriver    = net.sourceforge.jtds.jdbc.Driver
@@ -85,6 +86,7 @@ targetJdbcPath      = jdbc:jtds:sqlserver://127.0.0.1;databaseName=dbName
 targetJdbcDriver    = net.sourceforge.jtds.jdbc.Driver
 targetDbUsername    = username
 targetDbPassword    = password
+```
 
 <h5>
 Query configuration
