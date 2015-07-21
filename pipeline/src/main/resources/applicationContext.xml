@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
        xmlns:cache="http://www.springframework.org/schema/cache"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
 
     <context:component-scan base-package="uk.ac.kcl.iop.brc.core.pipeline.dncpipeline" />
     <context:component-scan base-package="uk.ac.kcl.iop.brc.core.pipeline.common" />
     <context:annotation-config />
-    <tx:annotation-driven />
     <cache:annotation-driven cache-manager="cacheManager" />
     <context:property-placeholder ignore-unresolvable="true"
                                   location="classpath:config.properties" />
@@ -31,20 +30,6 @@
             </value>
         </property>
         <property name="configLocation" value="velocity.properties"/>
-    </bean>
-
-    <bean id="sourceTransactionManager"
-          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sourceSessionFactory" />
-        <property name="dataSource" ref="sourceDataSource" />
-        <qualifier value="sourceTX" />
-    </bean>
-
-    <bean id="targetTransactionManager"
-          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sourceSessionFactory" />
-        <property name="dataSource" ref="targetDataSource" />
-        <qualifier value="targetTX" />
     </bean>
 
     <bean id="sourceDataSource" class="org.apache.commons.dbcp.BasicDataSource"

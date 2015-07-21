@@ -119,7 +119,6 @@ public class DNCPipelineService {
         coordinates.parallelStream().forEach(this::processSingleCoordinate);
     }
 
-    @Transactional("targetTX")
     private void processTextCoordinate(DNCWorkCoordinate coordinate) {
         try {
             logger.info("Anonymising text, coordinates: " + coordinate);
@@ -136,7 +135,6 @@ public class DNCPipelineService {
         }
     }
 
-    @Transactional("targetTX")
     private void processBinaryCoordinate(DNCWorkCoordinate coordinate) {
         try {
             byte[] bytes = dncWorkUnitDao.getByteFromCoordinate(coordinate);
