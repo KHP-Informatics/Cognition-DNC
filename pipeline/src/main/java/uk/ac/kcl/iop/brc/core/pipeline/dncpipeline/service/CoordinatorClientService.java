@@ -62,18 +62,22 @@ public class CoordinatorClientService {
         setCognitionNameIfNull();
         logger.info(cognitionName + " is starting processing documents now.");
 
-        List<DNCWorkCoordinate> workCoordinates;
+        List<DNCWorkCoordinate> coordinateObjects;
         String jsonCoordinates = "";
-        while (! jsonCoordinates.equalsIgnoreCase(CoordinatorService.NO_COORDINATE_LEFT)) {
+        while (thereAreCoordinatesToProcess(jsonCoordinates)) {
             try {
                 jsonCoordinates = getCoordinatesAsJsonFromServer();
-                workCoordinates = convertJsonCoordinateToObjects(jsonCoordinates);
-                pipelineService.processCoordinates(workCoordinates);
+                coordinateObjects = convertJsonCoordinateToObjects(jsonCoordinates);
+                pipelineService.processCoordinates(coordinateObjects);
             } catch (Exception e) {
                 handleException(jsonCoordinates, e);
             }
         }
 
+    }
+
+    private boolean thereAreCoordinatesToProcess(String jsonCoordinates) {
+        return ! jsonCoordinates.equalsIgnoreCase(CoordinatorService.NO_COORDINATE_LEFT);
     }
 
     private void handleException(String jsonCoordinates, Exception e) {
