@@ -41,6 +41,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Service
 public class DNCPipelineService {
@@ -115,8 +116,8 @@ public class DNCPipelineService {
         dumpFailedCoordinates();
     }
 
-    public void processCoordinates(List<DNCWorkCoordinate> coordinates) {
-        coordinates.parallelStream().forEach(this::processSingleCoordinate);
+    public void processCoordinates(ConcurrentLinkedQueue<DNCWorkCoordinate> coordinateQueue) {
+        coordinateQueue.parallelStream().forEach(this::processSingleCoordinate);
     }
 
     private void processTextCoordinate(DNCWorkCoordinate coordinate) {

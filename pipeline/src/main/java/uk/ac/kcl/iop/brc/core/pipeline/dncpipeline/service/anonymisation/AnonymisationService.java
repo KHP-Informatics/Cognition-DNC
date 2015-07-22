@@ -16,9 +16,6 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.anonymisation;
 
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.Patient;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.PythonService;
-import org.apache.commons.lang.math.RandomUtils;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -27,14 +24,7 @@ import org.jsoup.nodes.TextNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.MissingResourceException;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.Patient;
 
 @Service
 public class AnonymisationService {

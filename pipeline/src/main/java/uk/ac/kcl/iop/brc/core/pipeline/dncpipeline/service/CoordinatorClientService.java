@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.RandomUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import uk.ac.kcl.iop.brc.core.pipeline.common.helper.JsonHelper;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.DNCWorkCoordinate;
@@ -32,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Service
 public class CoordinatorClientService {
@@ -51,6 +53,8 @@ public class CoordinatorClientService {
 
     private String chunkSize = "10000";
 
+    private ConcurrentLinkedQueue<DNCWorkCoordinate> coordinateQueue = new ConcurrentLinkedQueue<>();
+
     public void setServerAddress(String serverAddress) {
         this.serverAddress = serverAddress;
     }
@@ -62,19 +66,34 @@ public class CoordinatorClientService {
         setCognitionNameIfNull();
         logger.info(cognitionName + " is starting processing documents now.");
 
-        List<DNCWorkCoordinate> coordinateObjects;
         String jsonCoordinates = "";
         while (thereAreCoordinatesToProcess(jsonCoordinates)) {
             try {
                 jsonCoordinates = getCoordinatesAsJsonFromServer();
-                coordinateObjects = convertJsonCoordinateToObjects(jsonCoordinates);
-                pipelineService.processCoordinates(coordinateObjects);
+                coordinateQueue.addAll(convertJsonCoordinateToObjects(jsonCoordinates));
+                pipelineService.processCoordinates(coordinateQueue);
             } catch (Exception e) {
                 handleException(jsonCoordinates, e);
             }
         }
 
     }
+
+    @Scheduled(cron = "0 * * * * *")
+    public void populateCoordinateQueue() {
+        int MAX_CORES = 256;
+        if (coordinateQueue.size() < MAX_CORES) {
+            try {
+                String jsonCoordinates = getCoordinatesAsJsonFromServer();
+                coordinateQueue.addAll(convertJsonCoordinateToObjects(jsonCoordinates));
+            } catch (UnirestException e) {
+                logger.error(e.getMessage());
+            }
+
+        }
+    }
+
+
 
     private boolean thereAreCoordinatesToProcess(String jsonCoordinates) {
         return ! jsonCoordinates.equalsIgnoreCase(CoordinatorService.NO_COORDINATE_LEFT);
