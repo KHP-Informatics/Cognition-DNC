@@ -9,3 +9,4 @@ cachedir/
 column_mapping.json
 velocity.log*
 .DS_*
+*#
