@@ -116,7 +116,7 @@ public class DNCPipelineService {
         dumpFailedCoordinates();
     }
 
-    public void processCoordinates(ConcurrentLinkedQueue<DNCWorkCoordinate> coordinateQueue) {
+    public void processCoordinates(List<DNCWorkCoordinate> coordinateQueue) {
         coordinateQueue.parallelStream().forEach(this::processSingleCoordinate);
     }
 

@@ -53,8 +53,6 @@ public class CoordinatorClientService {
 
     private String chunkSize = "10000";
 
-    private ConcurrentLinkedQueue<DNCWorkCoordinate> coordinateQueue = new ConcurrentLinkedQueue<>();
-
     public void setServerAddress(String serverAddress) {
         this.serverAddress = serverAddress;
     }
@@ -70,30 +68,14 @@ public class CoordinatorClientService {
         while (thereAreCoordinatesToProcess(jsonCoordinates)) {
             try {
                 jsonCoordinates = getCoordinatesAsJsonFromServer();
-                coordinateQueue.addAll(convertJsonCoordinateToObjects(jsonCoordinates));
-                pipelineService.processCoordinates(coordinateQueue);
+                List<DNCWorkCoordinate> coordinates = convertJsonCoordinateToObjects(jsonCoordinates);
+                pipelineService.processCoordinates(coordinates);
             } catch (Exception e) {
                 handleException(jsonCoordinates, e);
             }
         }
 
     }
-
-    @Scheduled(cron = "0 * * * * *")
-    public void populateCoordinateQueue() {
-        int MAX_CORES = 256;
-        if (coordinateQueue.size() < MAX_CORES) {
-            try {
-                String jsonCoordinates = getCoordinatesAsJsonFromServer();
-                coordinateQueue.addAll(convertJsonCoordinateToObjects(jsonCoordinates));
-            } catch (UnirestException e) {
-                logger.error(e.getMessage());
-            }
-
-        }
-    }
-
-
 
     private boolean thereAreCoordinatesToProcess(String jsonCoordinates) {
         return ! jsonCoordinates.equalsIgnoreCase(CoordinatorService.NO_COORDINATE_LEFT);
