@@ -19,6 +19,7 @@ package uk.ac.kcl.iop.brc.core.pipeline.common.service;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 import org.apache.commons.lang.math.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
@@ -63,7 +64,12 @@ public class DocumentConversionService {
         fos.close();
 
         try {
-            return tesseract.doOCR(file);
+            String contentFromPDF = tesseract.doOCR(file);
+            if (StringUtils.isBlank(contentFromPDF)) {
+                // TODO: Convert to image.
+                // contentFromPDF = applyOCROnImage(convertToImage(file));
+            }
+            return contentFromPDF;
         } catch (TesseractException e) {
             e.printStackTrace();
         } finally {
@@ -71,4 +77,5 @@ public class DocumentConversionService {
         }
         return "";
     }
+
 }
