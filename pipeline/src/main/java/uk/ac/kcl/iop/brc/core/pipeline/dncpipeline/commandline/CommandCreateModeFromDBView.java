@@ -38,8 +38,12 @@ public class CommandCreateModeFromDBView implements CommandProcessor {
     @Override
     public void process(CommandLine cmd) {
         if (cmd.hasOption("noPseudonym")) {
-            dncPipelineService.setNoPseudonym(true);
+            dncPipelineService.getCommandLineArgHolder().setNoPseudonym(true);
         }
+        if (cmd.hasOption("instantOCR")) {
+            dncPipelineService.getCommandLineArgHolder().setInstantOCR(true);
+        }
+
         dncPipelineService.startCreateModeWithDBView();
     }
 

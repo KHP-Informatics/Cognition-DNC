@@ -47,7 +47,11 @@ public class CommandCreateModeFromFile implements CommandProcessor {
         }
 
         if (cmd.hasOption("noPseudonym")) {
-            dncPipelineService.setNoPseudonym(true);
+            dncPipelineService.getCommandLineArgHolder().setNoPseudonym(true);
+        }
+
+        if (cmd.hasOption("instantOCR")) {
+            dncPipelineService.getCommandLineArgHolder().setInstantOCR(true);
         }
 
         dncPipelineService.startCreateModeWithFile(filePath);
@@ -62,6 +66,11 @@ public class CommandCreateModeFromFile implements CommandProcessor {
         options.addOption(OptionBuilder.withLongOpt("file")
                 .withDescription("Json file to process").hasOptionalArg().
                         withArgName("file").create());
+
+        options.addOption(OptionBuilder.withLongOpt("instantOCR")
+                .withDescription("Process OCR documents as soon as they arrive (By default, Cognition puts them " +
+                        "in a separate queue and processes the queue last").hasOptionalArg().
+                        withArgName("instantOCR").create());
     }
 
 }

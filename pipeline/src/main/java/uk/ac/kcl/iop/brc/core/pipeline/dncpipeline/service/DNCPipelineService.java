@@ -22,11 +22,11 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import uk.ac.kcl.iop.brc.core.pipeline.common.helper.JsonHelper;
 import uk.ac.kcl.iop.brc.core.pipeline.common.service.DocumentConversionService;
 import uk.ac.kcl.iop.brc.core.pipeline.common.service.FileTypeService;
 import uk.ac.kcl.iop.brc.core.pipeline.common.utils.StringTools;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.commandline.CommandLineArgHolder;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.CoordinatesDao;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.DNCWorkUnitDao;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.PatientDao;
@@ -35,13 +35,10 @@ import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.Patient;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.anonymisation.AnonymisationService;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Service
 public class DNCPipelineService {
@@ -77,7 +74,7 @@ public class DNCPipelineService {
 
     private JsonHelper<DNCWorkCoordinate> jsonHelper = new JsonHelper(DNCWorkCoordinate[].class);
 
-    private boolean noPseudonym = false;
+    private CommandLineArgHolder commandLineArgHolder = new CommandLineArgHolder();
 
     private List<DNCWorkCoordinate> failedCoordinates = Collections.synchronizedList(new ArrayList<>());
 
@@ -141,9 +138,13 @@ public class DNCPipelineService {
             byte[] bytes = dncWorkUnitDao.getByteFromCoordinate(coordinate);
             String text = convertBinary(bytes);
             if (StringTools.noContentInHtml(text) && ocrIsEnabled()) {
-                logger.info("Skipping OCR coordinate " + coordinate);
-                ocrQueue.add(coordinate);
-                return;
+                if (commandLineArgHolder.isInstantOCR()) {
+                    processOCRCoordinate(coordinate);
+                } else {
+                    logger.info("Skipping OCR coordinate " + coordinate);
+                    ocrQueue.add(coordinate);
+                    return;
+                }
             }
             if (pseudonymisationIsEnabled()) {
                 logger.info("Pseudonymising binary, coordinates: " + coordinate);
@@ -159,7 +160,7 @@ public class DNCPipelineService {
     }
 
     private boolean pseudonymisationIsEnabled() {
-        if (! noPseudonym) {
+        if (! commandLineArgHolder.isNoPseudonym()) {
             return true;
         }
         return "1".equals(pseudonymEnabled) || "true".equalsIgnoreCase(pseudonymEnabled);
@@ -207,20 +208,24 @@ public class DNCPipelineService {
 
     private void processOCRQueue() {
         ocrQueue.parallelStream().forEach(coordinate -> {
-            logger.info("Processing OCR coordinate " + coordinate);
-            byte[] bytes = dncWorkUnitDao.getByteFromCoordinate(coordinate);
-            try {
-                String text = tryOCR(bytes);
-                if (pseudonymisationIsEnabled()) {
-                    Patient patient = patientDao.getPatient(coordinate.getPatientId());
-                    text = pseudonymisePersonText(patient, text);
-                }
-                saveText(coordinate, text);
-            } catch (Exception e) {
-                failedCoordinates.add(coordinate);
-                logger.error(e.getMessage());
-            }
+            processOCRCoordinate(coordinate);
         });
+    }
+
+    private void processOCRCoordinate(DNCWorkCoordinate coordinate) {
+        logger.info("Processing OCR coordinate " + coordinate);
+        byte[] bytes = dncWorkUnitDao.getByteFromCoordinate(coordinate);
+        try {
+            String text = tryOCR(bytes);
+            if (pseudonymisationIsEnabled()) {
+                Patient patient = patientDao.getPatient(coordinate.getPatientId());
+                text = pseudonymisePersonText(patient, text);
+            }
+            saveText(coordinate, text);
+        } catch (Exception e) {
+            failedCoordinates.add(coordinate);
+            logger.error(e.getMessage());
+        }
     }
 
     private void processSingleCoordinate(DNCWorkCoordinate coordinate) {
@@ -230,10 +235,6 @@ public class DNCPipelineService {
         } else {
             processTextCoordinate(coordinate);
         }
-    }
-
-    public void setNoPseudonym(boolean noPseudonym) {
-        this.noPseudonym = noPseudonym;
     }
 
     public void dumpFailedCoordinates() {
@@ -252,4 +253,9 @@ public class DNCPipelineService {
             e.printStackTrace();
         }
     }
+
+    public CommandLineArgHolder getCommandLineArgHolder() {
+        return commandLineArgHolder;
+    }
+
 }

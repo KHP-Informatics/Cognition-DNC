@@ -24,12 +24,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.CoordinatorClientService;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.CoordinatorService;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.DNCPipelineService;
 
 @Component
 public class CommandClient implements CommandProcessor {
 
     @Autowired
-    public CoordinatorClientService clientService;
+    private CoordinatorClientService clientService;
+
+    @Autowired
+    private DNCPipelineService dncPipelineService;
 
     @Override
     public boolean isResponsibleFor(CommandLine cmd) {
@@ -51,6 +55,9 @@ public class CommandClient implements CommandProcessor {
                 throw new IllegalArgumentException("The specified chunkSize must be an integer.");
             }
             clientService.setChunkSize(chunkSize);
+        }
+        if (cmd.hasOption("instantOCR")) {
+            dncPipelineService.getCommandLineArgHolder().setInstantOCR(true);
         }
         clientService.startProcessing();
     }

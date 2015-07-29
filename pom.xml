@@ -9,12 +9,13 @@
         <springVersion>4.1.4.RELEASE</springVersion>
         <hibernateVersion>4.1.7.Final</hibernateVersion>
         <springTestVersion>4.0.3.RELEASE</springTestVersion>
-        <tikaVersion>1.7</tikaVersion>
+        <tikaVersion>1.9</tikaVersion>
+        <pdfBoxVersion>1.8.10</pdfBoxVersion>
     </properties>
 
     <groupId>uk.ac.kcl.iop.brc.core.pipeline</groupId>
     <artifactId>Pipeline</artifactId>
-    <version>0.3</version>
+    <version>0.4</version>
     <packaging>pom</packaging>
     <organization>
         <name>Cognition-DNC</name>
@@ -123,6 +124,25 @@
             <artifactId>postgresql</artifactId>
             <version>9.1-901-1.jdbc4</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>${pdfBoxVersion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>fontbox</artifactId>
+            <version>${pdfBoxVersion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>jempbox</artifactId>
+            <version>${pdfBoxVersion}</version>
+        </dependency>
+
 
     </dependencies>
 
