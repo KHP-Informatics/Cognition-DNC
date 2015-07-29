@@ -182,6 +182,14 @@ public class StringToolsTest {
     }
 
     @Test
+    public void shouldReturnTrueIfStringIsBlank() {
+        String test = "";
+
+        assertThat(StringTools.noContentInHtml(test), equalTo(true));
+
+    }
+
+    @Test
     public void shouldReturnFalseIfThereIsTextContentInHtml() {
         String test = "<html><head><title>Test</title></head><body><div id=\"test\">Some content</div></body></html>";
 

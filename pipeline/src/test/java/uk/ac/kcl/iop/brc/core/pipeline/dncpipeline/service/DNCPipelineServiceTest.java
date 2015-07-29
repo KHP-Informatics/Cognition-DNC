@@ -16,21 +16,22 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service;
 
-import org.junit.Before;
-import uk.ac.kcl.iop.brc.core.pipeline.common.helper.JsonHelper;
-import uk.ac.kcl.iop.brc.core.pipeline.common.service.DocumentConversionService;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.DNCWorkUnitDao;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.PatientDao;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.DNCWorkCoordinate;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.Patient;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.anonymisation.AnonymisationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import uk.ac.kcl.iop.brc.core.pipeline.common.helper.JsonHelper;
+import uk.ac.kcl.iop.brc.core.pipeline.common.service.DocumentConversionService;
+import uk.ac.kcl.iop.brc.core.pipeline.common.service.FileTypeService;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.DNCWorkUnitDao;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.PatientDao;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.DNCWorkCoordinate;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.Patient;
+import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.anonymisation.AnonymisationService;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class DNCPipelineServiceTest {
     private JsonHelper<DNCWorkCoordinate> mockJsonHelper;
 
     @Mock
-    private DNCWorkUnitDao DNCWorkUnitDao;
+    private DNCWorkUnitDao dncWorkUnitDao;
 
     @Mock
     private PatientDao patientDao;
@@ -57,6 +58,9 @@ public class DNCPipelineServiceTest {
 
     @Mock
     private DocumentConversionService documentConversionService;
+
+    @Mock
+    private FileTypeService fileTypeService;
 
     @Test
     public void shouldCallTextPipelineFromFileCorrectly() {
@@ -69,16 +73,16 @@ public class DNCPipelineServiceTest {
         DNCWorkCoordinates.add(cwc);
         Patient patient = new Patient();
         when(mockJsonHelper.loadListFromFile(any(File.class))).thenReturn(DNCWorkCoordinates);
-        when(DNCWorkUnitDao.getTextFromCoordinate(any(DNCWorkCoordinate.class))).thenReturn("val");
+        when(dncWorkUnitDao.getTextFromCoordinate(any(DNCWorkCoordinate.class))).thenReturn("val");
         when(patientDao.getPatient(1L)).thenReturn(patient);
         when(anonymisationService.pseudonymisePersonPlainText(patient, "val")).thenReturn("anonymised");
 
         service.startCreateModeWithFile("mockFile");
 
-        verify(DNCWorkUnitDao).getTextFromCoordinate(any(DNCWorkCoordinate.class));
+        verify(dncWorkUnitDao).getTextFromCoordinate(any(DNCWorkCoordinate.class));
         verify(patientDao).getPatient(1L);
         verify(anonymisationService).pseudonymisePersonPlainText(patient, "val");
-        verify(DNCWorkUnitDao).saveConvertedText(cwc, "anonymised");
+        verify(dncWorkUnitDao).saveConvertedText(cwc, "anonymised");
         verify(documentConversionService, times(0)).convertToText(any(byte[].class));
         verify(documentConversionService, times(0)).convertToXHTML(any(byte[].class));
     }
@@ -94,17 +98,17 @@ public class DNCPipelineServiceTest {
         DNCWorkCoordinates.add(cwc);
         Patient patient = new Patient();
         when(mockJsonHelper.loadListFromFile(any(File.class))).thenReturn(DNCWorkCoordinates);
-        when(DNCWorkUnitDao.getByteFromCoordinate(any(DNCWorkCoordinate.class))).thenReturn(new byte[1]);
+        when(dncWorkUnitDao.getByteFromCoordinate(any(DNCWorkCoordinate.class))).thenReturn(new byte[1]);
         when(patientDao.getPatient(1L)).thenReturn(patient);
         when(anonymisationService.pseudonymisePersonPlainText(patient, "val")).thenReturn("anonymised");
         when(documentConversionService.convertToText(any(byte[].class))).thenReturn("val");
 
         service.startCreateModeWithFile("mockFile");
 
-        verify(DNCWorkUnitDao).getByteFromCoordinate(any(DNCWorkCoordinate.class));
+        verify(dncWorkUnitDao).getByteFromCoordinate(any(DNCWorkCoordinate.class));
         verify(patientDao).getPatient(1L);
         verify(anonymisationService).pseudonymisePersonPlainText(patient, "val");
-        verify(DNCWorkUnitDao).saveConvertedText(cwc, "anonymised");
+        verify(dncWorkUnitDao).saveConvertedText(cwc, "anonymised");
         verify(documentConversionService, times(1)).convertToText(any(byte[].class));
     }
 
@@ -119,18 +123,38 @@ public class DNCPipelineServiceTest {
         DNCWorkCoordinates.add(cwc);
         Patient patient = new Patient();
         when(mockJsonHelper.loadListFromFile(any(File.class))).thenReturn(DNCWorkCoordinates);
-        when(DNCWorkUnitDao.getByteFromCoordinate(any(DNCWorkCoordinate.class))).thenReturn(new byte[1]);
+        when(dncWorkUnitDao.getByteFromCoordinate(any(DNCWorkCoordinate.class))).thenReturn(new byte[1]);
         when(patientDao.getPatient(1L)).thenReturn(patient);
         when(anonymisationService.pseudonymisePersonHTML(patient, "val")).thenReturn("anonymised");
         when(documentConversionService.convertToXHTML(any(byte[].class))).thenReturn("val");
 
         service.startCreateModeWithFile("mockFile");
 
-        verify(DNCWorkUnitDao).getByteFromCoordinate(any(DNCWorkCoordinate.class));
+        verify(dncWorkUnitDao).getByteFromCoordinate(any(DNCWorkCoordinate.class));
         verify(patientDao).getPatient(1L);
         verify(anonymisationService).pseudonymisePersonHTML(patient, "val");
-        verify(DNCWorkUnitDao).saveConvertedText(cwc, "anonymised");
+        verify(dncWorkUnitDao).saveConvertedText(cwc, "anonymised");
         verify(documentConversionService, times(1)).convertToXHTML(any(byte[].class));
+    }
+
+    @Test
+    public void shouldNotSaveOCRResultTwice() throws IOException {
+        service.getCommandLineArgHolder().setInstantOCR(true);
+        service.setOcrEnabled("1");
+        service.setConversionFormat("html");
+        service.getCommandLineArgHolder().setNoPseudonym(true);
+
+        DNCWorkCoordinate coordinate = new DNCWorkCoordinate();
+
+        when(dncWorkUnitDao.getByteFromCoordinate(coordinate)).thenReturn(new byte[0]);
+        when(fileTypeService.isPDF(any(byte[].class))).thenReturn(true);
+        when(documentConversionService.getContentFromImagePDF(any(byte[].class))).thenReturn("test text");
+
+        service.processBinaryCoordinate(coordinate);
+
+        verify(dncWorkUnitDao, times(2)).getByteFromCoordinate(coordinate);
+        verify(dncWorkUnitDao, times(1)).saveConvertedText(coordinate, "test text");
+        verifyZeroInteractions(dncWorkUnitDao);
     }
 
 }

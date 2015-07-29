@@ -18,6 +18,7 @@ package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service;
 
 import com.google.gson.Gson;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -117,7 +118,7 @@ public class DNCPipelineService {
         coordinateQueue.parallelStream().forEach(this::processSingleCoordinate);
     }
 
-    private void processTextCoordinate(DNCWorkCoordinate coordinate) {
+    public void processTextCoordinate(DNCWorkCoordinate coordinate) {
         try {
             logger.info("Anonymising text, coordinates: " + coordinate);
             String text = dncWorkUnitDao.getTextFromCoordinate(coordinate);
@@ -137,26 +138,41 @@ public class DNCPipelineService {
         try {
             byte[] bytes = dncWorkUnitDao.getByteFromCoordinate(coordinate);
             String text = convertBinary(bytes);
-            if (StringTools.noContentInHtml(text) && ocrIsEnabled()) {
-                if (commandLineArgHolder.isInstantOCR()) {
-                    processOCRCoordinate(coordinate);
-                } else {
-                    logger.info("Skipping OCR coordinate " + coordinate);
-                    ocrQueue.add(coordinate);
-                }
+            if (handleOCR(coordinate, text)) {
                 return;
             }
-            if (pseudonymisationIsEnabled()) {
-                logger.info("Pseudonymising binary, coordinates: " + coordinate);
-                Patient patient = patientDao.getPatient(coordinate.getPatientId());
-                text = pseudonymisePersonText(patient, text);
-            }
-            saveText(coordinate, text);
+            handleNonOCR(coordinate, text);
         } catch (Exception ex) {
             logger.error("Could not process coordinate " + coordinate );
             failedCoordinates.add(coordinate);
             ex.printStackTrace();
         }
+    }
+
+    private void handleNonOCR(DNCWorkCoordinate coordinate, String text) {
+        if (pseudonymisationIsEnabled()) {
+            logger.info("Pseudonymising binary, coordinates: " + coordinate);
+            Patient patient = patientDao.getPatient(coordinate.getPatientId());
+            text = pseudonymisePersonText(patient, text);
+        }
+        saveText(coordinate, text);
+    }
+
+    private boolean handleOCR(DNCWorkCoordinate coordinate, String text) {
+        if (shouldTryOCRFor(text)) {
+            if (commandLineArgHolder.isInstantOCR()) {
+                processOCRCoordinate(coordinate);
+            } else {
+                logger.info("Skipping OCR coordinate " + coordinate);
+                ocrQueue.add(coordinate);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean shouldTryOCRFor(String text) {
+        return StringTools.noContentInHtml(text) && ocrIsEnabled();
     }
 
     private boolean pseudonymisationIsEnabled() {
@@ -173,6 +189,7 @@ public class DNCPipelineService {
     private String tryOCR(byte[] bytes) throws Exception {
         if (! fileTypeService.isPDF(bytes)) {
             logger.info("Ignoring non-PDF file for OCR. OCR cannot be applied to Non-PDF Files.");
+            return "";
         }
 
         return documentConversionService.getContentFromImagePDF(bytes);
@@ -217,6 +234,9 @@ public class DNCPipelineService {
         byte[] bytes = dncWorkUnitDao.getByteFromCoordinate(coordinate);
         try {
             String text = tryOCR(bytes);
+            if (StringUtils.isBlank(text)) {
+                return;
+            }
             if (pseudonymisationIsEnabled()) {
                 Patient patient = patientDao.getPatient(coordinate.getPatientId());
                 text = pseudonymisePersonText(patient, text);
@@ -258,4 +278,7 @@ public class DNCPipelineService {
         return commandLineArgHolder;
     }
 
+    public void setOcrEnabled(String ocrEnabled) {
+        this.ocrEnabled = ocrEnabled;
+    }
 }

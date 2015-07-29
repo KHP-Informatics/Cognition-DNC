@@ -214,7 +214,7 @@ public class StringTools {
 
     public static boolean noContentInHtml(String text) {
         if (StringUtils.isBlank(text)) {
-            return false;
+            return true;
         }
         try {
             Document doc = Jsoup.parse(text);
