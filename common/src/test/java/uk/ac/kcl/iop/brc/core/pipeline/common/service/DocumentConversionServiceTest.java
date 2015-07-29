@@ -63,6 +63,18 @@ public class DocumentConversionServiceTest {
         assertTrue(text.contains("Introduction"));
     }
 
+    @Test
+    public void shouldConvertPDFToTextByOCR() throws IOException {
+        DocumentConversionService service = new DocumentConversionService();
+        InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("test_ocr_pdf.pdf");
+        byte[] bytes = IOUtils.toByteArray(resourceAsStream);
+
+        String text = service.getContentFromImagePDF(bytes);
+        System.out.println(text);
+
+        assertTrue(text.contains("An Example Paper"));
+    }
+
 //    @Test(threadPoolSize = 3) // invocationCount = 3
 //    @Ignore
 //    public void shouldApplyOCR() throws Exception {

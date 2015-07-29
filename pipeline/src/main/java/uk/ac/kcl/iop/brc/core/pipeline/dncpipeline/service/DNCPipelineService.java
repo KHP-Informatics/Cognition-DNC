@@ -133,7 +133,7 @@ public class DNCPipelineService {
         }
     }
 
-    private void processBinaryCoordinate(DNCWorkCoordinate coordinate) {
+    public void processBinaryCoordinate(DNCWorkCoordinate coordinate) {
         try {
             byte[] bytes = dncWorkUnitDao.getByteFromCoordinate(coordinate);
             String text = convertBinary(bytes);
@@ -143,8 +143,8 @@ public class DNCPipelineService {
                 } else {
                     logger.info("Skipping OCR coordinate " + coordinate);
                     ocrQueue.add(coordinate);
-                    return;
                 }
+                return;
             }
             if (pseudonymisationIsEnabled()) {
                 logger.info("Pseudonymising binary, coordinates: " + coordinate);
