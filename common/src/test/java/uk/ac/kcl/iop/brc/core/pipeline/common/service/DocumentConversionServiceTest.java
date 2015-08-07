@@ -17,7 +17,8 @@
 package uk.ac.kcl.iop.brc.core.pipeline.common.service;
 
 import org.apache.tika.io.IOUtils;
-import org.testng.annotations.Test;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,26 +64,4 @@ public class DocumentConversionServiceTest {
         assertTrue(text.contains("Introduction"));
     }
 
-    @Test
-    public void shouldConvertPDFToTextByOCR() throws IOException {
-        DocumentConversionService service = new DocumentConversionService();
-        InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("test_ocr_pdf.pdf");
-        byte[] bytes = IOUtils.toByteArray(resourceAsStream);
-
-        String text = service.getContentFromImagePDF(bytes);
-        System.out.println(text);
-
-        assertTrue(text.contains("An Example Paper"));
-    }
-
-//    @Test(threadPoolSize = 3) // invocationCount = 3
-//    @Ignore
-//    public void shouldApplyOCR() throws Exception {
-//        DocumentConversionService service = new DocumentConversionService();
-//        InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("testPdfImage.pdf");
-//        byte[] bytes = IOUtils.toByteArray(resourceAsStream);
-//
-//        String text = service.getContentFromImagePDF(bytes);
-//        assertFalse(StringUtils.isEmpty(text));
-//    }
 }

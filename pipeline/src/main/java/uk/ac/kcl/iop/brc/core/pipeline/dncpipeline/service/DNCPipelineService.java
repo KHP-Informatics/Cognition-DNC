@@ -224,9 +224,7 @@ public class DNCPipelineService {
     }
 
     private void processOCRQueue() {
-        ocrQueue.parallelStream().forEach(coordinate -> {
-            processOCRCoordinate(coordinate);
-        });
+        ocrQueue.parallelStream().forEach(coordinate -> processOCRCoordinate(coordinate));
     }
 
     private void processOCRCoordinate(DNCWorkCoordinate coordinate) {

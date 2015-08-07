@@ -68,6 +68,10 @@ public class CoordinatorClientService {
         while (thereAreCoordinatesToProcess(jsonCoordinates)) {
             try {
                 jsonCoordinates = getCoordinatesAsJsonFromServer();
+                if (jsonCoordinates.contains(CoordinatorService.NO_COORDINATE_LEFT))  {
+                    logger.info("No more coordinate left to process.");
+                    break;
+                }
                 List<DNCWorkCoordinate> coordinates = convertJsonCoordinateToObjects(jsonCoordinates);
                 pipelineService.processCoordinates(coordinates);
             } catch (Exception e) {
@@ -78,7 +82,7 @@ public class CoordinatorClientService {
     }
 
     private boolean thereAreCoordinatesToProcess(String jsonCoordinates) {
-        return ! jsonCoordinates.equalsIgnoreCase(CoordinatorService.NO_COORDINATE_LEFT);
+        return ! jsonCoordinates.contains(CoordinatorService.NO_COORDINATE_LEFT);
     }
 
     private void handleException(String jsonCoordinates, Exception e) {
@@ -103,7 +107,7 @@ public class CoordinatorClientService {
 
     private void saveCoordinatesInFile(String jsonCoordinates, String fileName) {
         try {
-            PrintWriter writer = new PrintWriter(LAST_SET_OF_COORDINATES_FILENAME, "UTF-8");
+            PrintWriter writer = new PrintWriter(fileName, "UTF-8");
             writer.println(jsonCoordinates);
             writer.close();
         } catch (Exception e) {
@@ -112,14 +116,14 @@ public class CoordinatorClientService {
     }
 
     private String getCoordinatesAsJsonFromServer() throws UnirestException {
-        HttpResponse<JsonNode> jsonResponse = Unirest.get(serverAddress)
+        HttpResponse<String> jsonResponse = Unirest.get(serverAddress)
                 .header("accept", "application/json")
                 .header("DNCRequest", "true")
                 .header("CognitionName", cognitionName)
                 .header("ChunkSize", chunkSize)
-                .asJson();
+                .asString();
 
-        return jsonResponse.getBody().toString();
+        return jsonResponse.getBody();
     }
 
     private void setCognitionNameIfNull() {

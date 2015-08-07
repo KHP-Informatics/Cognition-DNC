@@ -18,19 +18,27 @@ package uk.ac.kcl.iop.brc.core.pipeline.common.service;
 
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.math.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.apache.tika.sax.ToXMLContentHandler;
+import org.im4java.core.ConvertCmd;
+import org.im4java.core.IM4JavaException;
+import org.im4java.core.IMOperation;
 import org.springframework.stereotype.Service;
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.persistence.Convert;
 import java.io.*;
 
 @Service
 public class DocumentConversionService {
+
+    private Logger logger = Logger.getLogger(DocumentConversionService.class);
 
     private Tesseract tesseract = new Tesseract();
 
@@ -49,6 +57,7 @@ public class DocumentConversionService {
             parser.parse(stream, handler, metadata);
             return handler.toString();
         } catch (Exception e) {
+            logger.error(e.getMessage());
             e.printStackTrace();
         }
 
@@ -63,19 +72,16 @@ public class DocumentConversionService {
         fos.write(bytes);
         fos.close();
 
+        String result = "";
         try {
-            String contentFromPDF = tesseract.doOCR(file);
-            if (StringUtils.isBlank(contentFromPDF)) {
-                // TODO: Convert to image.
-                // contentFromPDF = applyOCROnImage(convertToImage(file));
-            }
-            return contentFromPDF;
-        } catch (TesseractException e) {
+            result = tesseract.doOCR(file);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
             e.printStackTrace();
         } finally {
             file.delete();
         }
-        return "";
+        return result;
     }
 
 }

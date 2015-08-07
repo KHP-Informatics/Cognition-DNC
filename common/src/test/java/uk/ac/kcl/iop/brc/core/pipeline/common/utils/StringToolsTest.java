@@ -182,6 +182,13 @@ public class StringToolsTest {
     }
 
     @Test
+    public void shouldReturnFalseIfThereIsNoHtmlTag() {
+        String test = "this is plain text";
+
+        assertThat(StringTools.noContentInHtml(test), equalTo(false));
+    }
+
+    @Test
     public void shouldReturnTrueIfStringIsBlank() {
         String test = "";
 
