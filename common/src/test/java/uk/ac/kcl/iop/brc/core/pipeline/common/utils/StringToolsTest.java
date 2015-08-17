@@ -177,7 +177,11 @@ public class StringToolsTest {
 
     @Test
     public void shouldReturnTrueIfThereIsNoTextContentInHtml() {
-        String test = "<html><head><title>Test</title></head><body><div id=\"test\"></div></body></html>";
+        String test = "<html><head><title>Test</title></head><body><div id=\"test\"><p /></div>" +
+                "<div id=\"test\"><p />" +
+                "</div>" +
+                "<div id=\"test\"><p /></div>" +
+                "<div id=\"test\"><p /></div></body></html>";
 
         assertThat(StringTools.noContentInHtml(test), equalTo(true));
     }

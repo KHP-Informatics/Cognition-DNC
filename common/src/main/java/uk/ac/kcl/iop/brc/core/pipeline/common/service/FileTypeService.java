@@ -17,7 +17,7 @@ public class FileTypeService {
 
     private boolean isDataTypeEqualTo(byte[] data, String type) {
         try {
-            return getType(data).equalsIgnoreCase(type);
+            return getType(data).equalsIgnoreCase(type) || getType(data).contains(type);
         } catch (Exception e) {
             e.printStackTrace();
         }

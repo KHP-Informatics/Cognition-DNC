@@ -200,6 +200,9 @@ public class DNCPipelineService {
             String text = convertBinary(bytes);
             DNCWorkCoordinate coordinate = DNCWorkCoordinate.createEmptyCoordinate();
             coordinate.setSourceTable(absoluteFilePath);
+            if (isPDFAndPossiblyOCR(bytes, text)) {
+                text = applyOCRToPDF(coordinate, bytes, text);
+            }
             saveText(coordinate, text);
         } catch (Exception e) {
             logger.error(e.getMessage());

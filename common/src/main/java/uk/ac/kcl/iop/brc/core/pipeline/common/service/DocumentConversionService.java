@@ -80,6 +80,7 @@ public class DocumentConversionService {
             }
             tiffFile = tiffFileOpt.get();
             String result = getOCRResultFromTiff(tiffFile);
+            pdfFile.deleteOnExit(); tiffFile.deleteOnExit();
             pdfFile.delete(); tiffFile.delete();
             return result;
         } catch (Exception e) {
@@ -134,7 +135,7 @@ public class DocumentConversionService {
         Thread waitThread = new Thread(waitTask);
         waitThread.start();
         try {
-            waitTask.get(120, TimeUnit.SECONDS);
+            waitTask.get(240, TimeUnit.SECONDS);
             return Optional.of(output);
         } catch (Exception e) {
             logger.error(e.getMessage());
