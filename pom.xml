@@ -9,7 +9,7 @@
         <springVersion>4.1.4.RELEASE</springVersion>
         <hibernateVersion>4.1.7.Final</hibernateVersion>
         <springTestVersion>4.0.3.RELEASE</springTestVersion>
-        <tikaVersion>1.9</tikaVersion>
+        <tikaVersion>1.10</tikaVersion>
         <pdfBoxVersion>1.8.10</pdfBoxVersion>
     </properties>
 
@@ -87,12 +87,6 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>6.9.4</version>
         </dependency>
 
         <dependency>

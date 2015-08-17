@@ -34,7 +34,7 @@
 
     <bean id="sourceDataSource" class="org.apache.commons.dbcp.BasicDataSource"
           destroy-method="close">
-        <property name="driverClassName" value="${sourceJdbcDriver}" />
+        <property name="driverClassName" value="org.postgresql.Driver" />
         <property name="url" value="${sourceJdbcPath}" />
         <property name="username" value="${sourceDbUsername}" />
         <property name="password" value="${sourceDbPassword}" />

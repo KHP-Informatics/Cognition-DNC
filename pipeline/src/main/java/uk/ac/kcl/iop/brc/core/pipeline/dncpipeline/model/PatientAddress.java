@@ -51,11 +51,8 @@ public class PatientAddress {
     }
 
     public boolean isNotTooShort() {
-        if (StringUtils.isBlank(address)) {
-            return false;
-        }
+        return !StringUtils.isBlank(address) && address.length() > 3;
 
-        return address.length() > 3;
     }
 
     public boolean isNotEmpty() {

@@ -8,7 +8,7 @@ package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.kcl.iop.brc.core.pipeline.common.testutils.IntegrationTest;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.DNCWorkCoordinate;
+import uk.ac.kcl.iop.brc.core.pipeline.common.model.DNCWorkCoordinate;
 
 import java.util.List;
 

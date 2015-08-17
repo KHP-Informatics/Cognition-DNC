@@ -26,7 +26,7 @@ import uk.ac.kcl.iop.brc.core.pipeline.common.service.DocumentConversionService;
 import uk.ac.kcl.iop.brc.core.pipeline.common.service.FileTypeService;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.DNCWorkUnitDao;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.PatientDao;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.DNCWorkCoordinate;
+import uk.ac.kcl.iop.brc.core.pipeline.common.model.DNCWorkCoordinate;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.Patient;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.anonymisation.AnonymisationService;
 
@@ -139,7 +139,6 @@ public class DNCPipelineServiceTest {
 
     @Test
     public void shouldNotSaveOCRResultTwice() throws IOException {
-        service.getCommandLineArgHolder().setInstantOCR(true);
         service.setOcrEnabled("1");
         service.setConversionFormat("html");
         service.getCommandLineArgHolder().setNoPseudonym(true);
@@ -148,11 +147,11 @@ public class DNCPipelineServiceTest {
 
         when(dncWorkUnitDao.getByteFromCoordinate(coordinate)).thenReturn(new byte[0]);
         when(fileTypeService.isPDF(any(byte[].class))).thenReturn(true);
-        when(documentConversionService.getContentFromImagePDF(any(byte[].class))).thenReturn("test text");
+        when(documentConversionService.convertToXHTML(any(byte[].class))).thenReturn("test text");
 
         service.processBinaryCoordinate(coordinate);
 
-        verify(dncWorkUnitDao, times(2)).getByteFromCoordinate(coordinate);
+        verify(dncWorkUnitDao, times(1)).getByteFromCoordinate(coordinate);
         verify(dncWorkUnitDao, times(1)).saveConvertedText(coordinate, "test text");
         verifyZeroInteractions(dncWorkUnitDao);
     }

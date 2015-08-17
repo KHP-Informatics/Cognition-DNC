@@ -24,7 +24,7 @@ import uk.ac.kcl.iop.brc.core.pipeline.common.data.BaseDao;
 
 import java.util.ArrayList;
 import java.util.List;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.DNCWorkCoordinate;
+import uk.ac.kcl.iop.brc.core.pipeline.common.model.DNCWorkCoordinate;
 
 @Repository
 public class CoordinatesDao extends BaseDao {

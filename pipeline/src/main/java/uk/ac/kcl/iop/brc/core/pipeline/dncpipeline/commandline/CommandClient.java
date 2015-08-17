@@ -56,9 +56,6 @@ public class CommandClient implements CommandProcessor {
             }
             clientService.setChunkSize(chunkSize);
         }
-        if (cmd.hasOption("instantOCR")) {
-            dncPipelineService.getCommandLineArgHolder().setInstantOCR(true);
-        }
         clientService.startProcessing();
     }
 

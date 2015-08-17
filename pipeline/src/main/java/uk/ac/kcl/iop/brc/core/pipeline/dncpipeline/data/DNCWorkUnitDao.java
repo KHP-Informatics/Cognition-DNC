@@ -25,7 +25,7 @@ import uk.ac.kcl.iop.brc.core.pipeline.common.data.BaseDao;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.helper.BlobHelper;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.helper.ClobHelper;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.exception.WorkCoordinateNotFound;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.DNCWorkCoordinate;
+import uk.ac.kcl.iop.brc.core.pipeline.common.model.DNCWorkCoordinate;
 
 import java.util.List;
 

@@ -18,12 +18,14 @@ package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service;
 
 import com.google.gson.Gson;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import uk.ac.kcl.iop.brc.core.pipeline.common.exception.CanNotProcessCoordinateException;
 import uk.ac.kcl.iop.brc.core.pipeline.common.helper.JsonHelper;
+import uk.ac.kcl.iop.brc.core.pipeline.common.model.DNCWorkCoordinate;
 import uk.ac.kcl.iop.brc.core.pipeline.common.service.DocumentConversionService;
 import uk.ac.kcl.iop.brc.core.pipeline.common.service.FileTypeService;
 import uk.ac.kcl.iop.brc.core.pipeline.common.utils.StringTools;
@@ -31,11 +33,11 @@ import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.commandline.CommandLineArgHol
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.CoordinatesDao;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.DNCWorkUnitDao;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.PatientDao;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.DNCWorkCoordinate;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.Patient;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service.anonymisation.AnonymisationService;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,8 +81,6 @@ public class DNCPipelineService {
 
     private List<DNCWorkCoordinate> failedCoordinates = Collections.synchronizedList(new ArrayList<>());
 
-    private List<DNCWorkCoordinate> ocrQueue = Collections.synchronizedList(new ArrayList<>());
-
     /**
      * Anonymise the DNC Work Coordinates (DWC) specified in a view/table in the source DB.
      *
@@ -91,8 +91,6 @@ public class DNCPipelineService {
         List<DNCWorkCoordinate> dncWorkCoordinates = coordinatesDao.getCoordinates();
 
         dncWorkCoordinates.parallelStream().forEach(this::processSingleCoordinate);
-        logger.info("Finished all non-OCR. Processing the OCR queue now.");
-        processOCRQueue();
         logger.info("Finished all.");
         dumpFailedCoordinates();
     }
@@ -108,8 +106,6 @@ public class DNCPipelineService {
         List<DNCWorkCoordinate> workCoordinates = jsonHelper.loadListFromFile(new File(filePath));
 
         workCoordinates.parallelStream().forEach(this::processSingleCoordinate);
-        logger.info("Finished all non-OCR. Processing the OCR queue now.");
-        processOCRQueue();
         logger.info("Finished all.");
         dumpFailedCoordinates();
     }
@@ -138,10 +134,15 @@ public class DNCPipelineService {
         try {
             byte[] bytes = dncWorkUnitDao.getByteFromCoordinate(coordinate);
             String text = convertBinary(bytes);
-            if (handleOCR(coordinate, text)) {
-                return;
+            if (isPDFAndPossiblyOCR(bytes, text)) {
+                text = applyOCRToPDF(coordinate, bytes, text);
             }
-            handleNonOCR(coordinate, text);
+            if (pseudonymisationIsEnabled()) {
+                logger.info("Pseudonymising binary, coordinates: " + coordinate);
+                Patient patient = patientDao.getPatient(coordinate.getPatientId());
+                text = pseudonymisePersonText(patient, text);
+            }
+            saveText(coordinate, text);
         } catch (Exception ex) {
             logger.error("Could not process coordinate " + coordinate );
             failedCoordinates.add(coordinate);
@@ -149,30 +150,15 @@ public class DNCPipelineService {
         }
     }
 
-    private void handleNonOCR(DNCWorkCoordinate coordinate, String text) {
-        if (pseudonymisationIsEnabled()) {
-            logger.info("Pseudonymising binary, coordinates: " + coordinate);
-            Patient patient = patientDao.getPatient(coordinate.getPatientId());
-            text = pseudonymisePersonText(patient, text);
-        }
-        saveText(coordinate, text);
+    private String applyOCRToPDF(DNCWorkCoordinate coordinate, byte[] bytes, String text) throws CanNotProcessCoordinateException {
+        String metaData = StringTools.getMetaDataFromHTML(text);
+        text = documentConversionService.tryOCRByConvertingToTiff(coordinate, bytes);
+        text = StringTools.addMetaDataToHtml(text, metaData);
+        return text;
     }
 
-    private boolean handleOCR(DNCWorkCoordinate coordinate, String text) {
-        if (shouldTryOCRFor(text)) {
-            if (commandLineArgHolder.isInstantOCR()) {
-                processOCRCoordinate(coordinate);
-            } else {
-                logger.info("Skipping OCR coordinate " + coordinate);
-                ocrQueue.add(coordinate);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private boolean shouldTryOCRFor(String text) {
-        return StringTools.noContentInHtml(text) && ocrIsEnabled();
+    private boolean isPDFAndPossiblyOCR(byte[] bytes, String text) {
+        return StringTools.noContentInHtml(text) && fileTypeService.isPDF(bytes);
     }
 
     private boolean pseudonymisationIsEnabled() {
@@ -180,19 +166,6 @@ public class DNCPipelineService {
             return true;
         }
         return "1".equals(pseudonymEnabled) || "true".equalsIgnoreCase(pseudonymEnabled);
-    }
-
-    private boolean ocrIsEnabled() {
-        return "true".equalsIgnoreCase(ocrEnabled) || "1".equals(ocrEnabled);
-    }
-
-    private String tryOCR(byte[] bytes) throws Exception {
-        if (! fileTypeService.isPDF(bytes)) {
-            logger.info("Ignoring non-PDF file for OCR. OCR cannot be applied to Non-PDF Files.");
-            return "";
-        }
-
-        return documentConversionService.getContentFromImagePDF(bytes);
     }
 
     private String pseudonymisePersonText(Patient patient, String text) {
@@ -219,31 +192,23 @@ public class DNCPipelineService {
         dncWorkUnitDao.saveConvertedText(coordinate, text);
     }
 
-    public void setConversionFormat(String conversionFormat) {
-        this.conversionFormat = conversionFormat;
-    }
-
-    private void processOCRQueue() {
-        ocrQueue.parallelStream().forEach(coordinate -> processOCRCoordinate(coordinate));
-    }
-
-    private void processOCRCoordinate(DNCWorkCoordinate coordinate) {
-        logger.info("Processing OCR coordinate " + coordinate);
-        byte[] bytes = dncWorkUnitDao.getByteFromCoordinate(coordinate);
+    public void processFile(String absoluteFilePath) {
+        File file = new File(absoluteFilePath);
         try {
-            String text = tryOCR(bytes);
-            if (StringUtils.isBlank(text)) {
-                return;
-            }
-            if (pseudonymisationIsEnabled()) {
-                Patient patient = patientDao.getPatient(coordinate.getPatientId());
-                text = pseudonymisePersonText(patient, text);
-            }
+            FileInputStream fileInputStream = new FileInputStream(file);
+            byte[] bytes = IOUtils.toByteArray(fileInputStream);
+            String text = convertBinary(bytes);
+            DNCWorkCoordinate coordinate = DNCWorkCoordinate.createEmptyCoordinate();
+            coordinate.setSourceTable(absoluteFilePath);
             saveText(coordinate, text);
         } catch (Exception e) {
-            failedCoordinates.add(coordinate);
             logger.error(e.getMessage());
+            e.printStackTrace();
         }
+    }
+
+    public void setConversionFormat(String conversionFormat) {
+        this.conversionFormat = conversionFormat;
     }
 
     private void processSingleCoordinate(DNCWorkCoordinate coordinate) {

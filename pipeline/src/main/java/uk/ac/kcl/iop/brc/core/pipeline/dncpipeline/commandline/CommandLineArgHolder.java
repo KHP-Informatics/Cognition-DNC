@@ -5,8 +5,6 @@ public class CommandLineArgHolder {
 
     private boolean noPseudonym;
 
-    private boolean instantOCR;
-
     public boolean isNoPseudonym() {
         return noPseudonym;
     }
@@ -15,12 +13,5 @@ public class CommandLineArgHolder {
         this.noPseudonym = noPseudonym;
     }
 
-    public boolean isInstantOCR() {
-        return instantOCR;
-    }
-
-    public void setInstantOCR(boolean instantOCR) {
-        this.instantOCR = instantOCR;
-    }
 
 }

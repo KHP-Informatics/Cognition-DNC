@@ -23,6 +23,7 @@ import org.apache.commons.lang.math.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.io.*;
 import java.util.*;
@@ -311,4 +312,29 @@ public class StringTools {
         }
     }
 
+    public static String getFirstHtmlWithContent(String html) {
+        String[] split = html.split("<html");
+        for (String htmlPart : split) {
+            if (noContentInHtml(htmlPart)) {
+                continue;
+            }
+
+            return String.format("%s%s", "<html", htmlPart);
+        }
+
+        return "";
+    }
+
+    public static String getMetaDataFromHTML(String html) {
+        Document doc = Jsoup.parse(html);
+        return doc.head().html();
+    }
+
+    public static String addMetaDataToHtml(String htmlText, String metaData) {
+        Document doc = Jsoup.parse(htmlText);
+        doc.head().append(metaData);
+
+
+        return doc.html();
+    }
 }

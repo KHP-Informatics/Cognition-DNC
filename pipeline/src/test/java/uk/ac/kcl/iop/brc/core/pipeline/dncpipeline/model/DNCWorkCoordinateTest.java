@@ -18,11 +18,13 @@ package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model;
 
 import uk.ac.kcl.iop.brc.core.pipeline.common.helper.JsonHelper;
 import org.junit.Test;
+import uk.ac.kcl.iop.brc.core.pipeline.common.model.DNCWorkCoordinate;
 
 import java.io.File;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -74,6 +76,25 @@ public class DNCWorkCoordinateTest {
         cwc.setUpdateTime(null);
 
         assertThat(cwc.getUpdateTime(), equalTo(""));
+    }
+
+    @Test
+    public void shouldGetFileName() {
+        DNCWorkCoordinate cwc = new DNCWorkCoordinate().idInSourceTable(5L).sourceTable("test_table");
+
+        assertThat(cwc.getFileName(), equalTo("test_table_5"));
+    }
+
+    @Test
+    public void shouldGetFileNameWithRandomSuffixIfIdInSourceTableIsMissing() {
+        DNCWorkCoordinate cwc = new DNCWorkCoordinate().sourceTable("test_table");
+
+        String fileName = cwc.getFileName();
+        System.out.println(fileName);
+        String[] split = fileName.split("_");
+        String id = split[2];
+        assertThat(id, not(equalTo("-1")));
+        assertThat(id, not(equalTo("0")));
     }
 
 }

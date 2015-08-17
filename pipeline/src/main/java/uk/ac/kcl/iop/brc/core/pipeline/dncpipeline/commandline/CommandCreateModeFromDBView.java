@@ -40,9 +40,6 @@ public class CommandCreateModeFromDBView implements CommandProcessor {
         if (cmd.hasOption("noPseudonym")) {
             dncPipelineService.getCommandLineArgHolder().setNoPseudonym(true);
         }
-        if (cmd.hasOption("instantOCR")) {
-            dncPipelineService.getCommandLineArgHolder().setInstantOCR(true);
-        }
 
         dncPipelineService.startCreateModeWithDBView();
     }

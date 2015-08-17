@@ -17,7 +17,7 @@
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data;
 
 import uk.ac.kcl.iop.brc.core.pipeline.common.testutils.IntegrationTest;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.DNCWorkCoordinate;
+import uk.ac.kcl.iop.brc.core.pipeline.common.model.DNCWorkCoordinate;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;

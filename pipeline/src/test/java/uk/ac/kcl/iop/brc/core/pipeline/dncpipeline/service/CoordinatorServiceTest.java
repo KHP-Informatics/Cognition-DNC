@@ -2,7 +2,7 @@ package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.service;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
-import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.DNCWorkCoordinate;
+import uk.ac.kcl.iop.brc.core.pipeline.common.model.DNCWorkCoordinate;
 
 import java.util.ArrayList;
 import java.util.List;

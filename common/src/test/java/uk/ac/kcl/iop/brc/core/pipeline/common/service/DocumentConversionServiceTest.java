@@ -16,9 +16,14 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.common.service;
 
+import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.IOUtils;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.xml.sax.SAXException;
+import uk.ac.kcl.iop.brc.core.pipeline.common.exception.CanNotProcessCoordinateException;
+import uk.ac.kcl.iop.brc.core.pipeline.common.model.DNCWorkCoordinate;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,9 +32,15 @@ import static junit.framework.TestCase.assertTrue;
 
 public class DocumentConversionServiceTest {
 
+    private DocumentConversionService service;
+
+    @Before
+    public void init() throws TikaException, IOException, SAXException {
+        service = new DocumentConversionService();
+    }
+
     @Test
-    public void shouldConvertWordDocToText() throws IOException {
-        DocumentConversionService service = new DocumentConversionService();
+    public void shouldConvertWordDocToText() throws IOException, TikaException, SAXException {
         InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("testDoc.doc");
         byte[] bytes = IOUtils.toByteArray(resourceAsStream);
 
@@ -40,7 +51,6 @@ public class DocumentConversionServiceTest {
 
     @Test
     public void shouldConvertDocToXHTML() throws IOException {
-        DocumentConversionService service = new DocumentConversionService();
         InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("docxexample.docx");
         byte[] bytes = IOUtils.toByteArray(resourceAsStream);
 
@@ -52,8 +62,7 @@ public class DocumentConversionServiceTest {
     }
 
     @Test
-    public void shouldConvertPDFToXHTML() throws IOException {
-        DocumentConversionService service = new DocumentConversionService();
+    public void shouldConvertPDFToXHTML() throws IOException, TikaException, SAXException {
         InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("pdfexample.pdf");
         byte[] bytes = IOUtils.toByteArray(resourceAsStream);
 
@@ -62,6 +71,17 @@ public class DocumentConversionServiceTest {
 
         assertTrue(text.contains("<body>"));
         assertTrue(text.contains("Introduction"));
+    }
+
+    @Test
+    public void shouldTryOCRByConvertingToTiff() throws TikaException, IOException, SAXException, CanNotProcessCoordinateException {
+        InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("test_ocr_pdf.pdf");
+        byte[] bytes = IOUtils.toByteArray(resourceAsStream);
+
+        String text = service.tryOCRByConvertingToTiff(new DNCWorkCoordinate().sourceTable("table1"), bytes);
+        System.out.println(text);
+
+        assertTrue(text.contains("An Example Paper"));
     }
 
 }

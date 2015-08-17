@@ -14,10 +14,11 @@
 	limitations under the License.
 */
 
-package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model;
+package uk.ac.kcl.iop.brc.core.pipeline.common.model;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import org.apache.commons.lang.math.RandomUtils;
 
 public class DNCWorkCoordinate {
 
@@ -43,6 +44,15 @@ public class DNCWorkCoordinate {
     private String updateTime;
 
     private boolean markedAsOCR = false;
+
+    public static DNCWorkCoordinate createEmptyCoordinate() {
+        DNCWorkCoordinate coordinate = new DNCWorkCoordinate();
+        coordinate.setPkColumnName("");
+        coordinate.setPatientId(-1);
+        coordinate.setSourceColumn("");
+        coordinate.setIdInSourceTable(-1);
+        return coordinate;
+    }
 
     public DNCWorkCoordinate patientId(long id) {
         this.patientId = id;
@@ -138,14 +148,21 @@ public class DNCWorkCoordinate {
         return gson.toJson(this);
     }
 
+
     public boolean isBinary() {
         return "binary".equalsIgnoreCase(type);
     }
 
-
     @Override
     public String toString() {
         return String.format("Patient Id: %d, Source table: %s, Source column: %s, DocId: %d", patientId, sourceTable, sourceColumn, idInSourceTable);
+    }
+
+    public String getFileName() {
+        if (0 == idInSourceTable || -1 == idInSourceTable) {
+            return String.format("%s_%d", sourceTable, RandomUtils.nextLong());
+        }
+        return String.format("%s_%d", sourceTable, idInSourceTable);
     }
 
     public boolean isMarkedAsOCR() {
