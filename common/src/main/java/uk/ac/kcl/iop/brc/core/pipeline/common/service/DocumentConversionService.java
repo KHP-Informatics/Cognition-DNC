@@ -69,22 +69,25 @@ public class DocumentConversionService {
 
     public String tryOCRByConvertingToTiff(DNCWorkCoordinate coordinate, byte[] bytes) throws CanNotProcessCoordinateException {
         validateImageMagick();
+        File pdfFile = null;
+        File tiffFile = null;
         try {
-            File pdfFile = File.createTempFile(coordinate.getFileName(), ".pdf");
+            pdfFile = File.createTempFile(coordinate.getFileName(), ".pdf");
             FileUtils.writeByteArrayToFile(pdfFile, bytes);
-            File tiffFile = File.createTempFile(coordinate.getFileName(), ".tiff");
+            tiffFile = File.createTempFile(coordinate.getFileName(), ".tiff");
             Optional<File> tiffFileOpt = makeTiffFromPDF(pdfFile, tiffFile);
-
             if (! tiffFileOpt.isPresent()) {
                 throw new CanNotProcessCoordinateException("Could not convert PDF to Tiff: " + coordinate);
             }
             tiffFile = tiffFileOpt.get();
-            String result = getOCRResultFromTiff(tiffFile);
-            pdfFile.deleteOnExit(); tiffFile.deleteOnExit();
-            pdfFile.delete(); tiffFile.delete();
-            return result;
+            return getOCRResultFromTiff(tiffFile);
         } catch (Exception e) {
             logger.error(e.getMessage());
+        } finally {
+            try {
+                pdfFile.delete();
+                tiffFile.delete();
+            } catch (Exception ex) {}
         }
         throw new CanNotProcessCoordinateException("Could not convert PDF to Tiff: " + coordinate);
     }
