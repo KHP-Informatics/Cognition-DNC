@@ -2,7 +2,7 @@
         Cognition-DNC (Dynamic Name Concealer)
         Binary to text document converter and database pseudonymiser.
 
-        Copyright (C) 2015 Ismail E. Kartoglu, Richard G. Jackson
+        Copyright (C) 2015 Ismail E. Kartoglu
 
         This program is free software: you can redistribute it and/or modify
         it under the terms of the GNU General Public License as published by
@@ -152,6 +152,8 @@ public class DocumentConversionService {
             waitThread.interrupt();
             process.destroy();
             Thread.currentThread().interrupt();
+        } finally {
+            IOUtils.closeQuietly(out);
         }
         return Optional.empty();
     }
