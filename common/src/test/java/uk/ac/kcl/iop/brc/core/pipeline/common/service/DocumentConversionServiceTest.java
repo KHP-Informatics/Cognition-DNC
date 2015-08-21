@@ -81,7 +81,7 @@ public class DocumentConversionServiceTest {
         String text = service.tryOCRByConvertingToTiff(new DNCWorkCoordinate().sourceTable("table1"), bytes);
         System.out.println(text);
 
-        assertTrue(text.contains("An Example Paper"));
+        assertTrue(text.contains("This is a random"));
     }
 
 }

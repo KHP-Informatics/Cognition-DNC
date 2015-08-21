@@ -36,10 +36,10 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 import uk.ac.kcl.iop.brc.core.pipeline.common.exception.CanNotProcessCoordinateException;
 import uk.ac.kcl.iop.brc.core.pipeline.common.model.DNCWorkCoordinate;
+import uk.ac.kcl.iop.brc.core.pipeline.common.utils.FileTools;
 import uk.ac.kcl.iop.brc.core.pipeline.common.utils.StringTools;
 
 import java.io.*;
-import java.util.Optional;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
@@ -76,25 +76,19 @@ public class DocumentConversionService {
         validateImageMagick();
         File pdfFile = null;
         File tiffFile = null;
-        File convertedTiff = null;
         try {
             pdfFile = File.createTempFile(coordinate.getFileName(), ".pdf");
             FileUtils.writeByteArrayToFile(pdfFile, bytes);
             tiffFile = File.createTempFile(coordinate.getFileName(), ".tiff");
-            Optional<File> tiffFileOpt = makeTiffFromPDF(pdfFile, tiffFile);
-            if (! tiffFileOpt.isPresent()) {
+            tiffFile = makeTiffFromPDF(pdfFile, tiffFile);
+            if (tiffFile == null) {
                 throw new CanNotProcessCoordinateException("Could not convert PDF to Tiff: " + coordinate);
             }
-            convertedTiff = tiffFileOpt.get();
-            return getOCRResultFromTiff(convertedTiff);
+            return getOCRResultFromTiff(tiffFile);
         } catch (Exception e) {
             logger.error(e.getMessage());
         } finally {
-            try {
-                pdfFile.delete();
-                tiffFile.delete();
-                convertedTiff.delete();
-            } catch (Exception ex) {}
+            FileTools.deleteFiles(pdfFile, tiffFile);
         }
         throw new CanNotProcessCoordinateException("Could not convert PDF to Tiff: " + coordinate);
     }
@@ -135,7 +129,7 @@ public class DocumentConversionService {
         return System.getProperty("os.name").startsWith("Windows") ? "convert.exe" : "convert";
     }
 
-    private Optional<File> makeTiffFromPDF(File input, File output) throws IOException, TikaException {
+    private File makeTiffFromPDF(File input, File output) throws IOException, TikaException {
         String[] cmd = {getImageMagickProg(),"-density", "300", input.getPath(), "-depth", "8", "-quality", "1", output.getPath()};
         Process process = new ProcessBuilder(cmd).start();
         process.getOutputStream().close();
@@ -146,7 +140,7 @@ public class DocumentConversionService {
         waitThread.start();
         try {
             waitTask.get(240, TimeUnit.SECONDS);
-            return Optional.of(output);
+            return output;
         } catch (Exception e) {
             logger.error(e.getMessage());
             waitThread.interrupt();
@@ -154,8 +148,9 @@ public class DocumentConversionService {
             Thread.currentThread().interrupt();
         } finally {
             IOUtils.closeQuietly(out);
+            process.destroy();
         }
-        return Optional.empty();
+        return null;
     }
 
     /**

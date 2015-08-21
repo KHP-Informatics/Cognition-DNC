@@ -47,6 +47,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class DNCPipelineService {
@@ -85,6 +86,7 @@ public class DNCPipelineService {
     private CommandLineArgHolder commandLineArgHolder = new CommandLineArgHolder();
 
     private List<DNCWorkCoordinate> failedCoordinates = Collections.synchronizedList(new ArrayList<>());
+
 
     /**
      * Anonymise the DNC Work Coordinates (DWC) specified in a view/table in the source DB.
