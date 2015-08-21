@@ -87,6 +87,7 @@ public class DocumentConversionService {
             return getOCRResultFromTiff(tiffFile);
         } catch (Exception e) {
             logger.error(e.getMessage());
+            e.printStackTrace();
         } finally {
             FileTools.deleteFiles(pdfFile, tiffFile);
         }
