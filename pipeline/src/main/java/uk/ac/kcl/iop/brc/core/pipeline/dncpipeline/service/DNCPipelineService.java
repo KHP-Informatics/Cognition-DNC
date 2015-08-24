@@ -149,7 +149,11 @@ public class DNCPipelineService {
                 Patient patient = patientDao.getPatient(coordinate.getPatientId());
                 text = pseudonymisePersonText(patient, text);
             }
-            saveText(coordinate, text);
+            if (StringTools.noContentInHtml(text)) {
+                logger.warn("Not saving empty document at coordinate: " + coordinate);
+            } else {
+                saveText(coordinate, text);
+            }
         } catch (Exception ex) {
             logger.error("Could not process coordinate " + coordinate );
             failedCoordinates.add(coordinate);

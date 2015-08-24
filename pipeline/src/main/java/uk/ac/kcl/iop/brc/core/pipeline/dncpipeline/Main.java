@@ -71,7 +71,7 @@ public class Main {
     }
 
     private static void printGNULicense() {
-        System.out.println("Cognition-DNC  Copyright (C) 2015  Ismail E. Kartoglu, Richard G. Jackson\n" +
+        System.out.println("Cognition-DNC  Copyright (C) 2015  Ismail E. Kartoglu\n" +
                 "    This program comes with ABSOLUTELY NO WARRANTY.\n" +
                 "    This is free software, and you are welcome to redistribute it\n" +
                 "    under certain conditions. Read GNU General Public License 3.0 for details.");
