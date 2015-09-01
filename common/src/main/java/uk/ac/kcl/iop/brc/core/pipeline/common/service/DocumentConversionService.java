@@ -27,7 +27,10 @@ import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.IOUtils;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.parser.ParseContext;
+import org.apache.tika.parser.Parser;
 import org.apache.tika.parser.external.ExternalParser;
+import org.apache.tika.parser.ocr.TesseractOCRConfig;
 import org.apache.tika.parser.ocr.TesseractOCRParser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.apache.tika.sax.ToXMLContentHandler;
@@ -48,6 +51,7 @@ public class DocumentConversionService {
 
     private Logger logger = Logger.getLogger(DocumentConversionService.class);
     public Boolean imageMagickInstalled = null;
+    private TesseractOCRConfig config = new TesseractOCRConfig(getClass().getClassLoader().getResourceAsStream("TesseractOCRConfig.properties"));
 
     public String convertToText(byte[] data) {
         return convertWithHandler(data, new BodyContentHandler(-1));
@@ -95,9 +99,11 @@ public class DocumentConversionService {
     }
 
     private String getOCRResultFromTiff(File tiffFile) throws IOException, TikaException, SAXException {
-        TesseractOCRParser tesseractOCRParser = new TesseractOCRParser();
         ToXMLContentHandler handler = new ToXMLContentHandler();
-        tesseractOCRParser.parse(new FileInputStream(tiffFile), handler, new Metadata());
+        Parser parser = new TesseractOCRParser();
+        ParseContext parseContext = new ParseContext();
+        parseContext.set(TesseractOCRConfig.class, config);
+        parser.parse(new FileInputStream(tiffFile), handler, new Metadata(), parseContext);
         return StringTools.getFirstHtmlWithContent(handler.toString());
     }
 
@@ -131,7 +137,7 @@ public class DocumentConversionService {
     }
 
     private File makeTiffFromPDF(File input, File output) throws IOException, TikaException {
-        String[] cmd = {getImageMagickProg(),"-density", "300", input.getPath(), "-depth", "8", "-quality", "1", output.getPath()};
+        String[] cmd = { getImageMagickProg(),"-density", "300", input.getPath(), "-depth", "8", "-quality", "1", output.getPath() };
         Process process = new ProcessBuilder(cmd).start();
         process.getOutputStream().close();
         InputStream out = process.getInputStream();
@@ -147,9 +153,12 @@ public class DocumentConversionService {
             waitThread.interrupt();
             process.destroy();
             Thread.currentThread().interrupt();
+            waitTask.cancel(true);
         } finally {
             IOUtils.closeQuietly(out);
             process.destroy();
+            waitThread.interrupt();
+            waitTask.cancel(true);
         }
         return null;
     }

@@ -41,6 +41,9 @@
         <property name="validationQuery" value="SELECT 1" />
         <property name="testOnBorrow" value="true" />
         <property name="testOnReturn" value="true" />
+        <property name="minEvictableIdleTimeMillis" value="180000"/>
+        <property name="timeBetweenEvictionRunsMillis" value="180000"/>
+        <property name="numTestsPerEvictionRun" value="3"/>
     </bean>
 
     <bean id="targetDataSource" class="org.apache.commons.dbcp.BasicDataSource"
@@ -52,6 +55,9 @@
         <property name="validationQuery" value="SELECT 1" />
         <property name="testOnBorrow" value="true" />
         <property name="testOnReturn" value="true" />
+        <property name="minEvictableIdleTimeMillis" value="180000"/>
+        <property name="timeBetweenEvictionRunsMillis" value="180000"/>
+        <property name="numTestsPerEvictionRun" value="3"/>
     </bean>
 
     <bean id="sourceSessionFactory"
