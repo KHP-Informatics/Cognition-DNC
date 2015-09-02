@@ -97,15 +97,20 @@ public class DocumentConversionService {
         throw new CanNotProcessCoordinateException("Could not convert PDF to Tiff: " + coordinate);
     }
 
-    private String getOCRResultFromTiff(File tiffFile) throws IOException, TikaException, SAXException {
+    private String getOCRResultFromTiff(File tiffFile) throws IOException, TikaException, SAXException, CanNotProcessCoordinateException {
+        FileInputStream stream = new FileInputStream(tiffFile);
         ToXMLContentHandler handler = new ToXMLContentHandler();
         Parser parser = new TesseractOCRParser();
         ParseContext parseContext = new ParseContext();
         parseContext.set(TesseractOCRConfig.class, config);
-        FileInputStream stream = new FileInputStream(tiffFile);
-        parser.parse(stream, handler, new Metadata(), parseContext);
-        IOUtils.closeQuietly(stream);
-        return StringTools.getFirstHtmlWithContent(handler.toString());
+        try {
+            parser.parse(stream, handler, new Metadata(), parseContext);
+            return StringTools.getFirstHtmlWithContent(handler.toString());
+        } catch (Exception ex) {
+            throw new CanNotProcessCoordinateException(ex.getMessage());
+        } finally {
+            IOUtils.closeQuietly(stream);
+        }
     }
 
 
