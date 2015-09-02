@@ -83,8 +83,7 @@ public class DocumentConversionService {
         try {
             pdfFile = File.createTempFile(coordinate.getFileName(), ".pdf");
             FileUtils.writeByteArrayToFile(pdfFile, bytes);
-            tiffFile = File.createTempFile(coordinate.getFileName(), ".tiff");
-            tiffFile = makeTiffFromPDF(pdfFile, tiffFile);
+            tiffFile = makeTiffFromPDF(coordinate, pdfFile);
             if (tiffFile == null) {
                 throw new CanNotProcessCoordinateException("Could not convert PDF to Tiff: " + coordinate);
             }
@@ -103,7 +102,9 @@ public class DocumentConversionService {
         Parser parser = new TesseractOCRParser();
         ParseContext parseContext = new ParseContext();
         parseContext.set(TesseractOCRConfig.class, config);
-        parser.parse(new FileInputStream(tiffFile), handler, new Metadata(), parseContext);
+        FileInputStream stream = new FileInputStream(tiffFile);
+        parser.parse(stream, handler, new Metadata(), parseContext);
+        IOUtils.closeQuietly(stream);
         return StringTools.getFirstHtmlWithContent(handler.toString());
     }
 
@@ -136,13 +137,14 @@ public class DocumentConversionService {
         return System.getProperty("os.name").startsWith("Windows") ? "convert.exe" : "convert";
     }
 
-    private File makeTiffFromPDF(File input, File output) throws IOException, TikaException {
+    private File makeTiffFromPDF(DNCWorkCoordinate coordinate, File input) throws IOException, TikaException {
+        File output = File.createTempFile(coordinate.getFileName(), ".tiff");
         String[] cmd = { getImageMagickProg(),"-density", "300", input.getPath(), "-depth", "8", "-quality", "1", output.getPath() };
         Process process = new ProcessBuilder(cmd).start();
-        process.getOutputStream().close();
-        InputStream out = process.getInputStream();
-        logStream(out);
-        FutureTask<Integer> waitTask = new FutureTask<>(() -> process.waitFor());
+        IOUtils.closeQuietly(process.getOutputStream());
+        InputStream processInputStream = process.getInputStream();
+        logStream(processInputStream);
+        FutureTask<Integer> waitTask = new FutureTask<>(process::waitFor);
         Thread waitThread = new Thread(waitTask);
         waitThread.start();
         try {
@@ -155,7 +157,7 @@ public class DocumentConversionService {
             Thread.currentThread().interrupt();
             waitTask.cancel(true);
         } finally {
-            IOUtils.closeQuietly(out);
+            IOUtils.closeQuietly(processInputStream);
             process.destroy();
             waitThread.interrupt();
             waitTask.cancel(true);
@@ -182,6 +184,7 @@ public class DocumentConversionService {
                     logger.error(e.getMessage());
                 } finally {
                     IOUtils.closeQuietly(stream);
+                    IOUtils.closeQuietly(reader);
                 }
                 logger.debug(out.toString());
             }

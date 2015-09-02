@@ -41,6 +41,7 @@
         <property name="validationQuery" value="SELECT 1" />
         <property name="testOnBorrow" value="true" />
         <property name="testOnReturn" value="true" />
+        <property name="testWhileIdle" value="true" />
         <property name="minEvictableIdleTimeMillis" value="180000"/>
         <property name="timeBetweenEvictionRunsMillis" value="180000"/>
         <property name="numTestsPerEvictionRun" value="3"/>
@@ -55,6 +56,7 @@
         <property name="validationQuery" value="SELECT 1" />
         <property name="testOnBorrow" value="true" />
         <property name="testOnReturn" value="true" />
+        <property name="testWhileIdle" value="true" />
         <property name="minEvictableIdleTimeMillis" value="180000"/>
         <property name="timeBetweenEvictionRunsMillis" value="180000"/>
         <property name="numTestsPerEvictionRun" value="3"/>
@@ -73,7 +75,7 @@
                 <prop key="transaction.auto_close_session">true</prop>
                 <prop key="transaction.flush_before_completion">true</prop>
                 <prop key="hibernate.connection.autocommit">true</prop>
-                <prop key="hibernate.connection.pool_size">10000</prop>
+                <prop key="hibernate.connection.pool_size">1000</prop>
                 <prop key="hibernate.connection.release_mode">auto</prop>
 
                 <prop key="hibernate.c3p0.min_size">16</prop>
@@ -104,7 +106,7 @@
                 <prop key="transaction.auto_close_session">true</prop>
                 <prop key="transaction.flush_before_completion">true</prop>
                 <prop key="hibernate.connection.autocommit">true</prop>
-                <prop key="hibernate.connection.pool_size">10000</prop>
+                <prop key="hibernate.connection.pool_size">1000</prop>
                 <prop key="hibernate.connection.release_mode">auto</prop>
 
                 <prop key="hibernate.c3p0.min_size">16</prop>
