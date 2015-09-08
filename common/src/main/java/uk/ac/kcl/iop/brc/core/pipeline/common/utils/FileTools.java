@@ -35,7 +35,7 @@ public class FileTools {
             try {
                 file.deleteOnExit();
                 org.apache.commons.io.FileUtils.forceDelete(file);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.error(e.getMessage());
             }
         }
