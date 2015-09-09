@@ -33,7 +33,6 @@ public class FileTools {
     public static void deleteFiles(File...files) {
         for (File file : files) {
             try {
-                file.deleteOnExit();
                 org.apache.commons.io.FileUtils.forceDelete(file);
             } catch (Exception e) {
                 logger.error(e.getMessage());
