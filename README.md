@@ -166,6 +166,6 @@ That’s it! If all has gone well, you should see rich formated XHTML strings re
 <h2>
 Contact
 </h2>
-If you’re interested in/need help with using our Cognition pipeline, please get in touch ismail.e.kartoglu@kcl.ac.uk (developer), richard.r.jackson@kcl.ac.uk, richard.j.dobson@kcl.ac.uk 
+If you’re interested in/need help with using our Cognition pipeline, please get in touch ismail.e.kartoglu@kcl.ac.uk (developer), caroline.johnston@kcl.ac.uk, amos.folarin@kcl.ac.uk, richard.r.jackson@kcl.ac.uk, richard.j.dobson@kcl.ac.uk 
 </body>
 </html>
