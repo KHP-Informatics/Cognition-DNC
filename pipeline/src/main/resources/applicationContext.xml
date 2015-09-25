@@ -34,7 +34,7 @@
 
     <bean id="sourceDataSource" class="org.apache.commons.dbcp.BasicDataSource"
           destroy-method="close">
-        <property name="driverClassName" value="org.postgresql.Driver" />
+        <property name="driverClassName" value="${sourceJdbcDriver}" />
         <property name="url" value="${sourceJdbcPath}" />
         <property name="username" value="${sourceDbUsername}" />
         <property name="password" value="${sourceDbPassword}" />
@@ -67,7 +67,7 @@
         <property name="dataSource" ref="sourceDataSource" />
         <property name="hibernateProperties">
             <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</prop>
+                <prop key="hibernate.dialect">${sourceHibernateDialect}</prop>
                 <prop key="hibernate.current_session_context_class">thread</prop>
                 <!--<prop key="hibernate.show_sql">true</prop>-->
                 <!--<prop key="format_sql">true</prop>-->
@@ -98,7 +98,7 @@
         <property name="dataSource" ref="targetDataSource" />
         <property name="hibernateProperties">
             <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</prop>
+                <prop key="hibernate.dialect">${targetHibernateDialect}</prop>
                 <prop key="hibernate.current_session_context_class">thread</prop>
                 <!--<prop key="hibernate.show_sql">true</prop>-->
                 <!--<prop key="format_sql">true</prop>-->
