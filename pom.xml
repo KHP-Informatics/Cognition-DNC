@@ -21,7 +21,7 @@
         <name>Cognition-DNC</name>
     </organization>
 
-    <name>IoPProjects</name>
+    <name>Cognition-DNC</name>
     <url>http://maven.apache.org</url>
 
     <dependencies>
