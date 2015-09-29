@@ -3,7 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:cache="http://www.springframework.org/schema/cache"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
 
     <context:component-scan base-package="uk.ac.kcl.iop.brc.core.pipeline.dncpipeline" />
     <context:component-scan base-package="uk.ac.kcl.iop.brc.core.pipeline.common" />
@@ -32,34 +32,42 @@
         <property name="configLocation" value="velocity.properties"/>
     </bean>
 
-    <bean id="sourceDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+    <bean id="sourceDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
           destroy-method="close">
-        <property name="driverClassName" value="${sourceJdbcDriver}" />
-        <property name="url" value="${sourceJdbcPath}" />
-        <property name="username" value="${sourceDbUsername}" />
+        <property name="driverClass" value="${sourceJdbcDriver}" />
+        <property name="jdbcUrl" value="${sourceJdbcPath}" />
+        <property name="user" value="${sourceDbUsername}" />
         <property name="password" value="${sourceDbPassword}" />
-        <property name="validationQuery" value="SELECT 1" />
-        <property name="testOnBorrow" value="true" />
-        <property name="testOnReturn" value="true" />
-        <property name="testWhileIdle" value="true" />
-        <property name="minEvictableIdleTimeMillis" value="180000"/>
-        <property name="timeBetweenEvictionRunsMillis" value="180000"/>
-        <property name="numTestsPerEvictionRun" value="3"/>
+        <property name="preferredTestQuery" value="SELECT 1" />
+        <property name="testConnectionOnCheckin" value="true" />
+        <property name="testConnectionOnCheckout" value="true" />
+
+        <property name="acquireIncrement" value="50" />
+        <property name="minPoolSize" value="50" />
+        <property name="maxPoolSize" value="200" />
+        <property name="autoCommitOnClose" value="true" />
+        <property name="idleConnectionTestPeriod" value="10" />
+        <property name="maxIdleTime" value="120" />
+        <property name="unreturnedConnectionTimeout" value="120"/>
     </bean>
 
-    <bean id="targetDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+    <bean id="targetDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
           destroy-method="close">
-        <property name="driverClassName" value="${targetJdbcDriver}" />
-        <property name="url" value="${targetJdbcPath}" />
-        <property name="username" value="${targetDbUsername}" />
+        <property name="driverClass" value="${targetJdbcDriver}" />
+        <property name="jdbcUrl" value="${targetJdbcPath}" />
+        <property name="user" value="${targetDbUsername}" />
         <property name="password" value="${targetDbPassword}" />
-        <property name="validationQuery" value="SELECT 1" />
-        <property name="testOnBorrow" value="true" />
-        <property name="testOnReturn" value="true" />
-        <property name="testWhileIdle" value="true" />
-        <property name="minEvictableIdleTimeMillis" value="180000"/>
-        <property name="timeBetweenEvictionRunsMillis" value="180000"/>
-        <property name="numTestsPerEvictionRun" value="3"/>
+        <property name="preferredTestQuery" value="SELECT 1" />
+        <property name="testConnectionOnCheckin" value="true" />
+        <property name="testConnectionOnCheckout" value="true" />
+
+        <property name="acquireIncrement" value="16" />
+        <property name="minPoolSize" value="50" />
+        <property name="maxPoolSize" value="200" />
+        <property name="autoCommitOnClose" value="true" />
+        <property name="idleConnectionTestPeriod" value="10" />
+        <property name="maxIdleTime" value="120" />
+        <property name="unreturnedConnectionTimeout" value="120"/>
     </bean>
 
     <bean id="sourceSessionFactory"
@@ -69,20 +77,9 @@
             <props>
                 <prop key="hibernate.dialect">${sourceHibernateDialect}</prop>
                 <prop key="hibernate.current_session_context_class">thread</prop>
-                <!--<prop key="hibernate.show_sql">true</prop>-->
-                <!--<prop key="format_sql">true</prop>-->
-                <!--<prop key="use_sql_comments">true</prop>-->
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="format_sql">false</prop>
                 <prop key="transaction.auto_close_session">true</prop>
-                <prop key="transaction.flush_before_completion">true</prop>
-                <prop key="hibernate.connection.autocommit">true</prop>
-                <prop key="hibernate.connection.pool_size">100</prop>
-                <prop key="hibernate.connection.release_mode">after_statement</prop>
-
-                <prop key="hibernate.c3p0.min_size">16</prop>
-                <prop key="hibernate.c3p0.max_size">64</prop>
-                <prop key="hibernate.c3p0.timeout">130</prop>
-                <prop key="hibernate.c3p0.max_statements">30</prop>
-                <prop key="hibernate.c3p0.idle_test_period">60</prop>
             </props>
         </property>
 
@@ -100,20 +97,9 @@
             <props>
                 <prop key="hibernate.dialect">${targetHibernateDialect}</prop>
                 <prop key="hibernate.current_session_context_class">thread</prop>
-                <!--<prop key="hibernate.show_sql">true</prop>-->
-                <!--<prop key="format_sql">true</prop>-->
-                <!--<prop key="use_sql_comments">true</prop>-->
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="format_sql">false</prop>
                 <prop key="transaction.auto_close_session">true</prop>
-                <prop key="transaction.flush_before_completion">true</prop>
-                <prop key="hibernate.connection.autocommit">true</prop>
-                <prop key="hibernate.connection.pool_size">100</prop>
-                <prop key="hibernate.connection.release_mode">after_statement</prop>
-
-                <prop key="hibernate.c3p0.min_size">16</prop>
-                <prop key="hibernate.c3p0.max_size">64</prop>
-                <prop key="hibernate.c3p0.timeout">130</prop>
-                <prop key="hibernate.c3p0.max_statements">30</prop>
-                <prop key="hibernate.c3p0.idle_test_period">60</prop>
             </props>
         </property>
 
@@ -128,5 +114,6 @@
         <property name="sourceSessionFactory" ref="sourceSessionFactory"/>
         <property name="targetSessionFactory" ref="targetSessionFactory"/>
     </bean>
+
 
 </beans>

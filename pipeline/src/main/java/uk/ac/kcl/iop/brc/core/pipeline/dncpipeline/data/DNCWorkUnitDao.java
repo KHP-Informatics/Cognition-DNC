@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 import uk.ac.kcl.iop.brc.core.pipeline.common.data.BaseDao;
+import uk.ac.kcl.iop.brc.core.pipeline.common.data.SessionWrapper;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.helper.BlobHelper;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.helper.ClobHelper;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.exception.WorkCoordinateNotFound;
@@ -73,20 +74,25 @@ public class DNCWorkUnitDao extends BaseDao {
     }
 
     private Object getObjectFromCoordinate(DNCWorkCoordinate coordinate) {
-        Query coordinateQuery = getCurrentSourceSession().getNamedQuery("getObjectFromCoordinate");
-        String queryString = coordinateQuery.getQueryString();
-        queryString = queryString.replace(":sourceTable", coordinate.getSourceTable())
-                .replace(":sourceColumn", coordinate.getSourceColumn())
-                .replace(":pkColumnName", coordinate.getPkColumnName())
-                .replace(":id", Long.toString(coordinate.getIdInSourceTable()));
+        SessionWrapper sessionWrapper = getCurrentSourceSession();
+        try {
+            Query coordinateQuery = sessionWrapper.getNamedQuery("getObjectFromCoordinate");
+            String queryString = coordinateQuery.getQueryString();
+            queryString = queryString.replace(":sourceTable", coordinate.getSourceTable())
+                    .replace(":sourceColumn", coordinate.getSourceColumn())
+                    .replace(":pkColumnName", coordinate.getPkColumnName())
+                    .replace(":id", Long.toString(coordinate.getIdInSourceTable()));
 
-        List result = getSQLResultFromSource(queryString);
+            List result = getSQLResultFromSource(queryString);
 
-        if (CollectionUtils.isEmpty(result)) {
-            throw new WorkCoordinateNotFound("Coordinate is invalid. No data found at " + coordinate);
+            if (CollectionUtils.isEmpty(result)) {
+                throw new WorkCoordinateNotFound("Coordinate is invalid. No data found at " + coordinate);
+            }
+
+            return result.get(0);
+        } finally {
+            sessionWrapper.closeSession();
         }
-
-        return result.get(0);
     }
 
     /**
@@ -95,14 +101,19 @@ public class DNCWorkUnitDao extends BaseDao {
      * @param processedText The processed text to be saved via saveTextToCoordinate named-query.
      */
     public void saveConvertedText(DNCWorkCoordinate coordinate, String processedText) {
-        Query query = getCurrentTargetSession().getNamedQuery("saveTextToCoordinate");
-        String queryString = query.getQueryString();
-        SQLQuery sqlQuery = getCurrentTargetSession().createSQLQuery(queryString);
-        sqlQuery.setParameter(0, coordinate.getSourceTable());
-        sqlQuery.setParameter(1, coordinate.getSourceColumn());
-        sqlQuery.setParameter(2, coordinate.getIdInSourceTable());
-        sqlQuery.setParameter(3, processedText);
-        sqlQuery.executeUpdate();
+        SessionWrapper sessionWrapper = getCurrentTargetSession();
+        try {
+            Query query = sessionWrapper.getNamedQuery("saveTextToCoordinate");
+            String queryString = query.getQueryString();
+            SQLQuery sqlQuery = sessionWrapper.createSQLQuery(queryString);
+            sqlQuery.setParameter(0, coordinate.getSourceTable());
+            sqlQuery.setParameter(1, coordinate.getSourceColumn());
+            sqlQuery.setParameter(2, coordinate.getIdInSourceTable());
+            sqlQuery.setParameter(3, processedText);
+            sqlQuery.executeUpdate();
+        } finally {
+            sessionWrapper.closeSession();
+        }
     }
 
 }
