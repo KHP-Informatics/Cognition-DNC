@@ -41,8 +41,8 @@ public class PatientDaoTest extends IntegrationTest {
     public void initDb() {
         patientDao.executeSQLQueryForSource("create table tblPatient(ID int, nhs_no varchar(100), dob date, PRIMARY KEY (ID))");
         patientDao.executeSQLQueryForSource("create table tblPatientNames(first_name varchar(100), last_name varchar(100), patient_id int)");
-        patientDao.executeSQLQueryForSource("create table dateOfBirths(patient_id int, dob date)");
-        patientDao.executeSQLQueryForSource("create table nhsNumbers(patient_id int, nhs_no varchar(100))");
+        patientDao.executeSQLQueryForSource("create table tbldateOfBirths(patient_id int, dob date)");
+        patientDao.executeSQLQueryForSource("create table tblnhsNumbers(patient_id int, nhs_no varchar(100))");
         patientDao.executeSQLQueryForSource("create table tblPatientAddresses(Address1 varchar(100), postcode varchar(100), patient_id int)");
         patientDao.executeSQLQueryForSource("create table tblPatientPhoneNumbers(number varchar(100), patient_id int)");
         patientDao.executeSQLQueryForSource("create table tblPatientCarers(first_name varchar(100), last_name varchar(100), patient_id int)");
@@ -55,17 +55,17 @@ public class PatientDaoTest extends IntegrationTest {
         patientDao.executeSQLQueryForSource("drop table tblPatientAddresses");
         patientDao.executeSQLQueryForSource("drop table tblPatientPhoneNumbers");
         patientDao.executeSQLQueryForSource("drop table tblPatientCarers");
-        patientDao.executeSQLQueryForSource("drop table dateOfBirths");
-        patientDao.executeSQLQueryForSource("drop table nhsNumbers");
+        patientDao.executeSQLQueryForSource("drop table tbldateOfBirths");
+        patientDao.executeSQLQueryForSource("drop table tblnhsNumbers");
     }
 
     @Test
     public void shouldFetchPatientById() {
         patientDao.executeSQLQueryForSource("insert into tblPatient values(1, '123123', '1990-05-09')");
-        patientDao.executeSQLQueryForSource("insert into dateOfBirths values(1, '1990-05-09')");
-        patientDao.executeSQLQueryForSource("insert into dateOfBirths values(1, '1990-05-10')");
-        patientDao.executeSQLQueryForSource("insert into nhsNumbers values(1, '123123')");
-        patientDao.executeSQLQueryForSource("insert into nhsNumbers values(1, '444444')");
+        patientDao.executeSQLQueryForSource("insert into tbldateOfBirths values(1, '1990-05-09')");
+        patientDao.executeSQLQueryForSource("insert into tbldateOfBirths values(1, '1990-05-10')");
+        patientDao.executeSQLQueryForSource("insert into tblnhsNumbers values(1, '123123')");
+        patientDao.executeSQLQueryForSource("insert into tblnhsNumbers values(1, '444444')");
         patientDao.executeSQLQueryForSource("insert into tblPatientNames values('michael', 'gregorski', 1)");
         patientDao.executeSQLQueryForSource("insert into tblPatientNames values('micha', 'gregor', 1)");
         patientDao.executeSQLQueryForSource("insert into tblPatientAddresses values('address1', 'cb4 2za', 1)");

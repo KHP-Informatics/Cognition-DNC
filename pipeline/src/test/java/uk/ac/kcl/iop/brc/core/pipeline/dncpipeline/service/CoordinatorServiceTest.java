@@ -5,8 +5,11 @@ import org.junit.Test;
 import uk.ac.kcl.iop.brc.core.pipeline.common.model.DNCWorkCoordinate;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -105,4 +108,5 @@ public class CoordinatorServiceTest {
 
         assertThat(CollectionUtils.isEmpty(list), equalTo(true));
     }
+
 }

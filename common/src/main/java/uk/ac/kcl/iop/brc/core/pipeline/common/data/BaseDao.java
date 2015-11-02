@@ -21,15 +21,15 @@
 
 package uk.ac.kcl.iop.brc.core.pipeline.common.data;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Repository
@@ -43,12 +43,7 @@ public class BaseDao {
     @Qualifier("targetSessionFactory")
     private SessionFactory targetSessionFactory;
 
-    private Session session;
-
-    @PostConstruct
-    public void init() {
-        session = getCurrentSourceSession();
-    }
+    private static Logger logger = Logger.getLogger(BaseDao.class);
 
     public SessionFactory getSourceSessionFactory() {
         return sourceSessionFactory;
@@ -58,20 +53,12 @@ public class BaseDao {
         this.sourceSessionFactory = sourceSessionFactory;
     }
 
-    public void useSourceSession() {
-        session = getCurrentSourceSession();
+    public SessionWrapper getCurrentSourceSession() {
+        return new SessionWrapper(sourceSessionFactory.openSession());
     }
 
-    public void useTargetSession() {
-        session = getCurrentTargetSession();
-    }
-
-    public Session getCurrentSourceSession() {
-        return sourceSessionFactory.openSession();
-    }
-
-    public Session getCurrentTargetSession() {
-        return targetSessionFactory.openSession();
+    public SessionWrapper getCurrentTargetSession() {
+        return new SessionWrapper(targetSessionFactory.openSession());
     }
 
     public SessionFactory getTargetSessionFactory() {
@@ -87,26 +74,43 @@ public class BaseDao {
     }
 
     public void executeSQLQueryForSource(String sqlQuery) {
-        Query query = getCurrentSourceSession().createSQLQuery(sqlQuery);
-        query.executeUpdate();
+        SessionWrapper sessionWrapper = getCurrentSourceSession();
+        try {
+            SQLQuery query = sessionWrapper.createSQLQuery(sqlQuery);
+            query.executeUpdate();
+        } finally {
+            sessionWrapper.closeSession();
+        }
     }
 
     public void executeSQLQueryForTarget(String sqlQuery) {
-        Query query = getCurrentTargetSession().createSQLQuery(sqlQuery);
-        query.executeUpdate();
+        SessionWrapper currentTargetSession = getCurrentTargetSession();
+        try {
+            SQLQuery query = currentTargetSession.createSQLQuery(sqlQuery);
+            query.executeUpdate();
+        } finally {
+            currentTargetSession.closeSession();
+        }
     }
 
     public List getSQLResultFromSource(String sqlQuery) {
-        Query query = getCurrentSourceSession().createSQLQuery(sqlQuery);
-        return query.list();
+        SessionWrapper currentSourceSession = getCurrentSourceSession();
+        try {
+            SQLQuery query = currentSourceSession.createSQLQuery(sqlQuery);
+            return query.list();
+        } finally {
+            currentSourceSession.closeSession();
+        }
     }
 
     public List getSQLResultFromTarget(String sqlQuery) {
-        Query query = getCurrentTargetSession().createSQLQuery(sqlQuery);
-        return query.list();
+        SessionWrapper sessionWrapper = getCurrentTargetSession();
+        try {
+            SQLQuery query = sessionWrapper.createSQLQuery(sqlQuery);
+            return query.list();
+        } finally {
+            sessionWrapper.closeSession();
+        }
     }
 
-    public Session getSession() {
-        return session;
-    }
 }

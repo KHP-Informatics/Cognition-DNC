@@ -15,7 +15,7 @@
     </sql-query>
 
     <sql-query name="saveTextToCoordinate">
-        insert into SaveTable (src_table, src_col, doc_ID, processedText) values(?, ?, ?, ?)
+        insert into tblTestOutputCoordinate (sourceTable, sourceColumn, idInSourceTable, processedText) values(?, ?, ?, ?)
     </sql-query>
 
     <sql-query name="getPatientNames">
@@ -27,11 +27,11 @@
     </sql-query>
 
     <sql-query name="getNhsNumbers">
-        select nhs_no as "NHSNumber" from nhsNumbers where patient_id = :patientId
+        select nhs_no as "NHSNumber" from tblNhsNumbers where patient_id = :patientId
     </sql-query>
 
     <sql-query name="getDateOfBirths">
-        select dob as "dateOfBirth" from dateOfBirths where patient_id = :patientId
+        select dob as "dateOfBirth" from tblDateOfBirths where patient_id = :patientId
     </sql-query>
 
     <sql-query name="getPhoneNumbers">
@@ -43,9 +43,10 @@
     </sql-query>
 
     <sql-query name="getCoordinates">
-        select patientId as "patientId", sourceTable as "sourceTable", sourceColumn as "sourceColumn",
-        idInSourceTable as "idInSourceTable", pkColumnName as "pkColumnName", type as "type", updateTime as "updateTime"
-        from testCoordinateView
+        select  patientId, sourceTable,  sourceColumn
+        ,  idInSourceTable, pkColumnName
+        ,  type , updatetime
+        from vwTestCoordinates
     </sql-query>
 
 

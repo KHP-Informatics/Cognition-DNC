@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import uk.ac.kcl.iop.brc.core.pipeline.common.data.BaseDao;
+import uk.ac.kcl.iop.brc.core.pipeline.common.data.SessionWrapper;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data.helper.ClobHelper;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.Patient;
 import uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.model.PatientAddress;
@@ -56,26 +57,32 @@ public class PatientDao extends BaseDao {
      */
     @Cacheable(value = "patients", key = "#id")
     public Patient getPatient(Long id) {
-        Query getPatient = getCurrentSourceSession().getNamedQuery("getPatient");
-        getPatient.setParameter("patientId", id);
-        logger.info("Loading patient " + id);
-        Patient patient = (Patient) getPatient.
-                setFirstResult(0).setMaxResults(1).
-                setResultTransformer(Transformers.aliasToBean(Patient.class)).uniqueResult();
+        SessionWrapper sessionWrapper = getCurrentSourceSession();
+        try {
+            Query getPatient = sessionWrapper.getNamedQuery("getPatient");
+            getPatient.setParameter("patientId", id);
+            logger.info("Loading patient " + id);
+            Patient patient = (Patient) getPatient.
+                    setFirstResult(0).setMaxResults(1).
+                    setResultTransformer(Transformers.aliasToBean(Patient.class)).uniqueResult();
 
-        setNames(patient);
-        setPhoneNumbers(patient);
-        setAddresses(patient);
-        setCarers(patient);
-        setNhsNumbers(patient);
-        setDateOfBirths(patient);
+            setNames(patient);
+            setPhoneNumbers(patient);
+            setAddresses(patient);
+            setCarers(patient);
+            setNhsNumbers(patient);
+            setDateOfBirths(patient);
 
-        return patient;
+            return patient;
+        } finally {
+            sessionWrapper.closeSession();
+        }
     }
 
     private void setNhsNumbers(Patient patient) {
+        SessionWrapper sessionWrapper = getCurrentSourceSession();
         try {
-            Query getNhsNumbers = getCurrentSourceSession().getNamedQuery("getNhsNumbers");
+            Query getNhsNumbers = sessionWrapper.getNamedQuery("getNhsNumbers");
             getNhsNumbers.setParameter("patientId", patient.getId());
             List nhsNumbers = getNhsNumbers.list();
             nhsNumbers.forEach(object -> {
@@ -92,12 +99,15 @@ public class PatientDao extends BaseDao {
             });
         } catch (Exception ex) {
             logger.warn("Error while loading NHS Numbers of patient " + patient.getId() + ". Does the specified table exist? " + ex.getMessage());
+        } finally {
+            sessionWrapper.closeSession();
         }
     }
 
     private void setDateOfBirths(Patient patient) {
+        SessionWrapper sessionWrapper = getCurrentSourceSession();
         try {
-            Query getDateOfBirths = getCurrentSourceSession().getNamedQuery("getDateOfBirths");
+            Query getDateOfBirths = sessionWrapper.getNamedQuery("getDateOfBirths");
             getDateOfBirths.setParameter("patientId", patient.getId());
             List dateOfBirths = getDateOfBirths.list();
             dateOfBirths.forEach(object -> {
@@ -114,12 +124,15 @@ public class PatientDao extends BaseDao {
             });
         } catch (Exception ex) {
             logger.warn("Error while loading date of births of patient " + patient.getId() + ". Does the specified table exist? " + ex.getMessage());
+        } finally {
+            sessionWrapper.closeSession();
         }
     }
 
     private void setCarers(Patient patient) {
+        SessionWrapper sessionWrapper = getCurrentSourceSession();
         try {
-            Query getCarers = getCurrentSourceSession().getNamedQuery("getCarers");
+            Query getCarers = sessionWrapper.getNamedQuery("getCarers");
             getCarers.setParameter("patientId", patient.getId());
             List carerObjects = getCarers.list();
             carerObjects.forEach(object -> {
@@ -131,21 +144,28 @@ public class PatientDao extends BaseDao {
             });
         } catch (Exception ex) {
             logger.warn("Error while loading carers of patient " + patient.getId() + ". Does the specified carer table exist? " + ex.getMessage());
+        } finally {
+            sessionWrapper.closeSession();
         }
     }
 
     private void setPhoneNumbers(Patient patient) {
-        Query getPhoneNumbers = getCurrentSourceSession().getNamedQuery("getPhoneNumbers");
-        getPhoneNumbers.setParameter("patientId", patient.getId());
-        List list = getPhoneNumbers.list();
-        List<String> phoneNumbers = new ArrayList<>();
-        list.forEach(object -> {
-            String phone = clobHelper.getStringFromExpectedClob(object);
-            if (! StringUtils.isBlank(phone)) {
-                phoneNumbers.add(phone);
-            }
-        });
-        patient.setPhoneNumbers(phoneNumbers);
+        SessionWrapper sessionWrapper = getCurrentSourceSession();
+        try {
+            Query getPhoneNumbers = sessionWrapper.getNamedQuery("getPhoneNumbers");
+            getPhoneNumbers.setParameter("patientId", patient.getId());
+            List list = getPhoneNumbers.list();
+            List<String> phoneNumbers = new ArrayList<>();
+            list.forEach(object -> {
+                String phone = clobHelper.getStringFromExpectedClob(object);
+                if (!StringUtils.isBlank(phone)) {
+                    phoneNumbers.add(phone);
+                }
+            });
+            patient.setPhoneNumbers(phoneNumbers);
+        } finally {
+            sessionWrapper.closeSession();
+        }
     }
 
     /**
@@ -154,8 +174,9 @@ public class PatientDao extends BaseDao {
      * @param patient
      */
     private void setAddresses(Patient patient) {
+        SessionWrapper sessionWrapper = getCurrentSourceSession();
         try {
-            Query getAddresses = getCurrentSourceSession().getNamedQuery("getAddresses");
+            Query getAddresses = sessionWrapper.getNamedQuery("getAddresses");
             getAddresses.setParameter("patientId", patient.getId());
             List addressObjects = getAddresses.list();
             addressObjects.forEach(object -> {
@@ -170,6 +191,8 @@ public class PatientDao extends BaseDao {
             });
         } catch (Exception ex) {
             logger.warn("Error while loading addresses of patient " + patient.getId() + ". Does the specified address table exist? " + ex.getMessage());
+        } finally {
+            sessionWrapper.closeSession();
         }
     }
 
@@ -179,8 +202,9 @@ public class PatientDao extends BaseDao {
      * @param patient
      */
     private void setNames(Patient patient) {
+        SessionWrapper sessionWrapper = getCurrentSourceSession();
         try {
-            Query getForeNames = getCurrentSourceSession().getNamedQuery("getPatientNames");
+            Query getForeNames = sessionWrapper.getNamedQuery("getPatientNames");
             getForeNames.setParameter("patientId", patient.getId());
             List foreNames = getForeNames.list();
             if (CollectionUtils.isEmpty(foreNames)) {
@@ -200,6 +224,8 @@ public class PatientDao extends BaseDao {
             }
         } catch (Exception ex) {
             logger.warn("Error while loading names of patient " + patient.getId() + ". Does the specified address table exist? " + ex.getMessage());
+        } finally {
+            sessionWrapper.closeSession();
         }
     }
 
