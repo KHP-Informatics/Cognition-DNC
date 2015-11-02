@@ -47,25 +47,32 @@ public class FullPipelineIntegrationTests extends IntegrationTest{
         patientDao.executeSQLQueryForSource("CREATE TABLE tblPatientPhoneNumbers(number varchar(100), patient_id int)");
         patientDao.executeSQLQueryForSource("CREATE TABLE tblPatientCarers(first_name varchar(100), last_name varchar(100), patient_id int)");
         patientDao.executeSQLQueryForSource("CREATE TABLE tblTestDocs(patient_id int, doc_id int, doc LONGVARBINARY )");        
+        //patientDao.executeSQLQueryForSource("create table vwTestCoordinates(patientId int, sourceTable varchar(100), sourceColumn varchar(100), idInSourceTable int, pkColumnName varchar(100), type varchar(100), updateTime varchar(100))");
         patientDao.executeSQLQueryForSource("CREATE VIEW vwTestCoordinates AS SELECT patient_id AS patientId, 'tblTestDocs' AS sourceTable, 'doc' AS sourceColumn , doc_id AS idInSourceTable, 'doc_id' AS pkColumnName,  'binary' AS type , null AS updatetime FROM tblTestDocs");
         patientDao.executeSQLQueryForSource("CREATE TABLE tblTestOutputCoordinate ( sourceTable VARCHAR(100), sourceColumn VARCHAR(100) , idInSourceTable INT , processedText VARCHAR(1500000) )");
         
         insertBinaries(patientDao.createSourceSession()); 
         
-                
+//         patientDao.executeSQLQueryForSource("INSERT INTO vwTestCoordinates " +
+//        "(      patientId,      sourceTable,    sourceColumn,   idInSourceTable,    pkColumnName,   type ) " +
+//        "SELECT patient_id ,    'tblTestDocs' , 'doc' ,         doc_id ,            'doc_id' ,      'binary' AS type  FROM tblTestDocs");
+     
+        //patient 1
         patientDao.executeSQLQueryForSource("INSERT INTO tblPatient values(1, '123123', '1990-05-09')");
-        patientDao.executeSQLQueryForSource("INSERT INTO tblDateOfBirths values(1, '1990-05-09')");
-        patientDao.executeSQLQueryForSource("INSERT INTO tblDateOfBirths values(1, '1990-05-10')");
-        patientDao.executeSQLQueryForSource("INSERT INTO tblNhsNumbers values(1, '123123')");
-        patientDao.executeSQLQueryForSource("INSERT INTO tblNhsNumbers values(1, '444444')");
-        patientDao.executeSQLQueryForSource("INSERT INTO tblPatientNames values('michael', 'gregorski', 1)");
-        patientDao.executeSQLQueryForSource("INSERT INTO tblPatientNames values('micha', 'gregor', 1)");
-        patientDao.executeSQLQueryForSource("INSERT INTO tblPatientAddresses values('address1', 'cb4 2za', 1)");
-        patientDao.executeSQLQueryForSource("INSERT INTO tblPatientAddresses values('address2', 'cb1 2za', 1)");
-        patientDao.executeSQLQueryForSource("INSERT INTO tblPatientPhoneNumbers values('213123', 1)");
-        patientDao.executeSQLQueryForSource("INSERT INTO tblPatientPhoneNumbers values('0778', 1)");
-        patientDao.executeSQLQueryForSource("INSERT INTO tblPatientCarers values('Richard', 'Jackson', 1)");
-        patientDao.executeSQLQueryForSource("INSERT INTO tblPatientCarers values('Ismail', 'Kartoglu', 1)");
+        patientDao.executeSQLQueryForSource("INSERT INTO tblPatientNames values('Bart', 'Davidson', 1)");       
+        patientDao.executeSQLQueryForSource("INSERT INTO tblPatientAddresses values('61 Basildon Way', 'AL64 9HT', 1)");
+        patientDao.executeSQLQueryForSource("INSERT INTO tblPatientAddresses values('East Croyhurst', 'AL64 9HT', 1)");        
+        patientDao.executeSQLQueryForSource("INSERT INTO tblPatientAddresses values('Angelton', 'AL64 9HT', 1)");            
+        patientDao.executeSQLQueryForSource("INSERT INTO tblPatientCarers values('Pauline', 'Smith', 1)");
+        patientDao.executeSQLQueryForSource("INSERT INTO tblPatientCarers values('Paul', 'Wayne', 1)");        
+        
+        //patient 2
+        patientDao.executeSQLQueryForSource("INSERT INTO tblPatient values(2, '123123', '1990-05-09')");
+        patientDao.executeSQLQueryForSource("INSERT INTO tblPatientNames values('David', 'Harleyson', 2)");       
+        patientDao.executeSQLQueryForSource("INSERT INTO tblPatientAddresses values('82a SaltFarm Crescent', 'HF93 9HS', 2)");
+        patientDao.executeSQLQueryForSource("INSERT INTO tblPatientAddresses values('Ditherington', null , 2)");        
+        patientDao.executeSQLQueryForSource("INSERT INTO tblPatientAddresses values('Sussex', null, 2)");            
+        patientDao.executeSQLQueryForSource("INSERT INTO tblPatientCarers values('Simon', 'Presley', 2)");
         
     }
 
@@ -79,6 +86,7 @@ public class FullPipelineIntegrationTests extends IntegrationTest{
         patientDao.executeSQLQueryForSource("DROP TABLE tblPatientPhoneNumbers");
         patientDao.executeSQLQueryForSource("DROP TABLE tblPatientCarers");
         patientDao.executeSQLQueryForSource("DROP VIEW vwTestCoordinates");        
+        //patientDao.executeSQLQueryForSource("DROP TABLE vwTestCoordinates");                
         patientDao.executeSQLQueryForSource("DROP TABLE tblTestDocs");
         patientDao.executeSQLQueryForSource("DROP TABLE tblTestOutputCoordinate");
     }
@@ -99,15 +107,62 @@ public class FullPipelineIntegrationTests extends IntegrationTest{
     private void insertBinaries(Session session) {        
         try {
             String sql = "INSERT INTO tblTestDocs (patient_id, doc_id, doc) VALUES(?,?,?)";
-            InputStream stream = getClass().getClassLoader().getResourceAsStream("docexample.doc");
+            InputStream stream = getClass().getClassLoader().getResourceAsStream("pat_id_1.pdf");
             byte[] binaryData = IOUtils.toByteArray(stream);            
-            for(int i =1; i<=20;i++){
+            for(int i =1; i<=5;i++){
                 SQLQuery query = session.createSQLQuery(sql);                
                 query.setInteger(0, 1);
                 query.setInteger(1, i);
                 query.setBinary(2, binaryData);
                 query.executeUpdate();
             }
+            stream = getClass().getClassLoader().getResourceAsStream("pat_id_1.doc");
+            binaryData = IOUtils.toByteArray(stream);            
+            for(int i =1; i<=5;i++){
+                SQLQuery query = session.createSQLQuery(sql);                
+                query.setInteger(0, 1);
+                query.setInteger(1, i);
+                query.setBinary(2, binaryData);
+                query.executeUpdate();
+            }
+            stream = getClass().getClassLoader().getResourceAsStream("pat_id_1.docx");
+            binaryData = IOUtils.toByteArray(stream);            
+            for(int i =1; i<=5;i++){
+                SQLQuery query = session.createSQLQuery(sql);                
+                query.setInteger(0, 1);
+                query.setInteger(1, i);
+                query.setBinary(2, binaryData);
+                query.executeUpdate();
+            }            
+            stream = getClass().getClassLoader().getResourceAsStream("pat_id_2.pdf");
+            binaryData = IOUtils.toByteArray(stream);            
+            for(int i =1; i<=5;i++){
+                SQLQuery query = session.createSQLQuery(sql);                
+                query.setInteger(0, 1);
+                query.setInteger(1, i);
+                query.setBinary(2, binaryData);
+                query.executeUpdate();
+            }
+            stream = getClass().getClassLoader().getResourceAsStream("pat_id_2.doc");
+            binaryData = IOUtils.toByteArray(stream);            
+            for(int i =1; i<=5;i++){
+                SQLQuery query = session.createSQLQuery(sql);                
+                query.setInteger(0, 1);
+                query.setInteger(1, i);
+                query.setBinary(2, binaryData);
+                query.executeUpdate();
+            }
+            stream = getClass().getClassLoader().getResourceAsStream("pat_id_2.docx");
+            binaryData = IOUtils.toByteArray(stream);            
+            for(int i =1; i<=5;i++){
+                SQLQuery query = session.createSQLQuery(sql);                
+                query.setInteger(0, 1);
+                query.setInteger(1, i);
+                query.setBinary(2, binaryData);
+                query.executeUpdate();
+            }            
+            
+
         } catch (IOException ex) {
             Logger.getLogger(FullPipelineIntegrationTests.class.getName()).log(Level.SEVERE, null, ex);
         }        

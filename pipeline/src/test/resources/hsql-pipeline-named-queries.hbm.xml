@@ -15,7 +15,7 @@
     </sql-query>
 
     <sql-query name="saveTextToCoordinate">
-        insert into tblTestOutputCoordinate (src_table, src_col, doc_ID, processedText) values(?, ?, ?, ?)
+        insert into tblTestOutputCoordinate (sourceTable, sourceColumn, idInSourceTable, processedText) values(?, ?, ?, ?)
     </sql-query>
 
     <sql-query name="getPatientNames">

@@ -29,25 +29,25 @@ import org.apache.commons.lang.math.RandomUtils;
 public class DNCWorkCoordinate {
 
     @SerializedName("patientId")
-    private long patientId;
+    private long PATIENTID;
 
     @SerializedName("sourceTable")
-    private String sourceTable;
+    private String SOURCETABLE;
 
     @SerializedName("sourceColumn")
-    private String sourceColumn;
+    private String SOURCECOLUMN;
 
     @SerializedName("idInSourceTable")
-    private long idInSourceTable;
+    private long IDINSOURCETABLE;
 
     @SerializedName("pkColumnName")
-    private String pkColumnName;
+    private String PKCOLUMNNAME;
 
     @SerializedName("type")
-    private String type;
+    private String TYPE;
 
     @SerializedName("updatetime")
-    private String updateTime;
+    private String UPDATETIME;
 
     private boolean markedAsOCR = false;
 
@@ -61,92 +61,92 @@ public class DNCWorkCoordinate {
     }
 
     public DNCWorkCoordinate patientId(long id) {
-        this.patientId = id;
+        this.PATIENTID = id;
         return this;
     }
 
     public DNCWorkCoordinate sourceTable(String sourceTable) {
-        this.sourceTable = sourceTable;
+        this.SOURCETABLE = sourceTable;
         return this;
     }
 
     public DNCWorkCoordinate sourceColumn(String sourceColumn){
-        this.sourceColumn = sourceColumn;
+        this.SOURCECOLUMN = sourceColumn;
         return this;
     }
 
     public DNCWorkCoordinate idInSourceTable(Long idInSourceTable) {
-        this.idInSourceTable = idInSourceTable;
+        this.IDINSOURCETABLE = idInSourceTable;
         return this;
     }
 
     public DNCWorkCoordinate type(String type) {
-        this.type = type;
+        this.TYPE = type;
         return this;
     }
 
     public DNCWorkCoordinate pkColumnName(String pkColumnName) {
-        this.pkColumnName = pkColumnName;
+        this.PKCOLUMNNAME = pkColumnName;
         return this;
     }
 
     public String getSourceTable() {
-        return sourceTable;
+        return SOURCETABLE;
     }
 
     public void setSourceTable(String sourceTable) {
-        this.sourceTable = sourceTable;
+        this.SOURCETABLE = sourceTable;
     }
 
     public String getSourceColumn() {
-        return sourceColumn;
+        return SOURCECOLUMN;
     }
 
     public void setSourceColumn(String sourceColumn) {
-        this.sourceColumn = sourceColumn;
+        this.SOURCECOLUMN = sourceColumn;
     }
 
     public long getIdInSourceTable() {
-        return idInSourceTable;
+        return IDINSOURCETABLE;
     }
 
     public void setIdInSourceTable(long idInSourceTable) {
-        this.idInSourceTable = idInSourceTable;
+        this.IDINSOURCETABLE = idInSourceTable;
     }
 
     public String getPkColumnName() {
-        return pkColumnName;
+        return PKCOLUMNNAME;
     }
 
     public void setPkColumnName(String pkColumnName) {
-        this.pkColumnName = pkColumnName;
+        this.PKCOLUMNNAME = pkColumnName;
     }
 
     public long getPatientId() {
-        return patientId;
+        return PATIENTID;
     }
 
     public void setPatientId(long patientId) {
-        this.patientId = patientId;
+        this.PATIENTID = patientId;
     }
 
     public String getType() {
-        return type;
+        return TYPE;
     }
 
     public void setType(String type) {
-        this.type = type;
+        this.TYPE = type;
     }
 
     public String getUpdateTime() {
-        if (updateTime == null ) {
+        if (UPDATETIME == null ) {
             return "";
         }
-        return updateTime;
+        return UPDATETIME;
     }
 
     public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
+        this.UPDATETIME = updateTime;
     }
 
     public String toJson() {
@@ -156,19 +156,19 @@ public class DNCWorkCoordinate {
 
 
     public boolean isBinary() {
-        return "binary".equalsIgnoreCase(type);
+        return "binary".equalsIgnoreCase(TYPE);
     }
 
     @Override
     public String toString() {
-        return String.format("Patient Id: %d, Source table: %s, Source column: %s, DocId: %d", patientId, sourceTable, sourceColumn, idInSourceTable);
+        return String.format("Patient Id: %d, Source table: %s, Source column: %s, DocId: %d", PATIENTID, SOURCETABLE, SOURCECOLUMN, IDINSOURCETABLE);
     }
 
     public String getFileName() {
-        if (0 == idInSourceTable || -1 == idInSourceTable) {
-            return String.format("%s_%d", sourceTable, RandomUtils.nextLong());
+        if (0 == IDINSOURCETABLE || -1 == IDINSOURCETABLE) {
+            return String.format("%s_%d", SOURCETABLE, RandomUtils.nextLong());
         }
-        return String.format("%s_%d", sourceTable, idInSourceTable);
+        return String.format("%s_%d", SOURCETABLE, IDINSOURCETABLE);
     }
 
     public boolean isMarkedAsOCR() {
