@@ -60,16 +60,17 @@ public class DNCWorkUnitDaoTest extends IntegrationTest {
 
     @Test
     public void shouldSaveAnonymisedTextToTargetDB() {
-        dao.executeSQLQueryForTarget("create table SaveTable(src_table varchar(100), src_col varchar(100), doc_ID int, processedText varchar(100), updatetime varchar(100))");
-        DNCWorkCoordinate coordinate = new DNCWorkCoordinate().sourceTable("SaveTable")
+        dao.executeSQLQueryForTarget("create table TBLTESTOUTPUTCOORDINATE (SOURCETABLE varchar(100), SOURCECOLUMN varchar(100), IDINSOURCETABLE int, PROCESSEDTEXT varchar(100), UPDATETIME varchar(100))");
+        DNCWorkCoordinate coordinate = new DNCWorkCoordinate().sourceTable("TBLTESTOUTPUTCOORDINATE")
                 .sourceColumn("someBinaryColumn").idInSourceTable(4L);
         coordinate.setUpdateTime("2015-02-11 16:18:43.42");
         dao.saveConvertedText(coordinate, "anonymised text");
-        List list = dao.getSQLResultFromTarget("select processedText from SaveTable where doc_Id=4");
+        List list = dao.getSQLResultFromTarget("select processedText from TBLTESTOUTPUTCOORDINATE where IDINSOURCETABLE=4");
 
         String text = (String) list.get(0);
 
         assertThat(text, equalTo("anonymised text"));
+        dao.executeSQLQueryForTarget("DROP TABLE TBLTESTOUTPUTCOORDINATE");
     }
 
     @Test

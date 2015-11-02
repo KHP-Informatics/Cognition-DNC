@@ -23,14 +23,14 @@ public class CoordinatesDaoTest extends IntegrationTest {
 
     @Test
     public void shouldLoadCoordinatesFromView() {
-        dao.executeSQLQueryForSource("create table testCoordinateView(patientId int, sourceTable varchar(100), sourceColumn varchar(100), idInSourceTable int, pkColumnName varchar(100), type varchar(100), updateTime varchar(100))");
-        dao.executeSQLQueryForSource("insert into testCoordinateView values(5, 'patientDocuments', 'binaryData', 13, 'id', 'binary', '2015-10-10')");
+        dao.executeSQLQueryForSource("create table vwTestCoordinates(patientId int, sourceTable varchar(100), sourceColumn varchar(100), idInSourceTable int, pkColumnName varchar(100), type varchar(100), updateTime varchar(100))");
+        dao.executeSQLQueryForSource("insert into vwTestCoordinates values(5, 'patientDocuments', 'binaryData', 13, 'id', 'binary', '2015-10-10')");
         
         List<DNCWorkCoordinate> result = dao.getCoordinates();
         
         assertThat(result.size(), equalTo(1));
 
-        dao.executeSQLQueryForSource("drop table testCoordinateView");
+        dao.executeSQLQueryForSource("drop table vwTestCoordinates");
     }
     
 }
