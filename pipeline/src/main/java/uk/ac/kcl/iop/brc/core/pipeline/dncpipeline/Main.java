@@ -1,7 +1,4 @@
 /*
-                Cognition-DNC (Dynamic Name Concealer)         Developed by Ismail Kartoglu (https://github.com/iemre)
-        Binary to text document converter and database pseudonymiser.
-
         Cognition-DNC (Dynamic Name Concealer)
         Developed by Ismail Kartoglu (https://github.com/iemre)
 
