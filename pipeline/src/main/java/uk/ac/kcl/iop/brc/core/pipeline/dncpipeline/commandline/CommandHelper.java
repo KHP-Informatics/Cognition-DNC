@@ -1,8 +1,8 @@
 /*
-        Cognition-DNC (Dynamic Name Concealer)
+        Cognition-DNC (Dynamic Name Concealer)         Developed by Ismail Kartoglu (https://github.com/iemre)
         Binary to text document converter and database pseudonymiser.
 
-        Copyright (C) 2015 Ismail E. Kartoglu
+        Copyright (C) 2015 Biomedical Research Centre for Mental Health
 
         This program is free software: you can redistribute it and/or modify
         it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ public class CommandHelper {
         System.out.println(
                 "*************************************************************\n" +
                 "\n" +
-                "    Cognition-DNC (Dynamic Name Concealer)\n" +
+                "            Cognition-DNC (Dynamic Name Concealer)         Developed by Ismail Kartoglu (https://github.com/iemre)\n" +
                 "    Ismail E. Kartoglu\n" +
                 "    ismail.e.kartoglu@kcl.ac.uk\n\n" +
                 "*************************************************************\n" +

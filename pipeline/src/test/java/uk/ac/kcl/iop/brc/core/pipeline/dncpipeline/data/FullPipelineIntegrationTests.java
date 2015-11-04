@@ -1,24 +1,36 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+        Cognition-DNC (Dynamic Name Concealer)         Developed by Ismail Kartoglu (https://github.com/iemre)
+        Binary to text document converter and database pseudonymiser.
+
+        Copyright (C) 2015 Biomedical Research Centre for Mental Health
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
+//Demonstration class to showcase DNCPipelineService class
 package uk.ac.kcl.iop.brc.core.pipeline.dncpipeline.data;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import spark.utils.IOUtils;
@@ -36,6 +48,7 @@ public class FullPipelineIntegrationTests extends IntegrationTest{
     
     @Autowired
     private DNCPipelineService service;
+    private ArrayList<byte[]> ba;
 
     @Before
     public void initDb() {
@@ -51,6 +64,7 @@ public class FullPipelineIntegrationTests extends IntegrationTest{
         patientDao.executeSQLQueryForSource("CREATE VIEW vwTestCoordinates AS SELECT patient_id AS patientId, 'tblTestDocs' AS sourceTable, 'doc' AS sourceColumn , doc_id AS idInSourceTable, 'doc_id' AS pkColumnName,  'binary' AS type , null AS updatetime FROM tblTestDocs");
         patientDao.executeSQLQueryForSource("CREATE TABLE tblTestOutputCoordinate ( sourceTable VARCHAR(100), sourceColumn VARCHAR(100) , idInSourceTable INT , processedText VARCHAR(1500000) )");
         
+        createBinaryArray();
         insertBinaries(patientDao.createSourceSession()); 
         
 //         patientDao.executeSQLQueryForSource("INSERT INTO vwTestCoordinates " +
@@ -91,8 +105,11 @@ public class FullPipelineIntegrationTests extends IntegrationTest{
         patientDao.executeSQLQueryForSource("DROP TABLE tblTestOutputCoordinate");
     }
     
+    
+    //remove ignore annotation to show!
+    @Ignore
     @Test
-    public void testTest(){
+    public void demonstrationTest(){
         
         service.startCreateModeWithDBView();
         
@@ -103,68 +120,35 @@ public class FullPipelineIntegrationTests extends IntegrationTest{
             System.out.println(ob.toString());
         }
     }
-
-    private void insertBinaries(Session session) {        
+    
+    private void createBinaryArray(){
+        ba = new ArrayList<>();
         try {
-            String sql = "INSERT INTO tblTestDocs (patient_id, doc_id, doc) VALUES(?,?,?)";
-            InputStream stream = getClass().getClassLoader().getResourceAsStream("pat_id_1.pdf");
-            byte[] binaryData = IOUtils.toByteArray(stream);            
-            for(int i =1; i<=5;i++){
-                SQLQuery query = session.createSQLQuery(sql);                
-                query.setInteger(0, 1);
-                query.setInteger(1, i);
-                query.setBinary(2, binaryData);
-                query.executeUpdate();
-            }
-            stream = getClass().getClassLoader().getResourceAsStream("pat_id_1.doc");
-            binaryData = IOUtils.toByteArray(stream);            
-            for(int i =1; i<=5;i++){
-                SQLQuery query = session.createSQLQuery(sql);                
-                query.setInteger(0, 1);
-                query.setInteger(1, i);
-                query.setBinary(2, binaryData);
-                query.executeUpdate();
-            }
-            stream = getClass().getClassLoader().getResourceAsStream("pat_id_1.docx");
-            binaryData = IOUtils.toByteArray(stream);            
-            for(int i =1; i<=5;i++){
-                SQLQuery query = session.createSQLQuery(sql);                
-                query.setInteger(0, 1);
-                query.setInteger(1, i);
-                query.setBinary(2, binaryData);
-                query.executeUpdate();
-            }            
-            stream = getClass().getClassLoader().getResourceAsStream("pat_id_2.pdf");
-            binaryData = IOUtils.toByteArray(stream);            
-            for(int i =1; i<=5;i++){
-                SQLQuery query = session.createSQLQuery(sql);                
-                query.setInteger(0, 1);
-                query.setInteger(1, i);
-                query.setBinary(2, binaryData);
-                query.executeUpdate();
-            }
-            stream = getClass().getClassLoader().getResourceAsStream("pat_id_2.doc");
-            binaryData = IOUtils.toByteArray(stream);            
-            for(int i =1; i<=5;i++){
-                SQLQuery query = session.createSQLQuery(sql);                
-                query.setInteger(0, 1);
-                query.setInteger(1, i);
-                query.setBinary(2, binaryData);
-                query.executeUpdate();
-            }
-            stream = getClass().getClassLoader().getResourceAsStream("pat_id_2.docx");
-            binaryData = IOUtils.toByteArray(stream);            
-            for(int i =1; i<=5;i++){
-                SQLQuery query = session.createSQLQuery(sql);                
-                query.setInteger(0, 1);
-                query.setInteger(1, i);
-                query.setBinary(2, binaryData);
-                query.executeUpdate();
-            }            
-            
+            ba.add(IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pat_id_1.pdf")));
+            ba.add(IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pat_id_1.doc")));            
+            ba.add(IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pat_id_1.docx")));     
+            ba.add(IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pat_id_1.png")));                               
+            ba.add(IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pat_id_2.pdf")));
+            ba.add(IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pat_id_2.doc")));            
+            ba.add(IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("pat_id_2.docx")));                             
 
         } catch (IOException ex) {
-            Logger.getLogger(FullPipelineIntegrationTests.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("error", ex);
+        }
+        
+    }
+
+    private void insertBinaries(Session session) {        
+        String sql = "INSERT INTO tblTestDocs (patient_id, doc_id, doc) VALUES(?,?,?)";
+        int i =1;
+        
+        for(byte[] object : ba){
+            SQLQuery query = session.createSQLQuery(sql);
+            query.setInteger(0, 1);
+            query.setInteger(1, i);
+            query.setBinary(2, object);
+            query.executeUpdate();
+            i++;
         }        
     }
 
