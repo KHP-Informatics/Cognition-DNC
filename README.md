@@ -71,6 +71,8 @@ so that the source database settings point to the source database where the data
 
 ```
 # SOURCE DATABASE SETTINGS
+
+[![Join the chat at https://gitter.im/KHP-Informatics/Cognition-DNC](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/KHP-Informatics/Cognition-DNC?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 sourceJdbcPath      = jdbc:jtds:sqlserver://127.0.0.1;databaseName=dbName
 sourceJdbcDriver    = net.sourceforge.jtds.jdbc.Driver
 sourceDbUsername    = username
